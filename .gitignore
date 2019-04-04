@@ -1,0 +1,16 @@
+*~
+.idea
+*.pyc
+__pycache__
+.#*
+*.img
+*.image
+venv
+env*
+/cover
+.coverage
+.bandit
+/cover/
+dside/cover/
+.cover
+htmlcov/
