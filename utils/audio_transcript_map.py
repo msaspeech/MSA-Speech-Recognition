@@ -3,8 +3,9 @@ from etc import QCRI_TRANSCRIPTS_PATH
 
 def get_transcript_key_value(transcript):
     """
-    :param transcript:
-    :return:
+    Retreives file name and its transcript for each line of the transcriptions file
+    :param transcript: String
+    :return: String, String
     """
     transcript = transcript.rstrip("\n")
     key_pattern = "(MSA[\d]+) .*"
@@ -16,6 +17,11 @@ def get_transcript_key_value(transcript):
 
 
 def map_transcripts(file_path):
+    """
+    Generates a dict where the key is the audio file name and the value is its transcript
+    :param file_path: String
+    :return: Dict
+    """
     transcripts_map = dict()
     with open(file_path, "r") as transcripts_file:
         uncleaned_transcripts = transcripts_file.readlines()
