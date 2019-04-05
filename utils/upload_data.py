@@ -16,8 +16,8 @@ def generate_picke_file():
      Generates pickle File in data directory
     """
     mapped_data = map_transcripts(QCRI_TRANSCRIPTS_PATH)
+    audio_data = []
     with open(DATA_PATH + 'QCRI_data_objects.pkl', 'wb') as f:
-        i= 0
         for file in glob.glob(os.path.join(QCRI_CORPUS_PATH, '*.wav')):
 
             # Retreiving audio transcript for the file
@@ -25,8 +25,9 @@ def generate_picke_file():
             audio_transcript = mapped_data[key]
 
             # Generating audio object
-            audio_processing = AudioInput(file)
-            audio_processing.set_transcript(audio_transcript)
-
+            audio_informations = AudioInput(file)
+            audio_informations.set_transcript(audio_transcript)
+            audio_data.append(audio_informations)
             # Dumps object in the picke file
-            pickle.dump(audio_processing, f, pickle.HIGHEST_PROTOCOL)
+        pickle.dump(audio_data, f, pickle.HIGHEST_PROTOCOL)
+
