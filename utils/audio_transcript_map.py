@@ -1,6 +1,7 @@
 import re
 from etc import QCRI_TRANSCRIPTS_PATH
 
+
 def get_transcript_key_value(transcript):
     """
     Retreives file name and its transcript for each line of the transcriptions file
