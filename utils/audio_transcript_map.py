@@ -1,5 +1,5 @@
 import re
-
+from etc import QCRI_TRANSCRIPTS_PATH
 
 def get_transcript_key_value(transcript):
     """
@@ -15,7 +15,7 @@ def get_transcript_key_value(transcript):
     return transcript_wav_file, transcript_content
 
 
-def map_transcripts(self, file_path):
+def map_transcripts(file_path):
     transcripts_map = dict()
     with open(file_path, "r") as transcripts_file:
         uncleaned_transcripts = transcripts_file.readlines()
