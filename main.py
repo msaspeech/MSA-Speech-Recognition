@@ -1,3 +1,3 @@
-from utils import generate_picke_file
+from lib import generate_fixed_size_data
 
-generate_picke_file()
+generate_fixed_size_data()
