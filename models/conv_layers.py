@@ -24,9 +24,9 @@ def return_cnn_layers(input_shape):
     :return: list
     """
     layers_list = []
-    layers_list.append(Conv1D(64, 32, activation='relu', input_shape=input_shape))
+    layers_list.append(Conv1D(64, 15, activation='relu', input_shape=input_shape))
     layers_list.append(MaxPooling1D(4))
-    layers_list.append(Conv1D(100, 10, activation='relu'))
+    layers_list.append(Conv1D(128, 15, activation='relu'))
     layers_list.append(MaxPooling1D(4))
     return layers_list
 
