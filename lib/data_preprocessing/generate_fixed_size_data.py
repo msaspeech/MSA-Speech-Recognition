@@ -1,6 +1,6 @@
 import numpy as np
 from utils import upload_original_data, generate_pickle_file_padding
-from lib import calculate_padding
+from .measure_padding import calculate_padding
 
 
 def get_resized_mfcc(mfcc, pad_width):

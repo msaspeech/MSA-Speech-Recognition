@@ -8,7 +8,7 @@ from etc import QCRI_TRANSCRIPTS_PATH
 from etc import QCRI_CORPUS_PATH
 from etc import PICKLE_FILE_PATH
 from etc import PICKLE_PAD_FILE_PATH
-from utils import map_transcripts
+from .audio_transcript_map import map_transcripts
 
 
 def generate_pickle_file():
