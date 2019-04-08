@@ -7,10 +7,10 @@ def get_input_data(train_ratio=0.8):
     train_length = int(len(data) * train_ratio)
     for i, audio_sample in enumerate(data):
         if i <= train_length:
-            train_x.append(audio_sample.mfcc)
+            train_x.append(audio_sample.mfcc.transpose())
             train_x = pd.DataFrame.from_records(train_x)
         else:
-            test_x.append(audio_sample.mfcc)
+            test_x.append(audio_sample.mfcc.transpose())
             test_x = pd.DataFrame.from_records(test_x)
     return train_x, test_x
 
