@@ -1,7 +1,8 @@
-from lib import generate_fixed_size_data
-from utils import upload_data_after_padding
-import numpy as np
 
-from lib import get_input_data
+from lib import generate_decoder_input_target
 
-train_x, test_x = get_input_data()
+
+input, target = generate_decoder_input_target()
+
+print(input)
+print(target)
