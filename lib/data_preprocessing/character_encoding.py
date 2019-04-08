@@ -97,15 +97,18 @@ def _generate_input_target_data(transcripts, char_to_int, num_transcripts, max_l
     return decoder_input_data, target_data
 
 
-def generate_decoder_input_target():
+def generate_decoder_input_target(transcripts=None):
     """
     Wrapper for the _generate_input_target_data method.
     :return: 3D numpy Array, 3D numpy Array
     """
-    transcripts = _get_transcriptions()
+    if transcripts is None:
+        transcripts = _get_transcriptions()
     character_set = _get_distinct_characters(transcripts)
+    print(character_set, len(character_set))
     char_to_int, int_to_char = _convert_to_int(character_set), _convert_to_char(character_set)
     max_sample_length = _get_longest_sample(transcripts)
+    print(max_sample_length)
     decoder_input, decoder_target = _generate_input_target_data(transcripts,
                                                                 char_to_int,
                                                                 len(transcripts),
