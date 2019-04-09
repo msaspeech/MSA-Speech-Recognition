@@ -1,8 +1,6 @@
 from lib import upload_dataset, upload_original_data
 from utils import decode_transcript, get_character_set
 
-
-
 (train_encoder_input, train_decoder_input, train_decoder_target), \
 (test_encoder_input, test_decoder_input, test_decoder_target) = upload_dataset()
 
