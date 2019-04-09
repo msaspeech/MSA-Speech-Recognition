@@ -1,4 +1,4 @@
-from utils import upload_data_after_padding
+from utils import upload_data_after_padding, convert_to_int
 import numpy as np
 
 
@@ -26,32 +26,6 @@ def _get_distinct_characters(transcripts):
             if c not in characters_set:
                 characters_set.add(c)
     return characters_set
-
-
-def _convert_to_int(character_set):
-    """
-    Returns a dict containing the int that corresponds to the char to encode input
-    :param character_set: set
-    :return: dict
-    """
-    char_to_int = dict()
-    for i, char in enumerate(character_set):
-        char_to_int[char] = i
-    return char_to_int
-
-
-def _convert_to_char(character_set):
-    """
-        Returns a dict containing the char that corresponds to an int to decode target
-        :param character_set: set
-        :return: dict
-        """
-    int_to_char = dict()
-    for i, char in enumerate(character_set):
-        int_to_char[i] = char
-
-    return int_to_char
-
 
 
 def _generate_input_target_data(transcripts, char_to_int, num_transcripts, max_length, num_distinct_chars):
@@ -97,7 +71,7 @@ def generate_decoder_input_target(length, transcripts=None):
     if transcripts is None:
         transcripts = _get_transcriptions()
     character_set = _get_distinct_characters(transcripts)
-    char_to_int, int_to_char = _convert_to_int(character_set), _convert_to_char(character_set)
+    char_to_int = convert_to_int(character_set)
     max_sample_length = length
     decoder_input, decoder_target = _generate_input_target_data(transcripts,
                                                                 char_to_int,
