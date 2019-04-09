@@ -14,19 +14,6 @@ def _get_transcriptions():
     return transcripts
 
 
-def _get_distinct_characters(transcripts):
-    """
-    Gets distincts characters for all dataset
-    :param transcripts:
-    :return:
-    """
-    characters_set = set()
-    for t in transcripts:
-        for c in t:
-            if c not in characters_set:
-                characters_set.add(c)
-    return characters_set
-
 
 def _generate_input_target_data(transcripts, char_to_int, num_transcripts, max_length, num_distinct_chars):
     """
@@ -63,14 +50,13 @@ def _generate_input_target_data(transcripts, char_to_int, num_transcripts, max_l
     return decoder_input_data, target_data
 
 
-def generate_decoder_input_target(length, transcripts=None):
+def generate_decoder_input_target(character_set, length, transcripts=None):
     """
     Wrapper for the _generate_input_target_data method.
     :return: 3D numpy Array, 3D numpy Array
     """
     if transcripts is None:
         transcripts = _get_transcriptions()
-    character_set = _get_distinct_characters(transcripts)
     char_to_int = convert_to_int(character_set)
     max_sample_length = length
     decoder_input, decoder_target = _generate_input_target_data(transcripts,
