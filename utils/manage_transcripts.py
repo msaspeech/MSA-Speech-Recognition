@@ -55,9 +55,7 @@ def decode_transcript(encoded_transcript, character_set):
     """
     transcript = ""
     conversion_table = convert_to_char(character_set)
-    print(conversion_table)
     encoded_transcript = encoded_transcript.astype(int)
-    print(encoded_transcript)
     for character in encoded_transcript:
         for index, value in enumerate(list(character)):
             if character[index]==1:
