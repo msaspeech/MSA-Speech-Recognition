@@ -1,5 +1,4 @@
 import re
-from etc import QCRI_TRANSCRIPTS_PATH
 
 
 def get_transcript_key_value(transcript):
