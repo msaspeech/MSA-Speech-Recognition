@@ -29,3 +29,4 @@ def map_transcripts(file_path):
             transcript_key, transcript_value = get_transcript_key_value(t)
             transcripts_map[transcript_key] = transcript_value
     return transcripts_map
+

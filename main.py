@@ -1,12 +1,8 @@
-from lib import generate_decoder_input_target
-from utils import upload_data_after_padding
-import numpy as np
+from lib import upload_dataset
 
 
-input, target = generate_decoder_input_target()
-data = upload_data_after_padding()
+(train_encoder_input, train_decoder_input, train_decoder_target), \
+(test_encoder_input, test_decoder_input, test_decoder_target) = upload_dataset()
 
-for d in data:
-    print(d.mfcc.transpose().shape)
-    print(type(d.mfcc.transpose()))
-    #print(d.mfcc.shape)
+print(train_encoder_input.shape, train_decoder_input.shape, train_decoder_target.shape)
+print(test_encoder_input.shape, test_decoder_input.shape, test_decoder_target.shape)

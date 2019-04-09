@@ -3,7 +3,7 @@ from . import generate_decoder_input_target
 import numpy as np
 
 
-def _get_train_test_data(train_ratio=0.8, padding=False):
+def _get_train_test_data(train_ratio=0.8, padding=True):
     """
     Splits dataset into train and test according to a ratio
     :param train_ratio: float
@@ -52,7 +52,7 @@ def _get_encoder_input_data(audio_data):
     return np.array(audio_data)
 
 
-def upload_dataset():
+def upload_dataset(train_ratio=0.8, padding=True):
     """
     Generate :
     train ==> encoder inputs, decoder inputs, decoder target
@@ -61,7 +61,7 @@ def upload_dataset():
     """
 
     # Upload train and test data, the train ration is 0.8 and can be modified through ration param
-    train_data, test_data = _get_train_test_data()
+    train_data, test_data = _get_train_test_data(train_ratio=train_ratio, padding=padding)
 
     # get mfcc and text transcripts for train and test
     train_audio, train_transcripts = _get_audio_transcripts(train_data)
@@ -69,7 +69,7 @@ def upload_dataset():
 
     # generate 3D numpy arrays for train encoder inputs and test encoder inputs
     train_encoder_input = _get_encoder_input_data(train_audio)
-    test_encoder_input = _get_encoder_input_data(test_data)
+    test_encoder_input = _get_encoder_input_data(test_audio)
 
     # generate 3D numpy arrays for train and test decoder input and decoder target
     train_decoder_input, train_decoder_target = generate_decoder_input_target(transcripts=train_transcripts)
