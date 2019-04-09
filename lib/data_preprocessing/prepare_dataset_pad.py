@@ -1,6 +1,7 @@
 from utils import upload_data_after_padding
 import pandas as pd
 
+
 def get_encoder_input_data(train_ratio=0.8):
     train_x, test_x = list(), list()
     data = upload_data_after_padding()
