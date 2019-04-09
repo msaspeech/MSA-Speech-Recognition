@@ -1,4 +1,4 @@
-from utils import upload_original_data, upload_data_after_padding
+from utils import upload_original_data, upload_data_after_padding, get_longest_sample_size
 from . import generate_decoder_input_target
 import numpy as np
 
@@ -67,13 +67,18 @@ def upload_dataset(train_ratio=0.8, padding=True):
     train_audio, train_transcripts = _get_audio_transcripts(train_data)
     test_audio, test_transcripts = _get_audio_transcripts(test_data)
 
+    # get max transcript size
+    transcript_max_length = max(get_longest_sample_size(train_transcripts), get_longest_sample_size(test_transcripts))
+
     # generate 3D numpy arrays for train encoder inputs and test encoder inputs
     train_encoder_input = _get_encoder_input_data(train_audio)
     test_encoder_input = _get_encoder_input_data(test_audio)
 
     # generate 3D numpy arrays for train and test decoder input and decoder target
-    train_decoder_input, train_decoder_target = generate_decoder_input_target(transcripts=train_transcripts)
-    test_decoder_input, test_decoder_target = generate_decoder_input_target(transcripts=test_transcripts)
+    train_decoder_input, train_decoder_target = generate_decoder_input_target(length= transcript_max_length,
+                                                                              transcripts=train_transcripts)
+    test_decoder_input, test_decoder_target = generate_decoder_input_target(length=transcript_max_length,
+                                                                            transcripts=test_transcripts)
 
     return (train_encoder_input, train_decoder_input, train_decoder_target), \
            (test_encoder_input, test_decoder_input, test_decoder_target)

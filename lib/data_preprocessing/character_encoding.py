@@ -53,14 +53,6 @@ def _convert_to_char(character_set):
     return int_to_char
 
 
-def _get_longest_sample(transcripts):
-    """
-    Return the maximum sample length for our dataset
-    :param transcripts: List of String
-    :return: int
-    """
-    return max([len(transcript) for transcript in transcripts])
-
 
 def _generate_input_target_data(transcripts, char_to_int, num_transcripts, max_length, num_distinct_chars):
     """
@@ -97,7 +89,7 @@ def _generate_input_target_data(transcripts, char_to_int, num_transcripts, max_l
     return decoder_input_data, target_data
 
 
-def generate_decoder_input_target(transcripts=None):
+def generate_decoder_input_target(length, transcripts=None):
     """
     Wrapper for the _generate_input_target_data method.
     :return: 3D numpy Array, 3D numpy Array
@@ -106,7 +98,7 @@ def generate_decoder_input_target(transcripts=None):
         transcripts = _get_transcriptions()
     character_set = _get_distinct_characters(transcripts)
     char_to_int, int_to_char = _convert_to_int(character_set), _convert_to_char(character_set)
-    max_sample_length = _get_longest_sample(_get_transcriptions())
+    max_sample_length = length
     decoder_input, decoder_target = _generate_input_target_data(transcripts,
                                                                 char_to_int,
                                                                 len(transcripts),
