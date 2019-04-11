@@ -4,6 +4,7 @@ from tensorflow.python.keras import Model
 
 
 MFCC_FEATURES = 40
+TARGET_LENGTH = 306
 latent_dim = 512
 # encoder training
 
@@ -38,7 +39,7 @@ decoder_lstm_2 = CuDNNLSTM(latent_dim,
                            recurrent_dropout=0.2)
 
 decoder_outputs, _, _ = decoder_lstm_2(decoder_lstm_1(decoder_inputs, initial_state = encoder_states))
-decoder_dense = TimeDistributed(Dense(MFCC_FEATURES, activation='relu'))
+decoder_dense = TimeDistributed(Dense(TARGET_LENGTH, activation='relu'))
 decoder_outputs = decoder_dense(decoder_outputs)
 
 
