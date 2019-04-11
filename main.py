@@ -7,7 +7,6 @@ from utils import decode_transcript, get_character_set
 print(train_encoder_input.shape, train_decoder_input.shape, train_decoder_target.shape)
 print(test_encoder_input.shape, test_decoder_input.shape, test_decoder_target.shape)
 
-
 # decoding transcript
 
 data = upload_original_data()
