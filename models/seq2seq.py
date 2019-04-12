@@ -3,15 +3,7 @@ from tensorflow.python.keras.layers import RepeatVector, TimeDistributed, Dense,
 from tensorflow.python.keras import Model
 
 
-def generate_baseline_seq2seq_model(mfcc_features=40, target_length=40, latent_dim=512):
-    """
-    Encoder Decoder Architecture with Variable Size input and targets
-    :param mfcc_features: int
-    :param target_length: int
-    :param latent_dim: int
-    :return: Model
-    """
-    encoder_inputs = Input(shape=(None, mfcc_features))
+def get_encoder_states(mfcc_features, encoder_inputs, latent_dim):
     encoder = CuDNNLSTM(latent_dim,
                         batch_input_shape=(None, None, mfcc_features),
                         stateful=False,
@@ -21,9 +13,10 @@ def generate_baseline_seq2seq_model(mfcc_features=40, target_length=40, latent_d
     # 'encoder_outputs' are ignored and only states are kept.
     encoder_outputs, state_h, state_c = encoder(encoder_inputs)
     encoder_states = [state_h, state_c]
+    return encoder_states
 
-    # Decoder training, using 'encoder_states' as initial state.
-    decoder_inputs = Input(shape=(None, target_length))
+
+def get_decoder_outputs(target_length, encoder_states, decoder_inputs, latent_dim):
     # First Layer
     decoder_lstm_1_layer = CuDNNLSTM(latent_dim,
                                      batch_input_shape=(None, None, target_length),
@@ -40,6 +33,29 @@ def generate_baseline_seq2seq_model(mfcc_features=40, target_length=40, latent_d
                                      dropout=0.2,
                                      recurrent_dropout=0.2)
     decoder_outputs, _, _ = decoder_lstm_2_layer(decoder_lstm1)
+    return decoder_outputs
+
+
+def generate_baseline_seq2seq_model(mfcc_features=40, target_length=40, latent_dim=512):
+    """
+    Encoder Decoder Architecture with Variable Size input and targets
+    :param mfcc_features: int
+    :param target_length: int
+    :param latent_dim: int
+    :return: Model
+    """
+    # Encoder training
+    encoder_inputs = Input(shape=(None, mfcc_features))
+    encoder_states = get_encoder_states(mfcc_features=mfcc_features,
+                                        encoder_inputs=encoder_inputs,
+                                        latent_dim=latent_dim)
+
+    # Decoder training, using 'encoder_states' as initial state.
+    decoder_inputs = Input(shape=(None, target_length))
+    decoder_outputs = get_decoder_outputs(target_length=target_length,
+                                          encoder_states=encoder_states,
+                                          decoder_inputs=decoder_inputs,
+                                          latent_dim=latent_dim)
 
     # Dense Output Layers
     decoder_dense = TimeDistributed(Dense(target_length, activation='softmax'))
@@ -68,36 +84,19 @@ def generate_cnn_attention_seq2seq_model(length, mfcc_features=40, target_length
     # getting CNN model
     cnn_inputs = Input(shape=cnn_input_shape)
     cnn_model = get_cnn_model(cnn_input_shape)
-    # Prepring Input shape for LSTM layer from CNN model
-    encoder_lstm_input_shape = (None, None, cnn_model.output_shape[2])
-    encoder_inputs = cnn_model(cnn_inputs)
-    encoder = CuDNNLSTM(latent_dim,
-                        batch_input_shape=encoder_lstm_input_shape,
-                        stateful=False,
-                        return_state=True,
-                        recurrent_initializer='glorot_uniform')
+    # Preparing Input shape for LSTM layer from CNN model
 
-    encoder_outputs, state_h, state_c = encoder(encoder_inputs)
-    encoder_states = [state_h, state_c]
+    encoder_inputs = cnn_model(cnn_inputs)
+    encoder_states = get_encoder_states(mfcc_features=cnn_model.output_shape[2],
+                                        encoder_inputs=encoder_inputs,
+                                        latent_dim=latent_dim)
 
     # Decoder training, using 'encoder_states' as initial state.
     decoder_inputs = Input(shape=(None, target_length))
-    # First Layer
-    decoder_lstm_1_layer = CuDNNLSTM(latent_dim,
-                                     batch_input_shape=(None, None, target_length),
-                                     stateful=False,
-                                     return_state=False,
-                                     dropout=0.2,
-                                     recurrent_dropout=0.2)
-    decoder_lstm1 = decoder_lstm_1_layer(decoder_inputs, initial_state=encoder_states)
-    # Second LSTM Layer
-    decoder_lstm_2_layer = CuDNNLSTM(latent_dim,
-                                     stateful=False,
-                                     return_sequences=True,
-                                     return_state=True,
-                                     dropout=0.2,
-                                     recurrent_dropout=0.2)
-    decoder_outputs, _, _ = decoder_lstm_2_layer(decoder_lstm1)
+    decoder_outputs = get_decoder_outputs(target_length=target_length,
+                                          encoder_states=encoder_states,
+                                          decoder_inputs=decoder_inputs,
+                                          latent_dim=latent_dim)
 
     # Dense Output Layers
     decoder_dense = TimeDistributed(Dense(target_length, activation='softmax'))
