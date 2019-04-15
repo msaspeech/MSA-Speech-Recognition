@@ -93,7 +93,7 @@ def train_baseline_seq2seq_model(encoder_input_data, decoder_input_data, decoder
     # Outputs and states from final LSTM Layer
     decoder_outputs, state_h, state_c = decoder_lstm2_layer(decoder_lstm1)
     decoder_states = [state_h, state_c]
-    
+
     decoder_outputs = decoder_dense(decoder_outputs)
     decoder_model = Model(
         [decoder_inputs] + decoder_states_inputs,
@@ -170,21 +170,22 @@ def train_model(encoder_input_data, decoder_input_data,decoder_target_data,
     :param batch_size: int
     :param model_architecture: int
     """
+    encoder_model, decoder_model = None, None
     length = encoder_input_data.shape[1]
     mfcc_features = encoder_input_data.shape[2]
     target_length = decoder_input_data.shape[2]
     if model_architecture == 1:
-        model = train_baseline_seq2seq_model(encoder_input_data=encoder_input_data,
-                                             decoder_input_data=decoder_input_data,
-                                             decoder_target_data=decoder_target_data,
-                                             mfcc_features=mfcc_features,
-                                             target_length=target_length,
-                                             latent_dim=latent_dim)
+        model, encoder_model, decoder_model = train_baseline_seq2seq_model(encoder_input_data=encoder_input_data,
+                                                                           decoder_input_data=decoder_input_data,
+                                                                           decoder_target_data=decoder_target_data,
+                                                                           mfcc_features=mfcc_features,
+                                                                           target_length=target_length,
+                                                                           latent_dim=latent_dim)
         model_name = "baseline.h5"
     elif model_architecture == 2:
         model = train_attention_seq2seq_model(mfcc_features=mfcc_features,
-                                                 target_length=target_length,
-                                                 latent_dim=latent_dim)
+                                              target_length=target_length,
+                                              latent_dim=latent_dim)
         model_name = "attention_based.h5"
     else:
         model = train_cnn_attention_seq2seq_model(encoder_input_data=encoder_input_data,
@@ -197,6 +198,9 @@ def train_model(encoder_input_data, decoder_input_data,decoder_target_data,
         model_name = "cnn_attention.h5"
 
     model.save(model_name)
+
+
+    return encoder_model, decoder_model
 
 
 
