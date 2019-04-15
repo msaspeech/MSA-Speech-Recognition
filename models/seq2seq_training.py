@@ -122,25 +122,30 @@ def train_model(encoder_input_data, decoder_input_data,decoder_target_data,
 
     mfcc_features = encoder_input_data.shape[2]
     target_length = decoder_input_data.shape[2]
-
     if model_architecture == 1:
         model = generate_baseline_seq2seq_model(mfcc_features=mfcc_features,
                                                 target_length=target_length,
                                                 latent_dim=latent_dim)
+        model_name = "baseline.h5"
     elif model_architecture == 2:
         model = generate_attention_seq2seq_model(mfcc_features=mfcc_features,
                                                  target_length=target_length,
                                                  latent_dim=latent_dim)
+        model_name = "attention_based.h5"
     else:
         model = generate_cnn_attention_seq2seq_model(mfcc_features=mfcc_features,
                                                      target_length=target_length,
                                                      latent_dim=latent_dim)
+        model_name = "cnn_attention.h5"
 
     model.compile(optimizer='rmsprop', loss='categorical_crossentropy')
     model.fit([encoder_input_data, decoder_input_data], decoder_target_data,
               batch_size=batch_size,
               epochs=epochs,
               validation_split=0.2)
+
+    model.save(model_name)
+
 
 
 
