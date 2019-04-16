@@ -40,17 +40,16 @@ def train_baseline_seq2seq_model(encoder_input_data, decoder_input_data, decoder
                                  mfcc_features=40, target_length=40, latent_dim=512,
                                  batch_size=64, epochs=70):
     """
-
-    :param encoder_input_data:
-    :param decoder_input_data:
-    :param decoder_target_data:
-    :param length:
-    :param mfcc_features:
-    :param target_length:
-    :param latent_dim:
-    :param batch_size:
-    :param epochs:
-    :return:
+    trains Encoder/Decoder architecture and prepares encoder_model and decoder_model for prediction part
+    :param encoder_input_data: 3D numpy array
+    :param decoder_input_data: 3D numpy array
+    :param decoder_target_data: 3D numpy array
+    :param mfcc_features: int
+    :param target_length: int
+    :param latent_dim: int
+    :param batch_size: int
+    :param epochs: int
+    :return: Model, Model, Model
     """
     # Encoder training
     encoder_inputs = Input(shape=(None, mfcc_features))
@@ -107,22 +106,22 @@ def train_attention_seq2seq_model(mfcc_features=40, target_length=40, latent_dim
 
 
 def train_cnn_attention_seq2seq_model(encoder_input_data, decoder_input_data, decoder_target_data,
-                                      length, mfcc_features=40, target_length=40, latent_dim=512,
+                                      audio_length, mfcc_features=40, target_length=40, latent_dim=512,
                                       batch_size=64, epochs=70):
     """
-
-    :param encoder_input_data:
-    :param decoder_input_data:
-    :param decoder_target_data:
-    :param length:
-    :param mfcc_features:
-    :param target_length:
-    :param latent_dim:
-    :param batch_size:
-    :param epochs:
-    :return:
+    trains Encoder/Decoder CNN based architecture and prepares encoder_model and decoder_model for prediction part
+    :param encoder_input_data: 3D numpy array
+    :param decoder_input_data: 3D numpy array
+    :param decoder_target_data: 3D numpy array
+    :param audio_length: int
+    :param mfcc_features: int
+    :param target_length: int
+    :param latent_dim: int
+    :param batch_size: int
+    :param epochs: int
+    :return: Model, Model, Model
     """
-    cnn_input_shape = (length, mfcc_features)
+    cnn_input_shape = (audio_length, mfcc_features)
     # getting CNN model
     cnn_inputs = Input(shape=cnn_input_shape)
     cnn_model = get_cnn_model(cnn_input_shape)
@@ -191,7 +190,7 @@ def train_model(encoder_input_data, decoder_input_data,decoder_target_data,
         model = train_cnn_attention_seq2seq_model(encoder_input_data=encoder_input_data,
                                                   decoder_input_data=decoder_input_data,
                                                   decoder_target_data=decoder_target_data,
-                                                  length=length,
+                                                  audio_length=length,
                                                   mfcc_features=mfcc_features,
                                                   target_length=target_length,
                                                   latent_dim=latent_dim)

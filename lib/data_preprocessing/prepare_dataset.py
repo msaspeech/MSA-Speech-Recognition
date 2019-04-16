@@ -39,7 +39,7 @@ def _get_audio_transcripts(data):
     for sample in data:
         audio_samples.append(sample.mfcc.transpose())
         # Adding "\t" at the beginning of each transcript for teacher forcing
-        transcript = "\t"+sample.audio_transcript
+        transcript = "\t" + sample.audio_transcript + "\n"
         transcripts.append(transcript)
 
     return audio_samples, transcripts
