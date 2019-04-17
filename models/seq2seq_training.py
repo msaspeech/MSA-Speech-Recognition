@@ -1,9 +1,10 @@
-from .conv_layers import get_cnn_model
-from tensorflow.python.keras.layers import RepeatVector, TimeDistributed, Dense, Input, CuDNNLSTM
 from tensorflow.python.keras import Model
+from tensorflow.python.keras.layers import TimeDistributed, Dense, Input, CuDNNLSTM, Concatenate
+
+from .layers import AttentionLayer, get_cnn_model
 
 
-def get_encoder_states(mfcc_features, encoder_inputs, latent_dim):
+def get_encoder_states(mfcc_features, encoder_inputs, latent_dim, return_sequences=False):
     encoder = CuDNNLSTM(latent_dim,
                         batch_input_shape=(None, None, mfcc_features),
                         stateful=False,
@@ -13,7 +14,10 @@ def get_encoder_states(mfcc_features, encoder_inputs, latent_dim):
     # 'encoder_outputs' are ignored and only states are kept.
     encoder_outputs, state_h, state_c = encoder(encoder_inputs)
     encoder_states = [state_h, state_c]
-    return encoder_states
+    if return_sequences:
+        return encoder_outputs, encoder_states
+    else:
+        return encoder_states
 
 
 def get_decoder_outputs(target_length, encoder_states, decoder_inputs, latent_dim):
@@ -102,7 +106,39 @@ def train_baseline_seq2seq_model(encoder_input_data, decoder_input_data, decoder
 
 
 def train_attention_seq2seq_model(mfcc_features=40, target_length=40, latent_dim=512):
-    return 1
+    """
+    :param mfcc_features:
+    :param target_length:
+    :param latent_dim:
+    :return:
+    """
+    # Encoder training
+    encoder_inputs = Input(shape=(None, mfcc_features))
+    encoder_outputs, encoder_states = get_encoder_states(mfcc_features=mfcc_features,
+                                                         encoder_inputs=encoder_inputs,
+                                                         latent_dim=latent_dim,
+                                                         return_sequences=True)
+
+    # Decoder training, using 'encoder_states' as initial state.
+    decoder_inputs = Input(shape=(None, target_length))
+    decoder_outputs = get_decoder_outputs(target_length=target_length,
+                                          encoder_states=encoder_states,
+                                          decoder_inputs=decoder_inputs,
+                                          latent_dim=latent_dim)
+
+    # Attention layer
+    attn_layer = AttentionLayer(name='attention_layer')
+    attn_out, attn_states = attn_layer([encoder_outputs, decoder_outputs])
+    decoder_concat_input = Concatenate(axis=-1, name='concat_layer')([decoder_outputs, attn_out])
+
+    # Dense Output Layers
+    dense = Dense(target_length, activation='softmax', name='softmax_layer')
+    dense_time = TimeDistributed(dense, name='time_distributed_layer')
+    decoder_pred = dense_time(decoder_concat_input)
+
+    # Generating Keras Model
+    model = Model(inputs=[encoder_inputs, decoder_inputs], outputs=decoder_pred)
+    return model
 
 
 def train_cnn_attention_seq2seq_model(encoder_input_data, decoder_input_data, decoder_target_data,
