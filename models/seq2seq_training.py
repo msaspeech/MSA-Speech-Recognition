@@ -109,7 +109,7 @@ def train_baseline_seq2seq_model(encoder_input_data, decoder_input_data, decoder
     return model, encoder_model, decoder_model
 
 
-def train_attention_seq2seq_model(mfcc_features=40, target_length=40, latent_dim=512):
+def train_attention_seq2seq_model(mfcc_features=40, target_length=42, latent_dim=512):
     """
     :param mfcc_features:
     :param target_length:
@@ -146,7 +146,7 @@ def train_attention_seq2seq_model(mfcc_features=40, target_length=40, latent_dim
 
 
 def train_cnn_attention_seq2seq_model(encoder_input_data, decoder_input_data, decoder_target_data,
-                                      audio_length, mfcc_features=40, target_length=40, latent_dim=512,
+                                      audio_length, mfcc_features=40, target_length=42, latent_dim=512,
                                       batch_size=64, epochs=70):
     """
     trains Encoder/Decoder CNN based architecture and prepares encoder_model and decoder_model for prediction part
@@ -165,19 +165,19 @@ def train_cnn_attention_seq2seq_model(encoder_input_data, decoder_input_data, de
     # getting CNN model
     cnn_inputs = Input(shape=cnn_input_shape)
     cnn_model = get_cnn_model(cnn_input_shape)
-    # Preparing Input shape for LSTM layer from CNN model
 
+    # Preparing Input shape for LSTM layer from CNN model
     encoder_inputs = cnn_model(cnn_inputs)
-    encoder_states = get_encoder_states(mfcc_features=cnn_model.output_shape[2],
+    encoder_states = get_encoder_states(mfcc_features=mfcc_features,
                                         encoder_inputs=encoder_inputs,
                                         latent_dim=latent_dim)
 
     # Decoder training, using 'encoder_states' as initial state.
     decoder_inputs = Input(shape=(None, target_length))
-    decoder_outputs = get_decoder_outputs(target_length=target_length,
-                                          encoder_states=encoder_states,
-                                          decoder_inputs=decoder_inputs,
-                                          latent_dim=latent_dim)
+    decoder_outputs, (decoder_lstm1_layer, decoder_lstm2_layer) = get_decoder_outputs(target_length=target_length,
+                                                                                      encoder_states=encoder_states,
+                                                                                      decoder_inputs=decoder_inputs,
+                                                                                      latent_dim=latent_dim)
 
     # Dense Output Layers
     decoder_dense = TimeDistributed(Dense(target_length, activation='softmax'))
@@ -187,7 +187,6 @@ def train_cnn_attention_seq2seq_model(encoder_input_data, decoder_input_data, de
     model = Model([encoder_inputs, decoder_inputs], decoder_outputs)
 
     # Training model
-
     model.compile(optimizer='rmsprop', loss='categorical_crossentropy')
     model.fit([encoder_input_data, decoder_input_data], decoder_target_data,
               batch_size=batch_size,
