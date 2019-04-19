@@ -1,15 +1,16 @@
 from tensorflow.python.keras import Model
-from tensorflow.python.keras.layers import TimeDistributed, Dense, Input, CuDNNLSTM, Concatenate
-
+from tensorflow.python.keras.layers import TimeDistributed, Dense, Input, CuDNNLSTM, Concatenate, LSTM
 from .layers import AttentionLayer, get_cnn_model
+
+from etc import settings
 
 
 def get_encoder_states(mfcc_features, encoder_inputs, latent_dim, return_sequences=False):
-    encoder = CuDNNLSTM(latent_dim,
-                        batch_input_shape=(None, None, mfcc_features),
-                        stateful=False,
-                        return_state=True,
-                        recurrent_initializer='glorot_uniform')
+    encoder = LSTM(latent_dim,
+                   batch_input_shape=(None, None, mfcc_features),
+                   stateful=False,
+                   return_state=True,
+                   recurrent_initializer='glorot_uniform')
 
     # 'encoder_outputs' are ignored and only states are kept.
     encoder_outputs, state_h, state_c = encoder(encoder_inputs)
@@ -22,20 +23,23 @@ def get_encoder_states(mfcc_features, encoder_inputs, latent_dim, return_sequenc
 
 def get_decoder_outputs(target_length, encoder_states, decoder_inputs, latent_dim):
     # First Layer
-    decoder_lstm_1_layer = CuDNNLSTM(latent_dim,
-                                     batch_input_shape=(None, None, target_length),
-                                     stateful=False,
-                                     return_state=False,
-                                     dropout=0.2,
-                                     recurrent_dropout=0.2)
+    decoder_lstm_1_layer = LSTM(latent_dim,
+                                batch_input_shape=(None, None, target_length),
+                                stateful=False,
+                                return_sequences=True,
+                                return_state=False,
+                                dropout=0.2,
+                                recurrent_dropout=0.2)
+
     decoder_lstm1 = decoder_lstm_1_layer(decoder_inputs, initial_state=encoder_states)
+
     # Second LSTM Layer
-    decoder_lstm_2_layer = CuDNNLSTM(latent_dim,
-                                     stateful=False,
-                                     return_sequences=True,
-                                     return_state=True,
-                                     dropout=0.2,
-                                     recurrent_dropout=0.2)
+    decoder_lstm_2_layer = LSTM(latent_dim,
+                                stateful=False,
+                                return_sequences=True,
+                                return_state=True,
+                                dropout=0.2,
+                                recurrent_dropout=0.2)
     decoder_outputs, _, _ = decoder_lstm_2_layer(decoder_lstm1)
     return decoder_outputs, (decoder_lstm_1_layer, decoder_lstm_2_layer)
 
@@ -201,39 +205,37 @@ def train_model(encoder_input_data, decoder_input_data,decoder_target_data,
     :param decoder_input_data: Numpy 3dArray
     :param decoder_target_data: Numpy 3dArray
     :param latent_dim: int
-    :param epochs: int
-    :param batch_size: int
     :param model_architecture: int
     """
     encoder_model, decoder_model = None, None
-    length = encoder_input_data.shape[1]
-    mfcc_features = encoder_input_data.shape[2]
-    target_length = decoder_input_data.shape[2]
+    mfcc_features_length = settings.MFCC_FEATURES_LENGTH
+    target_length = len(settings.CHARACTER_SET)
+
     if model_architecture == 1:
         model, encoder_model, decoder_model = train_baseline_seq2seq_model(encoder_input_data=encoder_input_data,
                                                                            decoder_input_data=decoder_input_data,
                                                                            decoder_target_data=decoder_target_data,
-                                                                           mfcc_features=mfcc_features,
+                                                                           mfcc_features=mfcc_features_length,
                                                                            target_length=target_length,
                                                                            latent_dim=latent_dim)
         model_name = "baseline.h5"
     elif model_architecture == 2:
-        model = train_attention_seq2seq_model(mfcc_features=mfcc_features,
+        model = train_attention_seq2seq_model(mfcc_features=mfcc_features_length,
                                               target_length=target_length,
                                               latent_dim=latent_dim)
         model_name = "attention_based.h5"
     else:
+        length = encoder_input_data.shape[1]
         model = train_cnn_attention_seq2seq_model(encoder_input_data=encoder_input_data,
                                                   decoder_input_data=decoder_input_data,
                                                   decoder_target_data=decoder_target_data,
                                                   audio_length=length,
-                                                  mfcc_features=mfcc_features,
+                                                  mfcc_features=mfcc_features_length,
                                                   target_length=target_length,
                                                   latent_dim=latent_dim)
         model_name = "cnn_attention.h5"
 
     model.save(model_name)
-
 
     return encoder_model, decoder_model
 

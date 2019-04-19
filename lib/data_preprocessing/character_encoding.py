@@ -1,4 +1,4 @@
-from utils import upload_data_after_padding, convert_to_int
+from utils import upload_data_after_padding, convert_to_int, get_longest_sample_size
 import numpy as np
 
 
@@ -105,9 +105,15 @@ def generate_decoder_input_target(character_set, transcripts=None):
     if transcripts is None:
         transcripts = _get_transcriptions()
     char_to_int = convert_to_int(character_set)
-    decoder_input, decoder_target = _generate_input_target_data(transcripts,
-                                                                char_to_int,
-                                                                len(character_set))
+    max_transcript_length = get_longest_sample_size(transcripts)
+    decoder_input, decoder_target = _generate_fixed_size_input_target_data(transcripts=transcripts,
+                                                                           char_to_int=char_to_int,
+                                                                           num_transcripts=len(transcripts),
+                                                                           max_length=max_transcript_length,
+                                                                           num_distinct_chars=len(character_set))
+    #decoder_input, decoder_target = _generate_input_target_data(transcripts,
+    #                                                           char_to_int,
+    #                                                            len(character_set))
     return decoder_input, decoder_target
 
 
