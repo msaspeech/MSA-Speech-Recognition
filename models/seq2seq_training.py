@@ -74,7 +74,6 @@ def train_baseline_seq2seq_model(mfcc_features=40, target_length=42, latent_dim=
 
     # Generating Keras Model
     model = Model([encoder_inputs, decoder_inputs], decoder_outputs)
-
     return model, encoder_states
 
 
@@ -86,14 +85,14 @@ def train_attention_seq2seq_model(mfcc_features=40, target_length=42, latent_dim
     :return:
     """
     # Encoder training
-    encoder_inputs = Input(shape=(None, mfcc_features))
+    encoder_inputs = Input(shape=(None, mfcc_features), name="encoder_inputs")
     encoder_outputs, encoder_states = get_encoder_states(mfcc_features=mfcc_features,
                                                          encoder_inputs=encoder_inputs,
                                                          latent_dim=latent_dim,
                                                          return_sequences=True)
 
     # Decoder training, using 'encoder_states' as initial state.
-    decoder_inputs = Input(shape=(None, target_length))
+    decoder_inputs = Input(shape=(None, target_length), name="decoder_inputs")
     decoder_outputs = get_decoder_outputs(target_length=target_length,
                                           encoder_states=encoder_states,
                                           decoder_inputs=decoder_inputs,
@@ -105,7 +104,7 @@ def train_attention_seq2seq_model(mfcc_features=40, target_length=42, latent_dim
     decoder_concat_input = Concatenate(axis=-1, name='concat_layer')([decoder_outputs, attn_out])
 
     # Dense Output Layers
-    dense = Dense(target_length, activation='softmax', name='softmax_layer')
+    dense = Dense(target_length, activation='softmax', name="decoder_dense")
     dense_time = TimeDistributed(dense, name='time_distributed_layer')
     decoder_pred = dense_time(decoder_concat_input)
 
@@ -138,14 +137,14 @@ def train_cnn_attention_seq2seq_model(audio_length, mfcc_features=40, target_len
                                         latent_dim=latent_dim)
 
     # Decoder training, using 'encoder_states' as initial state.
-    decoder_inputs = Input(shape=(None, target_length))
+    decoder_inputs = Input(shape=(None, target_length), name="decoder_inputs")
     decoder_outputs = get_decoder_outputs(target_length=target_length,
                                           encoder_states=encoder_states,
                                           decoder_inputs=decoder_inputs,
                                           latent_dim=latent_dim)
 
     # Dense Output Layers
-    decoder_dense = Dense(target_length, activation='softmax')
+    decoder_dense = Dense(target_length, activation='softmax', name="decoder_dense")
     decoder_outputs = decoder_dense(decoder_outputs)
 
     # Generating Keras Model
