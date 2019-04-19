@@ -56,6 +56,7 @@ def train_baseline_seq2seq_model(mfcc_features=40, target_length=42, latent_dim=
     """
     # Encoder training
     encoder_inputs = Input(shape=(None, mfcc_features), name="encoder_input")
+    print(encoder_inputs)
     encoder_states = get_encoder_states(mfcc_features=mfcc_features,
                                         encoder_inputs=encoder_inputs,
                                         latent_dim=latent_dim)
@@ -124,13 +125,16 @@ def train_cnn_attention_seq2seq_model(audio_length, mfcc_features=40, target_len
     """
     cnn_input_shape = (audio_length, mfcc_features)
     # getting CNN model
-    cnn_inputs = Input(shape=cnn_input_shape)
+    cnn_inputs = Input(shape=cnn_input_shape, name="encoder_inputs")
     cnn_model = get_cnn_model(cnn_input_shape)
 
     # Preparing Input shape for LSTM layer from CNN model
-    encoder_inputs = cnn_model(cnn_inputs)
+    cnn_output = cnn_model(cnn_inputs)
+    shape = (None, cnn_output.shape[2])
+    encoder_inputs = Input(shape=shape, name="encoder_inputs_after_cnn")
+
     encoder_states = get_encoder_states(mfcc_features=mfcc_features,
-                                        encoder_inputs=encoder_inputs,
+                                        encoder_inputs=cnn_output,
                                         latent_dim=latent_dim)
 
     # Decoder training, using 'encoder_states' as initial state.
@@ -145,7 +149,8 @@ def train_cnn_attention_seq2seq_model(audio_length, mfcc_features=40, target_len
     decoder_outputs = decoder_dense(decoder_outputs)
 
     # Generating Keras Model
-    model = Model([encoder_inputs, decoder_inputs], decoder_outputs)
+    model = Model([cnn_inputs, decoder_inputs], decoder_outputs)
+    print(model.summary())
 
     return model, encoder_states
 
