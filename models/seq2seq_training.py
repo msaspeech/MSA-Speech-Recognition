@@ -141,7 +141,7 @@ def train_cnn_attention_seq2seq_model(audio_length, mfcc_features=40, target_len
                                           latent_dim=latent_dim)
 
     # Dense Output Layers
-    decoder_dense = TimeDistributed(Dense(target_length, activation='softmax'))
+    decoder_dense = Dense(target_length, activation='softmax')
     decoder_outputs = decoder_dense(decoder_outputs)
 
     # Generating Keras Model
