@@ -1,6 +1,7 @@
 from utils import upload_data_after_padding, convert_to_int, get_longest_sample_size
 import numpy as np
 
+
 def _get_transcriptions():
     """
     Returns transcripts of the dataset
