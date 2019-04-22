@@ -1,5 +1,5 @@
 import numpy as np
-from utils import convert_to_int, convert_to_char
+from utils import convert_to_int, convert_to_char, decode_transcript
 from tensorflow.keras import Model
 from tensorflow.keras.layers import Input
 from etc import settings
@@ -105,3 +105,14 @@ def predict_sequence(audio_sequence, model, encoder_states, latent_dim):
                                              character_set=settings.CHARACTER_SET)
 
     return decoded_sequence
+
+
+def measure_test_accuracy(test_data, transcripts, model, encoder_states, latent_dim):
+    test_size = len(test_data)
+    good_prediction = 0
+    for i, audio_input in enumerate(test_data):
+        predicted_sequence = predict_sequence(audio_input, model, encoder_states, latent_dim)
+        if predicted_sequence == decode_transcript(transcripts[i], settings.CHARACTER_SET):
+            good_prediction += 1
+
+    return good_prediction * 100 / test_size

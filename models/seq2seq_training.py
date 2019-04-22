@@ -7,7 +7,7 @@ from etc import settings
 
 def get_encoder_states(mfcc_features, encoder_inputs, latent_dim, return_sequences=False):
     encoder = LSTM(latent_dim,
-                   batch_input_shape=(None, None, mfcc_features),
+                   batch_input_shape=(1, None, mfcc_features),
                    stateful=False,
                    return_state=True,
                    recurrent_initializer='glorot_uniform')
@@ -24,7 +24,7 @@ def get_encoder_states(mfcc_features, encoder_inputs, latent_dim, return_sequenc
 def get_decoder_outputs(target_length, encoder_states, decoder_inputs, latent_dim):
     # First Layer
     decoder_lstm1_layer = LSTM(latent_dim,
-                               batch_input_shape=(None, None, target_length),
+                               batch_input_shape=(1, None, target_length),
                                stateful=False,
                                return_sequences=True,
                                return_state=False,
@@ -105,8 +105,8 @@ def train_attention_seq2seq_model(mfcc_features=40, target_length=42, latent_dim
 
     # Dense Output Layers
     dense = Dense(target_length, activation='softmax', name="decoder_dense")
-    dense_time = TimeDistributed(dense, name='time_distributed_layer')
-    decoder_pred = dense_time(decoder_concat_input)
+    # dense_time = TimeDistributed(dense, name='time_distributed_layer')
+    decoder_pred = dense(decoder_concat_input)
 
     # Generating Keras Model
     model = Model(inputs=[encoder_inputs, decoder_inputs], outputs=decoder_pred)
@@ -129,9 +129,6 @@ def train_cnn_attention_seq2seq_model(audio_length, mfcc_features=40, target_len
 
     # Preparing Input shape for LSTM layer from CNN model
     cnn_output = cnn_model(cnn_inputs)
-    shape = (None, cnn_output.shape[2])
-    encoder_inputs = Input(shape=shape, name="encoder_inputs_after_cnn")
-
     encoder_states = get_encoder_states(mfcc_features=mfcc_features,
                                         encoder_inputs=cnn_output,
                                         latent_dim=latent_dim)

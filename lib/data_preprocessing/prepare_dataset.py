@@ -12,7 +12,7 @@ def _get_train_test_data(train_ratio=0.8, padding=False):
     :return: List of InputAudio, List of InputAudio
     """
     if padding is False:
-        data = upload_data_after_padding()
+        data = upload_original_data()
     else:
         data = upload_data_after_padding()
 
