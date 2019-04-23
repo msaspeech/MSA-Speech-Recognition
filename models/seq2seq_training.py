@@ -28,8 +28,6 @@ def get_decoder_outputs(target_length, encoder_states, decoder_inputs, latent_di
                                     stateful=False,
                                     return_sequences=True,
                                     return_state=False,
-                                    dropout=0.2,
-                                    recurrent_dropout=0.2,
                                     name="decoder_lstm1_layer")
 
     decoder_lstm1 = decoder_lstm1_layer(decoder_inputs, initial_state=encoder_states)
@@ -39,8 +37,6 @@ def get_decoder_outputs(target_length, encoder_states, decoder_inputs, latent_di
                                     stateful=False,
                                     return_sequences=True,
                                     return_state=True,
-                                    dropout=0.2,
-                                    recurrent_dropout=0.2,
                                     name="decoder_lstm_2layer")
     decoder_outputs, _, _ = decoder_lstm2_layer(decoder_lstm1)
     return decoder_outputs
