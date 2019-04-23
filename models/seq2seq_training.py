@@ -6,11 +6,13 @@ from etc import settings
 
 
 def get_encoder_states(mfcc_features, encoder_inputs, latent_dim, return_sequences=False):
-    encoder = LSTM(latent_dim,
-                        batch_input_shape=(1, None, mfcc_features),
-                        stateful=False,
-                        return_state=True,
-                        recurrent_initializer='glorot_uniform')
+    encoder = CuDNNLSTM(latent_dim,
+                   batch_input_shape=(1, None, mfcc_features),
+                   stateful=False,
+                   return_state=True,
+                   kernel_constraint=None,
+                   kernel_regularizer=None,
+                   recurrent_initializer='glorot_uniform')
 
     # 'encoder_outputs' are ignored and only states are kept.
     encoder_outputs, state_h, state_c = encoder(encoder_inputs)
@@ -23,21 +25,25 @@ def get_encoder_states(mfcc_features, encoder_inputs, latent_dim, return_sequenc
 
 def get_decoder_outputs(target_length, encoder_states, decoder_inputs, latent_dim):
     # First Layer
-    decoder_lstm1_layer = LSTM(latent_dim,
-                                    batch_input_shape=(1, None, target_length),
-                                    stateful=False,
-                                    return_sequences=True,
-                                    return_state=False,
-                                    name="decoder_lstm1_layer")
+    decoder_lstm1_layer = CuDNNLSTM(latent_dim,
+                               batch_input_shape=(1, None, target_length),
+                               stateful=False,
+                               return_sequences=True,
+                               return_state=False,
+                               kernel_constraint=None,
+                               kernel_regularizer=None,
+                               name="decoder_lstm1_layer")
 
     decoder_lstm1 = decoder_lstm1_layer(decoder_inputs, initial_state=encoder_states)
 
     # Second LSTM Layer
-    decoder_lstm2_layer = LSTM(latent_dim,
-                                    stateful=False,
-                                    return_sequences=True,
-                                    return_state=True,
-                                    name="decoder_lstm_2layer")
+    decoder_lstm2_layer = CuDNNLSTM(latent_dim,
+                               stateful=False,
+                               return_sequences=True,
+                               return_state=True,
+                               kernel_constraint=None,
+                               kernel_regularizer=None,
+                               name="decoder_lstm_2layer")
     decoder_outputs, _, _ = decoder_lstm2_layer(decoder_lstm1)
     return decoder_outputs
 
@@ -180,7 +186,7 @@ def train_model(encoder_input_data, decoder_input_data,decoder_target_data,
                                                                   latent_dim=latent_dim)
 
     # Training model
-    model.compile(optimizer='rmsprop', loss='categorical_crossentropy')
+    model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
     model.fit([encoder_input_data, decoder_input_data], decoder_target_data,
               batch_size=batch_size,
               epochs=epochs,
