@@ -10,6 +10,7 @@ def get_encoder_states(mfcc_features, encoder_inputs, latent_dim, batch_size, re
                         input_shape=( None, mfcc_features),
                         batch_size=batch_size,
                         stateful=False,
+                        return_sequences=return_sequences,
                         return_state=True,
                         kernel_constraint=None,
                         kernel_regularizer=None,
