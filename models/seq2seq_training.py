@@ -3,6 +3,7 @@ from tensorflow.python.keras.layers import TimeDistributed, Dense, Input, CuDNNL
 from .layers import AttentionLayer, get_cnn_model
 
 from etc import settings
+from etc import ENCODER_INPUT_MAX_LENGTH, DECODER_INPUT_MAX_LENGTH
 
 
 def get_encoder_states(mfcc_features, encoder_inputs, latent_dim, batch_size, return_sequences=False):
@@ -61,7 +62,6 @@ def train_baseline_seq2seq_model(mfcc_features, target_length, batch_size, laten
     """
     # Encoder training
     encoder_inputs = Input(shape=(None, mfcc_features), name="encoder_input")
-    print(encoder_inputs)
     encoder_states = get_encoder_states(mfcc_features=mfcc_features,
                                         encoder_inputs=encoder_inputs,
                                         latent_dim=latent_dim,
@@ -92,7 +92,7 @@ def train_attention_seq2seq_model(mfcc_features, target_length, latent_dim, batc
     :return:
     """
     # Encoder training
-    encoder_inputs = Input(shape=(None, mfcc_features), name="encoder_inputs")
+    encoder_inputs = Input(shape=(ENCODER_INPUT_MAX_LENGTH, mfcc_features), name="encoder_inputs")
     encoder_outputs, encoder_states = get_encoder_states(mfcc_features=mfcc_features,
                                                          encoder_inputs=encoder_inputs,
                                                          latent_dim=latent_dim,
@@ -119,6 +119,7 @@ def train_attention_seq2seq_model(mfcc_features, target_length, latent_dim, batc
 
     # Generating Keras Model
     model = Model(inputs=[encoder_inputs, decoder_inputs], outputs=decoder_pred)
+    print(model.summary())
     return model, encoder_states
 
 
