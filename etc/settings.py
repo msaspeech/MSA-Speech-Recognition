@@ -10,4 +10,6 @@ OTA_TRANSCRIPTS_PATH = './data/OTA Corpus/arabic-speech-corpus/orthographic-tran
 global MFCC_FEATURES_LENGTH
 global CHARACTER_SET
 
+ENCODER_INPUT_MAX_LENGTH = 945
+DECODER_INPUT_MAX_LENGTH = 289
 
