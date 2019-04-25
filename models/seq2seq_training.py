@@ -7,7 +7,7 @@ from etc import settings
 
 def get_encoder_states(mfcc_features, encoder_inputs, latent_dim, batch_size, return_sequences=False):
     encoder = CuDNNLSTM(latent_dim,
-                        input_shape=( None, mfcc_features),
+                        input_shape=(None, mfcc_features),
                         batch_size=batch_size,
                         stateful=False,
                         return_state=True,
@@ -162,7 +162,7 @@ def train_cnn_attention_seq2seq_model(audio_length, mfcc_features, target_length
 
 
 def train_model(encoder_input_data, decoder_input_data,decoder_target_data,
-                latent_dim=512, batch_size=64, epochs=70, model_architecture=1):
+                latent_dim=256, batch_size=64, epochs=70, model_architecture=1):
     """
     Choosing the architecture and running a training
     :param encoder_input_data: Numpy 3dArray
