@@ -1,4 +1,4 @@
-from livelossplot.keras import PlotLossesCallback
+import matplotlib.pyplot as plt
 
 from etc import settings
 from .seq2seq_baseline import train_baseline_seq2seq_model
@@ -43,12 +43,28 @@ def train_model(encoder_input_data, decoder_input_data,decoder_target_data,
 
     # Training model
     model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
-    model.fit([encoder_input_data, decoder_input_data], decoder_target_data,
+    history = model.fit([encoder_input_data, decoder_input_data], decoder_target_data,
               batch_size=batch_size,
               epochs=epochs,
-              validation_split=0.2,
-              callbacks=[PlotLossesCallback()])
-
+              validation_split=0.2)
+    # list all data in history
+    print(history.history.keys())
+    # summarize history for accuracy
+    plt.plot(history.history['acc'])
+    plt.plot(history.history['val_acc'])
+    plt.title('model accuracy')
+    plt.ylabel('accuracy')
+    plt.xlabel('epoch')
+    plt.legend(['train', 'test'], loc='upper left')
+    plt.show()
+    # summarize history for loss
+    plt.plot(history.history['loss'])
+    plt.plot(history.history['val_loss'])
+    plt.title('model loss')
+    plt.ylabel('loss')
+    plt.xlabel('epoch')
+    plt.legend(['train', 'test'], loc='upper left')
+    plt.show()
     model_name = "trained_models/architecture"+str(model_architecture)+".h5"
     model.save(model_name)
 
