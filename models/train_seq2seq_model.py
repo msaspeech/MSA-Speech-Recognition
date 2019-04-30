@@ -1,7 +1,9 @@
+from livelossplot.keras import PlotLossesCallback
+
 from etc import settings
 from .seq2seq_baseline import train_baseline_seq2seq_model
-from .seq2seq_with_attention import train_attention_seq2seq_model
 from .seq2seq_cnn_attention import train_cnn_attention_seq2seq_model
+from .seq2seq_with_attention import train_attention_seq2seq_model
 
 
 def train_model(encoder_input_data, decoder_input_data,decoder_target_data,
@@ -44,7 +46,8 @@ def train_model(encoder_input_data, decoder_input_data,decoder_target_data,
     model.fit([encoder_input_data, decoder_input_data], decoder_target_data,
               batch_size=batch_size,
               epochs=epochs,
-              validation_split=0.2)
+              validation_split=0.2,
+              callbacks=[PlotLossesCallback()])
 
     model_name = "trained_models/architecture"+str(model_architecture)+".h5"
     model.save(model_name)
