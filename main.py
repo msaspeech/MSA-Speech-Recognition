@@ -19,7 +19,7 @@ model, encoder_states = train_model(encoder_input_data=train_encoder_input,
                                     batch_size=batch_size,
                                     latent_dim=latent_dim,
                                     epochs=epochs,
-                                    model_architecture=1)
+                                    model_architecture=architecture)
 
 
 # accuracy = measure_test_accuracy(test_decoder_input, model, encoder_states, latent_dim=512)
