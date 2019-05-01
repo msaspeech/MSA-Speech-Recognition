@@ -1,9 +1,8 @@
 import matplotlib.pyplot as plt
-
 from etc import settings
-from .seq2seq_baseline import train_baseline_seq2seq_model
-from .seq2seq_cnn_attention import train_cnn_attention_seq2seq_model
-from .seq2seq_with_attention import train_attention_seq2seq_model
+from .seq2seq_baseline import train_baseline_seq2seq_model, train_bidirectional_baseline_seq2seq_model
+from .seq2seq_cnn_attention import train_cnn_attention_seq2seq_model, train_cnn_bidirectional_attention_seq2seq_model
+from .seq2seq_with_attention import train_attention_seq2seq_model, train_bidirectional_attention_seq2seq_model
 
 
 def train_model(encoder_input_data, decoder_input_data,decoder_target_data,
@@ -26,16 +25,33 @@ def train_model(encoder_input_data, decoder_input_data,decoder_target_data,
                                                              target_length=target_length,
                                                              batch_size=batch_size,
                                                              latent_dim=latent_dim)
-
     elif model_architecture == 2:
+        model, encoder_states = train_bidirectional_baseline_seq2seq_model(mfcc_features=mfcc_features_length,
+                                                             target_length=target_length,
+                                                             batch_size=batch_size,
+                                                             latent_dim=latent_dim)
+
+    elif model_architecture == 3:
         model, encoder_states = train_attention_seq2seq_model(mfcc_features=mfcc_features_length,
                                                               target_length=target_length,
                                                               batch_size=batch_size,
                                                               latent_dim=latent_dim)
+    elif model_architecture == 4:
+        model, encoder_states = train_bidirectional_attention_seq2seq_model(mfcc_features=mfcc_features_length,
+                                                              target_length=target_length,
+                                                              batch_size=batch_size,
+                                                              latent_dim=latent_dim)
 
-    else:
+    elif model_architecture == 5:
         length = encoder_input_data.shape[1]
         model, encoder_states = train_cnn_attention_seq2seq_model(audio_length=length,
+                                                                  mfcc_features=mfcc_features_length,
+                                                                  target_length=target_length,
+                                                                  batch_size=batch_size,
+                                                                  latent_dim=latent_dim)
+    else:
+        length = encoder_input_data.shape[1]
+        model, encoder_states = train_cnn_bidirectional_attention_seq2seq_model(audio_length=length,
                                                                   mfcc_features=mfcc_features_length,
                                                                   target_length=target_length,
                                                                   batch_size=batch_size,
