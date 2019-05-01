@@ -1,7 +1,7 @@
 from tensorflow.python.keras import Model
 from tensorflow.python.keras.layers import Dense, Input
 
-from .encoder_decoder import get_encoder_states, get_decoder_outputs
+from .encoder_decoder import get_encoder_states, get_decoder_outputs, encoder_BiLSTM, decoder_for_Bidirectional_encoder
 
 
 def train_baseline_seq2seq_model(mfcc_features, target_length, batch_size, latent_dim):
@@ -14,14 +14,14 @@ def train_baseline_seq2seq_model(mfcc_features, target_length, batch_size, laten
     """
     # Encoder training
     encoder_inputs = Input(shape=(None, mfcc_features), name="encoder_input")
-    encoder_states = get_encoder_states(mfcc_features=mfcc_features,
+    encoder_states = encoder_BiLSTM(mfcc_features=mfcc_features,
                                         encoder_inputs=encoder_inputs,
                                         latent_dim=latent_dim,
                                         batch_size=batch_size)
 
     # Decoder training, using 'encoder_states' as initial state.
     decoder_inputs = Input(shape=(None, target_length), name="decoder_inputs")
-    decoder_outputs = get_decoder_outputs(target_length=target_length,
+    decoder_outputs = decoder_for_Bidirectional_encoder(target_length=target_length,
                                           encoder_states=encoder_states,
                                           decoder_inputs=decoder_inputs,
                                           latent_dim=latent_dim,
