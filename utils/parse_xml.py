@@ -12,18 +12,21 @@ def get_transcriptions(file_path):
         for segment in body.findall("segment"):
             start_time = float(segment.attrib["starttime"])
             end_time = float(segment.attrib["endtime"])
-            transcrpt = ""
+            transcript = ""
             for element in segment.findall("element"):
                 elt = element.text
                 if elt is not None :
-                    transcrpt += elt + " "
-            transcriptions.append(Transcript(start_time, end_time, transcrpt))
-
+                    transcript += elt + " "
+            transcriptions.append(Transcript(start_time, end_time, transcript))
+            #transcriptions.append(transcript)
     return transcriptions
 
 
-def generate_transcriptions_file(input_path, output_path):
-    transcriptions = get_transcriptions(file_path=input_path)
+def generate_transcriptions_file(transcriptions_desc, output_path):
+    transcriptions_text = []
+    for t in transcriptions_desc :
+        transcriptions_text.append(t.content)
+
     with open(output_path, "w") as output_file:
-        output_file.writelines(transcriptions)
+        output_file.writelines(transcriptions_text)
         output_file.close()
