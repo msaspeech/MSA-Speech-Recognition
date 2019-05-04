@@ -25,15 +25,16 @@ def _retrieve_timelapse(audio_data):
     return timelapses
 
 
-def calculate_padding(audio_data, measure_unit):
+def calculate_padding(audioInput_data, measure_unit="q3"):
     """
     Gets as parameter measure unit (average/3rd quantile)
     Returns corresponding width pad
-    :param audio_data: List
+    :param audio_data: List of AudioInput
     :param measure_unit: String
     :return: Integer
     """
-    timelapses = _retrieve_timelapse(audio_data)
+    timelapses = _retrieve_timelapse(audioInput_data)
+    print("yes")
     if measure_unit is "avg":
         timelapses_sum = _sum_timelapses(timelapses)
         return int(timelapses_sum/len(timelapses))

@@ -1,15 +1,7 @@
 import os
-from etc import RAW_DATASET_AUDIO_PATH, RAW_DATASET_TRANSCRIPTIONS, GENERATED_DATA_PATH
-from . import generate_transcriptions_file, get_transcriptions, split_audio
-
-
-def get_files(directory):
-    list_files = []
-    for root, dirs, files in os.walk(directory):
-        for filename in sorted(files):
-            list_files.append(directory + filename)
-
-    return list_files
+from etc import RAW_DATASET_AUDIO_PATH, RAW_DATASET_TRANSCRIPTIONS, GENERATED_DATA_TRANSCRIPTS_PATH, GENERATED_DATA_WAV_PATH
+from . import get_transcriptions, generate_transcriptions_file, split_audio
+from utils import get_files
 
 
 def get_audio_transcripts_pairs(audio_files_path, transcription_files_path):
@@ -29,16 +21,16 @@ def generate_dataset():
     audio_descriptions_pairs = get_audio_transcripts_pairs(RAW_DATASET_AUDIO_PATH, RAW_DATASET_TRANSCRIPTIONS)
 
     for i, (audio_entry, transcript_desc_path) in enumerate(audio_descriptions_pairs):
-        transcriptions_directory = GENERATED_DATA_PATH+"transcriptions/"
+        transcriptions_directory = GENERATED_DATA_TRANSCRIPTS_PATH
         if not os.path.exists(transcriptions_directory):
             os.mkdir(transcriptions_directory)
 
-        transcript_path = transcriptions_directory+"audio"+str(i)+"_transcript.txt"
+        transcript_path = transcriptions_directory+"audio"+str(i)+".txt"
         transcriptions_description = get_transcriptions(transcript_desc_path)
         generate_transcriptions_file(transcriptions_desc=transcriptions_description,
                                      output_path=transcript_path)
 
-        audio_directory = GENERATED_DATA_PATH + "wav/audio" + str(i) + "/"
+        audio_directory = GENERATED_DATA_WAV_PATH + "audio" + str(i) + "/"
         if not os.path.exists(audio_directory):
             os.mkdir(audio_directory)
 

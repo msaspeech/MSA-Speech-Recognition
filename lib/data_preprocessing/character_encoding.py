@@ -1,15 +1,14 @@
-from utils import upload_data_after_padding, convert_to_int, get_longest_sample_size
+from utils.manage_transcripts import convert_to_int, get_longest_sample_size
 import numpy as np
 
 
-def _get_transcriptions():
+def _get_transcriptions(audioInput_data):
     """
     Returns transcripts of the dataset
     :return: List of Strings
     """
     transcripts = []
-    data = upload_data_after_padding()
-    for audio_sample in data:
+    for audio_sample in audioInput_data:
         transcripts.append(audio_sample.audio_transcript)
     return transcripts
 
@@ -97,13 +96,13 @@ def _generate_fixed_size_input_target_data(transcripts, char_to_int, num_transcr
     return decoder_input_data, decoder_target_data
 
 
-def generate_decoder_input_target(character_set, transcripts=None):
+def generate_decoder_input_target(audioInput_data, character_set, transcripts=None):
     """
     Wrapper for the _generate_input_target_data method.
     :return: 3D numpy Array, 3D numpy Array
     """
     if transcripts is None:
-        transcripts = _get_transcriptions()
+        transcripts = _get_transcriptions(audioInput_data)
     char_to_int = convert_to_int(character_set)
     max_transcript_length = get_longest_sample_size(transcripts)
     decoder_input, decoder_target = _generate_fixed_size_input_target_data(transcripts=transcripts,

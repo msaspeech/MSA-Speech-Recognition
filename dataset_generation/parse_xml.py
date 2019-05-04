@@ -1,5 +1,5 @@
 import xml.etree.ElementTree as ET
-from .transcript import Transcript
+from dataset_generation.transcript import Transcript
 
 
 def get_transcriptions(file_path):
@@ -18,7 +18,6 @@ def get_transcriptions(file_path):
                 if elt is not None :
                     transcript += elt + " "
             transcriptions.append(Transcript(start_time, end_time, transcript))
-            #transcriptions.append(transcript)
     return transcriptions
 
 
@@ -28,5 +27,6 @@ def generate_transcriptions_file(transcriptions_desc, output_path):
         transcriptions_text.append(t.content)
 
     with open(output_path, "w") as output_file:
-        output_file.writelines(transcriptions_text)
+        for line in transcriptions_text:
+            output_file.write(line+"\n")
         output_file.close()
