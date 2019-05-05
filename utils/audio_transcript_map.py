@@ -1,5 +1,4 @@
 import re
-from etc import QCRI_TRANSCRIPTS_PATH
 
 
 def get_transcript_key_value(transcript):
@@ -30,3 +29,4 @@ def map_transcripts(file_path):
             transcript_key, transcript_value = get_transcript_key_value(t)
             transcripts_map[transcript_key] = transcript_value
     return transcripts_map
+
