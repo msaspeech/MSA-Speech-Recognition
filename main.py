@@ -1,7 +1,7 @@
 import sys
 from lib import upload_dataset
 from models import train_model, measure_test_accuracy
-from models import save_to_drive
+#from models import save_to_drive
 
 #save_to_drive(model_name="test.h5", model_path="./trained_models/test.h5")
 
