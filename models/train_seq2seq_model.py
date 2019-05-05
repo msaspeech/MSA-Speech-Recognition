@@ -59,8 +59,7 @@ def train_model(encoder_input_data, decoder_input_data,decoder_target_data,
 
     # Training model
     model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
-    keras.callbacks.ModelCheckpoint(filepath, monitor='val_loss', verbose=0, save_best_only=False,
-                                    save_weights_only=False, mode='auto', period=1)
+    #keras.callbacks.ModelCheckpoint(filepath, monitor='val_loss', verbose=0, save_best_only=False, save_weights_only=False, mode='auto', period=1)
 
     history = model.fit([encoder_input_data, decoder_input_data], decoder_target_data,
               batch_size=batch_size,
