@@ -8,7 +8,7 @@ from etc import QCRI_TRANSCRIPTS_PATH
 from etc import QCRI_CORPUS_PATH
 from etc import PICKLE_FILE_PATH
 from etc import PICKLE_PAD_FILE_PATH
-from .audio_transcript_map import map_transcripts
+from . import map_audio_transcripts
 
 
 def generate_pickle_file():
@@ -17,7 +17,7 @@ def generate_pickle_file():
      Create AudioInput object and assigns its transcript
      Generates pickle File in data directory
     """
-    mapped_data = map_transcripts(QCRI_TRANSCRIPTS_PATH)
+    mapped_data = map_audio_transcripts(QCRI_TRANSCRIPTS_PATH)
     audio_data = []
     with open(DATA_PATH + 'QCRI_data_objects.pkl', 'wb') as f:
         for file in glob.glob(os.path.join(QCRI_CORPUS_PATH, '*.wav')):
