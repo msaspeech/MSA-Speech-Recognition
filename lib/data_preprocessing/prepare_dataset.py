@@ -1,7 +1,9 @@
-from utils import upload_original_data, upload_data_after_padding, get_longest_sample_size, get_character_set
+from utils import get_longest_sample_size, get_character_set
 from . import generate_decoder_input_target
 import numpy as np
 from etc import settings
+from utils import load_pickle_data
+from etc import PICKLE_PAD_FILE_PATH
 
 
 def _get_train_test_data(train_ratio=0.8, padding=False):
@@ -12,9 +14,9 @@ def _get_train_test_data(train_ratio=0.8, padding=False):
     :return: List of InputAudio, List of InputAudio
     """
     if padding is False:
-        data = upload_data_after_padding()
+        data = load_pickle_data(PICKLE_PAD_FILE_PATH)
     else:
-        data = upload_data_after_padding()
+        data = load_pickle_data(PICKLE_PAD_FILE_PATH)
 
     train_length = int(len(data) * train_ratio)
     train_data = []
@@ -64,11 +66,11 @@ def upload_dataset(train_ratio=0.8, padding=False):
     """
 
     # Upload train and test data, the train ration is 0.8 and can be modified through ration param
-    train_data, test_data = _get_train_test_data(train_ratio=train_ratio, padding=padding)
+    train_data, test_data = _get_train_test_data(train_ratio=0.75, padding=padding)
     # get mfcc and text transcripts for train and test
     train_audio, train_transcripts = _get_audio_transcripts(train_data)
     test_audio, test_transcripts = _get_audio_transcripts(test_data)
-
+    print("yes upload dataset")
     # Saving mfcc features length for global use
     settings.MFCC_FEATURES_LENGTH = train_audio[0].shape[1]
 
@@ -76,21 +78,19 @@ def upload_dataset(train_ratio=0.8, padding=False):
     all_transcripts = train_transcripts + test_transcripts
     # transcript_max_length = get_longest_sample_size(all_transcripts)
     character_set = get_character_set(all_transcripts)
-
     # Saving character set for global use
     settings.CHARACTER_SET = character_set
 
     # generate 3D numpy arrays for train encoder inputs and test encoder inputs
     train_encoder_input = _get_encoder_input_data(train_audio)
     test_encoder_input = _get_encoder_input_data(test_audio)
-
+    print("yes encoder data")
     # generate 3D numpy arrays for train and test decoder input and decoder target
     train_decoder_input, train_decoder_target = generate_decoder_input_target(character_set=character_set,
                                                                               transcripts=train_transcripts)
 
     test_decoder_input, test_decoder_target = generate_decoder_input_target(character_set=character_set,
                                                                             transcripts=test_transcripts)
-
     return (train_encoder_input, train_decoder_input, train_decoder_target), \
            (test_encoder_input, test_decoder_input, test_decoder_target)
 

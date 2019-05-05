@@ -7,9 +7,9 @@ from etc import PICKLE_PAD_FILE_PATH
 
 def generate_pickle_dataset():
     mapped_audio = map_audio_transcripts()
-    print(mapped_audio)
     audioInput = []
     for path, transcription in mapped_audio.items():
+        print(path+"====>"+transcription)
         audioInput.append(AudioInput(path=path, transcript=transcription))
 
     updated_data = get_fixed_size_data(audioInput_data=audioInput)

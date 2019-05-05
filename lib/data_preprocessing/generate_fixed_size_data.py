@@ -34,7 +34,9 @@ def get_resized_mfcc(mfcc, pad_width):
 def get_fixed_size_data(audioInput_data):
 
     updated_data = []
+    print(len(audioInput_data))
     max_pad_len = calculate_padding(audioInput_data, "q3")
+    print(max_pad_len)
     for audio_sample in audioInput_data:
         pad_width = max_pad_len - audio_sample.mfcc.shape[1]
         if pad_width > 0 :

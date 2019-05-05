@@ -34,7 +34,6 @@ def calculate_padding(audioInput_data, measure_unit="q3"):
     :return: Integer
     """
     timelapses = _retrieve_timelapse(audioInput_data)
-    print("yes")
     if measure_unit is "avg":
         timelapses_sum = _sum_timelapses(timelapses)
         return int(timelapses_sum/len(timelapses))

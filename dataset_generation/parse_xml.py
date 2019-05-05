@@ -27,6 +27,8 @@ def generate_transcriptions_file(transcriptions_desc, output_path):
         transcriptions_text.append(t.content)
 
     with open(output_path, "w") as output_file:
+        output_file.write(transcriptions_text[0])
+        transcriptions_text.pop(0)
         for line in transcriptions_text:
-            output_file.write(line+"\n")
+            output_file.write("\n"+line)
         output_file.close()

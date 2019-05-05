@@ -7,7 +7,7 @@ architecture = 3 #int(sys.argv[1])
 batch_size = 1 #int(sys.argv[2])
 latent_dim = 400 #int(sys.argv[3])
 epochs = 100 #int(sys.argv[4])
-
+print("yes 1")
 (train_encoder_input, train_decoder_input, train_decoder_target), \
 (test_encoder_input, test_decoder_input, test_decoder_target) = upload_dataset()
 
