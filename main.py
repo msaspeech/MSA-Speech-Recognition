@@ -1,13 +1,16 @@
 import sys
 from lib import upload_dataset
 from models import train_model, measure_test_accuracy
+from models import save_to_drive
+
+save_to_drive(model_name="test.h5", model_path="./trained_models/test.h5")
 
 
 architecture = int(sys.argv[1])
 batch_size = int(sys.argv[2])
 latent_dim = int(sys.argv[3])
 epochs = int(sys.argv[4])
-print("yes 1")
+
 (train_encoder_input, train_decoder_input, train_decoder_target), \
 (test_encoder_input, test_decoder_input, test_decoder_target) = upload_dataset()
 

@@ -70,10 +70,10 @@ def upload_dataset(train_ratio=0.8, padding=False):
     # get mfcc and text transcripts for train and test
     train_audio, train_transcripts = _get_audio_transcripts(train_data)
     test_audio, test_transcripts = _get_audio_transcripts(test_data)
-    print("yes upload dataset")
-    # Saving mfcc features length for global use
-    settings.MFCC_FEATURES_LENGTH = train_audio[0].shape[1]
 
+    # Saving mfcc features and length for global use
+    settings.MFCC_FEATURES_LENGTH = train_audio[0].shape[1]
+    settings.ENCODER_INPUT_MAX_LENGTH = train_audio[0].shape[0]
     # get max transcript size and character_set
     all_transcripts = train_transcripts + test_transcripts
     # transcript_max_length = get_longest_sample_size(all_transcripts)
@@ -84,13 +84,17 @@ def upload_dataset(train_ratio=0.8, padding=False):
     # generate 3D numpy arrays for train encoder inputs and test encoder inputs
     train_encoder_input = _get_encoder_input_data(train_audio)
     test_encoder_input = _get_encoder_input_data(test_audio)
-    print("yes encoder data")
+
     # generate 3D numpy arrays for train and test decoder input and decoder target
     train_decoder_input, train_decoder_target = generate_decoder_input_target(character_set=character_set,
                                                                               transcripts=train_transcripts)
 
     test_decoder_input, test_decoder_target = generate_decoder_input_target(character_set=character_set,
                                                                             transcripts=test_transcripts)
+    
+    settings.DECODER_INPUT_MAX_LENGTH = train_decoder_input.shape[1]
+
+
     return (train_encoder_input, train_decoder_input, train_decoder_target), \
            (test_encoder_input, test_decoder_input, test_decoder_target)
 
