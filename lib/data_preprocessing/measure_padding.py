@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def sum_timelapses(timelapses):
+def _sum_timelapses(timelapses):
     """
     Returns sum of time lapses
     :param timelapses: List
@@ -13,7 +13,7 @@ def sum_timelapses(timelapses):
     return sum
 
 
-def retrieve_time_lapse(audio_data):
+def _retrieve_timelapse(audio_data):
     """
     Returns a list of timelapses of each AudioInput object
     :param audio_data: List of AudioInput objects
@@ -25,17 +25,17 @@ def retrieve_time_lapse(audio_data):
     return timelapses
 
 
-def calculate_padding(audio_data, measure_unit):
+def calculate_padding(audioInput_data, measure_unit="q3"):
     """
     Gets as parameter measure unit (average/3rd quantile)
     Returns corresponding width pad
-    :param audio_data: List
+    :param audio_data: List of AudioInput
     :param measure_unit: String
     :return: Integer
     """
-    timelapses = retrieve_time_lapse(audio_data)
+    timelapses = _retrieve_timelapse(audioInput_data)
     if measure_unit is "avg":
-        timelapses_sum = sum_timelapses(timelapses)
+        timelapses_sum = _sum_timelapses(timelapses)
         return int(timelapses_sum/len(timelapses))
     elif measure_unit is "q3":
         return int(np.quantile(timelapses, .75))

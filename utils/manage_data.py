@@ -7,7 +7,8 @@ from etc import DATA_PATH
 from etc import QCRI_TRANSCRIPTS_PATH
 from etc import QCRI_CORPUS_PATH
 from etc import PICKLE_FILE_PATH
-from utils import map_transcripts
+from etc import PICKLE_PAD_FILE_PATH
+from . import map_audio_transcripts
 
 
 def generate_pickle_file():
@@ -16,7 +17,7 @@ def generate_pickle_file():
      Create AudioInput object and assigns its transcript
      Generates pickle File in data directory
     """
-    mapped_data = map_transcripts(QCRI_TRANSCRIPTS_PATH)
+    mapped_data = map_audio_transcripts(QCRI_TRANSCRIPTS_PATH)
     audio_data = []
     with open(DATA_PATH + 'QCRI_data_objects.pkl', 'wb') as f:
         for file in glob.glob(os.path.join(QCRI_CORPUS_PATH, '*.wav')):
@@ -57,6 +58,6 @@ def upload_data_after_padding():
       Uploads AudioInput data after padding from pickle file
       :return:
       """
-    with open(PICKLE_FILE_PATH, "rb") as f:
+    with open(PICKLE_PAD_FILE_PATH, "rb") as f:
         data = pickle.load(f)
     return data

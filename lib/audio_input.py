@@ -5,12 +5,12 @@ import librosa.display
 
 # TODO : Add doc to this class
 class AudioInput:
-    def __init__(self, path):
+    def __init__(self, path, transcript):
         data, self.sample_rate = librosa.load(path)
         self.mfcc = self.extract_mfcc(data)
         self.audio_length = self.get_audio_length(data)
         self.audio_path = path
-        self.audio_transcript = ""
+        self.audio_transcript = transcript
 
     def extract_mfcc(self, data):
         """
