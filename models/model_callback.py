@@ -7,6 +7,7 @@ class ModelSaver(Callback):
         self.model_name = model_name
         self.model_path = model_path
         self.drive_instance = drive_instance
+        self.model.save(model_path)
         super(ModelSaver, self).__init__()
 
     def on_epoch_end(self, epoch, logs=None):
@@ -14,4 +15,3 @@ class ModelSaver(Callback):
         uploaded = self.drive_instance.CreateFile({model_title: self.model_name})
         uploaded.SetContentFile(self.model_path)
         uploaded.Upload()
-
