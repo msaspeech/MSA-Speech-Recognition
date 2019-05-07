@@ -12,7 +12,7 @@ class ModelSaver(Callback):
     def on_epoch_end(self, epoch, logs=None):
         self.model.save(self.model_path)
         parent_directory_id = '0B5fJkPjHLj3Jdkw5ZnFiY0lZV1U'
-        file_list = self.drive_instance.ListFile({'q': "\'"+parent_directory_id"+\'"+"in parents"}).GetList()
+        file_list = self.drive_instance.ListFile({'q': "\'"+parent_directory_id+"\'"+"in parents"}).GetList()
         try:
             for file1 in file_list:
                 if file1['title'] == self.model_path:
