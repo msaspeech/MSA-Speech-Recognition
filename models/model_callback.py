@@ -10,6 +10,8 @@ class ModelSaver(Callback):
         self.drive_instance = drive_instance
         if self.model is not None :
             self.model.save(model_path)
+        else:
+            print("model is None")
 
     def on_epoch_end(self, epoch, logs=None):
         model_title = self.model_name.split(".h5")[0]
