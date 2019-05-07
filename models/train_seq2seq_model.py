@@ -3,6 +3,8 @@ from etc import settings
 from .seq2seq_baseline import train_baseline_seq2seq_model, train_bidirectional_baseline_seq2seq_model
 from .seq2seq_cnn_attention import train_cnn_attention_seq2seq_model, train_cnn_bidirectional_attention_seq2seq_model
 from .seq2seq_with_attention import train_attention_seq2seq_model, train_bidirectional_attention_seq2seq_model
+import keras
+from .model_callback import ModelSaver
 
 
 def train_model(encoder_input_data, decoder_input_data,decoder_target_data,
@@ -59,12 +61,19 @@ def train_model(encoder_input_data, decoder_input_data,decoder_target_data,
 
     # Training model
     model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
-    #keras.callbacks.ModelCheckpoint(filepath, monitor='val_loss', verbose=0, save_best_only=False, save_weights_only=False, mode='auto', period=1)
+
+    model_name = "architecture" + str(model_architecture) + ".h5"
+    model_path = settings.TRAINED_MODELS_PATH+model_name
+    model_saver = ModelSaver(model_name=model_name, model_path=model_path, drive_instance=settings.DRIVE_INSTANCE)
+
+    #mc = keras.callbacks.ModelCheckpoint(model_name, save_best_only=True, save_weights_only=True, period=1)
 
     history = model.fit([encoder_input_data, decoder_input_data], decoder_target_data,
-              batch_size=batch_size,
-              epochs=epochs,
-              validation_split=0.2)
+                        batch_size=batch_size,
+                        epochs=epochs,
+                        validation_split=0.2,
+                        callbacks=[model_saver])
+
     # list all data in history
     print(history.history.keys())
     # summarize history for accuracy
@@ -83,8 +92,6 @@ def train_model(encoder_input_data, decoder_input_data,decoder_target_data,
     plt.xlabel('epoch')
     plt.legend(['train', 'test'], loc='upper left')
     plt.show()
-    model_name = "trained_models/architecture"+str(model_architecture)+".h5"
-    model.save(model_name)
 
     return model, encoder_states
 

@@ -11,10 +11,13 @@ GENERATED_DATA_WAV_PATH = "./data/generated_data/wav/"
 GENERATED_DATA_TRANSCRIPTS_PATH = "./data/generated_data/transcriptions/"
 RAW_DATASET_AUDIO_PATH = "./data/raw/wav/"
 RAW_DATASET_TRANSCRIPTIONS = "./data/raw/transcriptions/"
-
+DRIVE_INSTANCE_PATH = "./drive/drive.pkl"
+TRAINED_MODELS_PATH = "./trained_models/"
 
 global MFCC_FEATURES_LENGTH
 global CHARACTER_SET
 
 global ENCODER_INPUT_MAX_LENGTH
 global DECODER_INPUT_MAX_LENGTH
+
+global DRIVE_INSTANCE
