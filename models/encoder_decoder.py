@@ -1,4 +1,4 @@
-from keras.layers import CuDNNLSTM, Bidirectional, Concatenate
+from tensorflow.python.keras.layers import CuDNNLSTM, Bidirectional, Concatenate
 
 
 def get_encoder_states(mfcc_features, encoder_inputs, latent_dim, batch_size, return_sequences=False):

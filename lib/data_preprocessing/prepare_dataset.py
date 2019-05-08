@@ -78,6 +78,7 @@ def upload_dataset(train_ratio=0.8, padding=False):
     all_transcripts = train_transcripts + test_transcripts
     # transcript_max_length = get_longest_sample_size(all_transcripts)
     character_set = get_character_set(all_transcripts)
+    print(len(character_set))
     # Saving character set for global use
     settings.CHARACTER_SET = character_set
 

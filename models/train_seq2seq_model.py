@@ -66,8 +66,6 @@ def train_model(encoder_input_data, decoder_input_data,decoder_target_data,
     model_path = settings.TRAINED_MODELS_PATH+model_name
     model_saver = ModelSaver(model_name=model_name, model_path=model_path, drive_instance=settings.DRIVE_INSTANCE)
 
-    #mc = keras.callbacks.ModelCheckpoint(model_name, save_best_only=True, save_weights_only=True, period=1)
-
     history = model.fit([encoder_input_data, decoder_input_data], decoder_target_data,
                         batch_size=batch_size,
                         epochs=epochs,

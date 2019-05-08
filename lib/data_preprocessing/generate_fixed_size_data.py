@@ -44,5 +44,4 @@ def get_fixed_size_data(audioInput_data):
 
             updated_data.append(audio_sample)
 
-
     return updated_data
