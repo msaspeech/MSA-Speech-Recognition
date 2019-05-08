@@ -47,14 +47,14 @@ def get_decoder_outputs(target_length, encoder_states, decoder_inputs, batch_siz
 
 def encoder_bilstm(mfcc_features, encoder_inputs, latent_dim, batch_size, return_sequences=False):
     encoder = Bidirectional(CuDNNLSTM(latent_dim,
-                        input_shape=(None, mfcc_features),
-                        batch_size=batch_size,
-                        stateful=False,
-                        return_sequences=return_sequences,
-                        return_state=True,
-                        kernel_constraint=None,
-                        kernel_regularizer=None,
-                        recurrent_initializer='glorot_uniform'))
+                            input_shape=(None, mfcc_features),
+                            batch_size=batch_size,
+                            stateful=False,
+                            return_sequences=return_sequences,
+                            return_state=True,
+                            kernel_constraint=None,
+                            kernel_regularizer=None,
+                            recurrent_initializer='glorot_uniform'))
     # 'encoder_outputs' are ignored and only states are kept.
     encoder_outputs, forward_h, forward_c, backward_h, backward_c = encoder(encoder_inputs)
     state_h = Concatenate()([forward_h, backward_h])
