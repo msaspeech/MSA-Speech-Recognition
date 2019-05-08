@@ -7,10 +7,10 @@ from etc import settings
 
 #settings.DRIVE_INSTANCE = load_pickle_data(DRIVE_INSTANCE_PATH)
 
-architecture = 1#int(sys.argv[1])
-batch_size = 2#int(sys.argv[2])
-latent_dim = 100#int(sys.argv[3])
-epochs = 100#int(sys.argv[4])
+architecture = int(sys.argv[1])
+batch_size = int(sys.argv[2])
+latent_dim = int(sys.argv[3])
+epochs = int(sys.argv[4])
 
 (train_encoder_input, train_decoder_input, train_decoder_target), \
 (test_encoder_input, test_decoder_input, test_decoder_target) = upload_dataset()
