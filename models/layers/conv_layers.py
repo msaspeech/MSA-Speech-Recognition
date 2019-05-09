@@ -12,6 +12,10 @@ def get_cnn_model(input_shape):
     model = Sequential()
     model.add(Conv1D(64, 15, activation='relu', input_shape=input_shape))
     model.add(MaxPooling1D(4))
+    model.add(Conv1D(88, 15, activation='relu'))
+    model.add(MaxPooling1D(4))
+    model.add(Conv1D(100, 15, activation='relu'))
+    model.add(MaxPooling1D(4))
     model.add(Conv1D(128, 15, activation='relu'))
     model.add(MaxPooling1D(4))
     return model
