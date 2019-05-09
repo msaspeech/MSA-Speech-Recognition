@@ -10,12 +10,12 @@ def get_cnn_model(input_shape):
     :return: Sequential
     """
     model = Sequential()
-    model.add(Conv1D(64, 64, activation='relu', input_shape=input_shape))
+    model.add(Conv1D(64, 16, activation='relu', input_shape=input_shape))
     model.add(MaxPooling1D(4))
     model.add(Conv1D(88, 32, activation='relu'))
     model.add(MaxPooling1D(4))
-    model.add(Conv1D(100, 16, activation='relu'))
+    model.add(Conv1D(100, 64, activation='relu'))
     model.add(MaxPooling1D(4))
-    model.add(Conv1D(128, 8, activation='relu'))
+    model.add(Conv1D(128, 64, activation='relu'))
     model.add(MaxPooling1D(4))
     return model
