@@ -16,6 +16,6 @@ def get_cnn_model(input_shape):
     model.add(MaxPooling1D(4))
     model.add(Conv1D(100, 64, activation='relu'))
     model.add(MaxPooling1D(4))
-    model.add(Conv1D(128, 64, activation='relu'))
+    model.add(Conv1D(128, 16, activation='relu'))
     model.add(MaxPooling1D(4))
     return model
