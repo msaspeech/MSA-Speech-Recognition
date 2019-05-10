@@ -1,5 +1,5 @@
 from utils import get_longest_sample_size, get_character_set
-from . import generate_decoder_input_target, transcript_preprocessing
+from . import generate_decoder_input_target, transcript_preprocessing, special_characters_table
 import numpy as np
 from etc import settings
 from utils import load_pickle_data
@@ -47,6 +47,26 @@ def _get_audio_transcripts(data):
     return audio_samples, transcripts
 
 
+def print_suspicious_characters(data):
+    """
+        Returns a list of audio mfcc dta and list of transcripts
+        :param data: List of Audio Input
+        :return: List of ndArray, List of Strings
+        """
+    audio_samples = []
+    transcripts = []
+    special_characters = special_characters_table()
+
+    for sample in data:
+        audio_samples.append(sample.mfcc.transpose())
+        transcript = "\t" + sample.audio_transcript + "\n"
+        for character in special_characters:
+            if character in transcript:
+                print("CHARACTER "+character+ " is in : "+transcript)
+        transcripts.append(transcript)
+
+    return audio_samples, transcripts
+
 def _get_encoder_input_data(audio_data):
     """
     Concatenate list of numpy 2dArray into a 3D numpy Array
@@ -68,6 +88,7 @@ def upload_dataset(train_ratio=0.8, padding=False):
     train_data, test_data = _get_train_test_data(train_ratio=0.75, padding=padding)
     # get mfcc and text transcripts for train and test
     train_audio, train_transcripts = _get_audio_transcripts(train_data)
+    #train_audio, train_transcripts = print_suspicious_characters(train_data)
     test_audio, test_transcripts = _get_audio_transcripts(test_data)
 
     # Saving mfcc features and length for global use

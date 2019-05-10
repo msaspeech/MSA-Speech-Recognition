@@ -2,12 +2,13 @@ import re
 
 
 def special_characters_table():
-    special_characters = {}
+    special_characters = dict()
+    
     special_characters["%"] = "في المئة"
     special_characters["@"] = ""
     special_characters["#"] = ""
     special_characters[";"] = ""
-    special_characters["\\"] = ""
+    special_characters["\\\\"] = ""
     special_characters["B"] = "b"
     special_characters["C"] = "c"
     special_characters["e"] = "E"
@@ -64,6 +65,7 @@ def _replace_special_characters(transcription, special_characters_table):
 def transcript_preprocessing(transcription, num_text_table, special_characters_table):
     #replacing special characters
     transcription = _replace_special_characters(transcription, special_characters_table)
+
     # Replacing numbers
     transcription = _replace_numbers(transcription, num_text_table)
 
