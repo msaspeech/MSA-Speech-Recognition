@@ -1,5 +1,5 @@
 from utils import get_longest_sample_size, get_character_set
-from . import generate_decoder_input_target
+from . import generate_decoder_input_target, transcript_preprocessing
 import numpy as np
 from etc import settings
 from utils import load_pickle_data
@@ -41,7 +41,6 @@ def _get_audio_transcripts(data):
 
     for sample in data:
         audio_samples.append(sample.mfcc.transpose())
-        # Adding "\t" at the beginning and "\n" at the end of each transcript for teacher forcing
         transcript = "\t" + sample.audio_transcript + "\n"
         transcripts.append(transcript)
 
