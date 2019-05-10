@@ -95,7 +95,6 @@ def upload_dataset(train_ratio=0.8, padding=False):
     
     settings.DECODER_INPUT_MAX_LENGTH = train_decoder_input.shape[1]
 
-
     return (train_encoder_input, train_decoder_input, train_decoder_target), \
            (test_encoder_input, test_decoder_input, test_decoder_target)
 
