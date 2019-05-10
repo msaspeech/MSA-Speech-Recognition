@@ -9,13 +9,14 @@ def get_cnn_model(input_shape):
     :param input_shape: tuple
     :return: Sequential
     """
+
     model = Sequential()
-    model.add(Conv1D(64, 16, activation='relu', input_shape=input_shape))
-    model.add(MaxPooling1D(4))
-    model.add(Conv1D(88, 32, activation='relu'))
-    model.add(MaxPooling1D(4))
-    model.add(Conv1D(100, 64, activation='relu'))
-    model.add(MaxPooling1D(4))
-    model.add(Conv1D(128, 16, activation='relu'))
+    model.add(Conv1D(16, 32, activation='relu', input_shape=input_shape))
+    model.add(MaxPooling1D(2))
+    model.add(Conv1D(32, 32, activation='relu'))
+    model.add(MaxPooling1D(2))
+    model.add(Conv1D(64, 16, activation='relu'))
+    model.add(MaxPooling1D(2))
+    model.add(Conv1D(128, 8, activation='relu'))
     model.add(MaxPooling1D(4))
     return model
