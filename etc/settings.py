@@ -14,6 +14,7 @@ RAW_DATASET_TRANSCRIPTIONS = "./data/raw/transcriptions/"
 DRIVE_INSTANCE_PATH = "./drive/drive.pkl"
 TRAINED_MODELS_PATH = "./trained_models/"
 
+
 global MFCC_FEATURES_LENGTH
 global CHARACTER_SET
 
