@@ -46,7 +46,7 @@ def convert_numeral_to_written_number(number):
         to_replace_with = "ألف"
         written_number = re.sub(matches[0], to_replace_with, written_number)
 
-    return written_number
+    return arabic_to_buckwalter(written_number)
 
 
 def numerical_to_written_numbers_table(inf_number=0, sup_number=10001):
