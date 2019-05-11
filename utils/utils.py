@@ -40,6 +40,12 @@ def buckwalter_to_arabic(buckwalter_sentence):
 
 def convert_numeral_to_written_number(number):
     written_number = num2words(number, lang="ar")
+    pattern = "واحد ألف"
+    matches =re.findall(pattern, written_number)
+    if matches:
+        to_replace_with = "ألف"
+        written_number = re.sub(matches[0], to_replace_with, written_number)
+
     return written_number
 
 
