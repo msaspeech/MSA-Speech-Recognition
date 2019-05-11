@@ -1,5 +1,5 @@
 from utils import get_longest_sample_size, get_character_set
-from . import generate_decoder_input_target, transcript_preprocessing, special_characters_table
+from . import generate_decoder_input_target
 import numpy as np
 from etc import settings
 from utils import load_pickle_data
@@ -47,25 +47,25 @@ def _get_audio_transcripts(data):
     return audio_samples, transcripts
 
 
-def print_suspicious_characters(data):
-    """
-        Returns a list of audio mfcc dta and list of transcripts
-        :param data: List of Audio Input
-        :return: List of ndArray, List of Strings
-        """
-    audio_samples = []
-    transcripts = []
-    special_characters = special_characters_table()
+#def print_suspicious_characters(data):
+#    """
+#        Returns a list of audio mfcc dta and list of transcripts
+#        :param data: List of Audio Input
+#        :return: List of ndArray, List of Strings
+#        """
+#    audio_samples = []
+#    transcripts = []
+#    special_characters = special_characters_table()
 
-    for sample in data:
-        audio_samples.append(sample.mfcc.transpose())
-        transcript = "\t" + sample.audio_transcript + "\n"
-        for character in special_characters:
-            if character in transcript:
-                print("CHARACTER "+character+ " is in : "+transcript)
-        transcripts.append(transcript)
+#    for sample in data:
+#        audio_samples.append(sample.mfcc.transpose())
+#        transcript = "\t" + sample.audio_transcript + "\n"
+#        for character in special_characters:
+#            if character in transcript:
+#                print("CHARACTER "+character+ " is in : "+transcript)
+#        transcripts.append(transcript)
 
-    return audio_samples, transcripts
+#    return audio_samples, transcripts
 
 def _get_encoder_input_data(audio_data):
     """
