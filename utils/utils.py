@@ -1,7 +1,7 @@
 import os
 import pickle
 import re
-from num2words import num2words
+#from num2words import num2words
 from lang_trans.arabic import buckwalter
 
 
