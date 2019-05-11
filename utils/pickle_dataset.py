@@ -16,8 +16,7 @@ def generate_pickle_dataset():
 
         # Calling transcription preprocessing
         special_characters = special_characters_table()
-        num_text_table = numerical_to_written_numbers_table()
-        transcription = transcript_preprocessing(transcription, num_text_table, special_characters)
+        transcription = transcript_preprocessing(transcription, special_characters)
 
         audioInput.append(AudioInput(path=path, transcript=transcription))
 

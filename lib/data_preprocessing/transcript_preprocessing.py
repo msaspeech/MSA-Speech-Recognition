@@ -1,14 +1,13 @@
 import re
-
+from utils import convert_numeral_to_written_number
 
 def special_characters_table():
     special_characters = dict()
-    
+
     special_characters["%"] = "في المئة"
     special_characters["@"] = ""
     special_characters["#"] = ""
     special_characters[";"] = ""
-    special_characters["\\\\"] = ""
     special_characters["B"] = "b"
     special_characters["C"] = "c"
     special_characters["e"] = "E"
@@ -40,14 +39,14 @@ def special_characters_table():
     return special_characters
 
 
-def _replace_numbers(transcription, num_text_table):
+def _replace_numbers(transcription):
     pattern = "\d+"
     numbers = re.findall(pattern, transcription)
     if numbers :
         for number in numbers:
-            corresponding_text = num_text_table[int(number)]
-            pattern = str(number)
-            transcription = re.sub(pattern, corresponding_text, transcription)
+            to_replace_with = convert_numeral_to_written_number(int(number))
+            print("------" + number + "-----" + to_replace_with )
+            transcription = re.sub(number, to_replace_with, transcription)
 
     return transcription
 
@@ -57,17 +56,18 @@ def _replace_special_characters(transcription, special_characters_table):
         matches = re.findall(pattern, transcription)
         if matches:
             for match in matches:
+                print("------"+ match+ "-----"+to_replace_with)
                 transcription = re.sub(match, to_replace_with, transcription)
 
     return transcription
 
 
-def transcript_preprocessing(transcription, num_text_table, special_characters_table):
+def transcript_preprocessing(transcription, special_characters_table):
     #replacing special characters
     transcription = _replace_special_characters(transcription, special_characters_table)
 
     # Replacing numbers
-    transcription = _replace_numbers(transcription, num_text_table)
+    transcription = _replace_numbers(transcription)
 
     return transcription
 

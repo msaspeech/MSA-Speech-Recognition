@@ -38,16 +38,16 @@ def buckwalter_to_arabic(buckwalter_sentence):
     return buckwalter.untransliterate(buckwalter_sentence)
 
 
-def convert_numeral_to_written_numbers(number):
+def convert_numeral_to_written_number(number):
     written_number = num2words(number, lang="ar")
     return written_number
 
 
-def numerical_to_written_numbers_table(inf_number=0, sup_number=10000):
+def numerical_to_written_numbers_table(inf_number=0, sup_number=10001):
     mapped_numbers = {}
     for i in range(inf_number, sup_number):
 
-        mapped_numbers[i] = arabic_to_buckwalter(convert_numeral_to_written_numbers(i))
+        mapped_numbers[i] = arabic_to_buckwalter(convert_numeral_to_written_number(i))
     return mapped_numbers
 
 
