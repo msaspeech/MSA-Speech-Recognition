@@ -1,6 +1,5 @@
 from tensorflow.python.keras import Model
 from tensorflow.python.keras.layers import Dense, Input
-
 from .encoder_decoder import get_encoder_states, get_decoder_outputs, encoder_bilstm, decoder_for_bidirectional_encoder
 
 
@@ -33,7 +32,7 @@ def train_baseline_seq2seq_model(mfcc_features, target_length, batch_size, laten
 
     # Generating Keras Model
     model = Model([encoder_inputs, decoder_inputs], decoder_outputs)
-    print(model.summary())
+   # print(model.summary())
     return model, encoder_states
 
 
