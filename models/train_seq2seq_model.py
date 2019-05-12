@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
 from etc import settings
+from utils import file_exists
+from tensorflow.python.keras import models
 from .seq2seq_baseline import train_baseline_seq2seq_model, train_bidirectional_baseline_seq2seq_model
 from .seq2seq_cnn_attention import train_cnn_attention_seq2seq_model, train_cnn_bidirectional_attention_seq2seq_model
 from .seq2seq_with_attention import train_attention_seq2seq_model, train_bidirectional_attention_seq2seq_model
@@ -63,7 +65,11 @@ def train_model(encoder_input_data, decoder_input_data,decoder_target_data,
 
     model_name = "architecture" + str(model_architecture) + ".h5"
     model_path = settings.TRAINED_MODELS_PATH+model_name
+
     model_saver = ModelSaver(model_name=model_name, model_path=model_path, drive_instance=settings.DRIVE_INSTANCE)
+
+    if file_exists(model_path):
+        model = models.load_model(model_path)
 
     history = model.fit([encoder_input_data, decoder_input_data], decoder_target_data,
                         batch_size=batch_size,

@@ -20,6 +20,12 @@ def get_files(directory):
     return list_files
 
 
+def file_exists(file_path):
+    if os.path.exists(file_path):
+        return True
+    return False
+
+
 def atoi(text):
     return int(text) if text.isdigit() else text
 
