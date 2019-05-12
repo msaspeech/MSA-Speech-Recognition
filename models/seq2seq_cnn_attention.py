@@ -1,8 +1,9 @@
 from tensorflow.python.keras import Model
-from tensorflow.python.keras.layers import Dense, Input
+from tensorflow.python.keras.layers import Dense, Input, Concatenate
 
 from .encoder_decoder import get_encoder_states, get_decoder_outputs, encoder_bilstm, decoder_for_bidirectional_encoder
 from .layers import get_cnn_model
+from .layers import AttentionLayer
 
 
 def train_cnn_attention_seq2seq_model(audio_length, mfcc_features, target_length, batch_size, latent_dim):
@@ -21,10 +22,11 @@ def train_cnn_attention_seq2seq_model(audio_length, mfcc_features, target_length
 
     # Preparing Input shape for LSTM layer from CNN model
     cnn_output = cnn_model(cnn_inputs)
-    encoder_states = get_encoder_states(mfcc_features=mfcc_features,
+    encoder_outputs, encoder_states = get_encoder_states(mfcc_features=mfcc_features,
                                         encoder_inputs=cnn_output,
                                         batch_size=batch_size,
-                                        latent_dim=latent_dim)
+                                        latent_dim=latent_dim,
+                                        return_sequences=True)
 
     # Decoder training, using 'encoder_states' as initial state.
     decoder_inputs = Input(shape=(None, target_length), name="decoder_inputs")
@@ -34,9 +36,18 @@ def train_cnn_attention_seq2seq_model(audio_length, mfcc_features, target_length
                                           batch_size=batch_size,
                                           latent_dim=latent_dim)
 
+    # Attention layer
+    attn_layer = AttentionLayer(name='attention_layer')
+    attn_out, attn_states = attn_layer([encoder_outputs, decoder_outputs])
+    decoder_concat_input = Concatenate(axis=-1, name='concat_layer')([decoder_outputs, attn_out])
+
     # Dense Output Layers
     decoder_dense = Dense(target_length, activation='softmax', name="decoder_dense")
-    decoder_outputs = decoder_dense(decoder_outputs)
+    decoder_outputs = decoder_dense(decoder_concat_input)
+
+    # Dense Output Layers
+    #decoder_dense = Dense(target_length, activation='softmax', name="decoder_dense")
+    #decoder_outputs = decoder_dense(decoder_outputs)
 
     # Generating Keras Model
     model = Model([cnn_inputs, decoder_inputs], decoder_outputs)
