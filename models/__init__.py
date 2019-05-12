@@ -1,4 +1,3 @@
-from .CTCModel import *
 from .encoder_decoder import *
 from .layers import *
 from .seq2seq_baseline import *
