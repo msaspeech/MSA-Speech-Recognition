@@ -118,7 +118,7 @@ def upload_dataset(train_ratio=0.8, padding=False):
     # generate 3D numpy arrays for train and test decoder input and decoder target
     train_decoder_input, train_decoder_target = generate_decoder_input_target(character_set=character_set,
                                                                               transcripts=train_transcripts,
-                                                                              fixed_size=False)
+                                                                              fixed_size=True)
 
     # generate fixed size 3D numpy arrays for train and test decoder input and decoder target
     #train_decoder_input, train_decoder_target = generate_decoder_input_target(character_set=character_set,
