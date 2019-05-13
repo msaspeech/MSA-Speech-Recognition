@@ -47,7 +47,6 @@ def train_cnn_seq2seq_model(audio_length, mfcc_features, target_length, batch_si
     return model, encoder_states
 
 
-
 def train_cnn_attention_seq2seq_model(audio_length, mfcc_features, target_length, batch_size, latent_dim):
     """
     trains Encoder/Decoder CNN based architecture and prepares encoder_model and decoder_model for prediction part
@@ -110,10 +109,11 @@ def train_cnn_bidirectional_attention_seq2seq_model(audio_length, mfcc_features,
     # getting CNN model
     cnn_inputs = Input(shape=cnn_input_shape, name="encoder_inputs")
     cnn_model = get_cnn_model(cnn_input_shape)
+    cnn_model_output_shape = cnn_model.layers[-1].output_shape[2]
 
     # Preparing Input shape for LSTM layer from CNN model
     cnn_output = cnn_model(cnn_inputs)
-    encoder_states = encoder_bilstm(mfcc_features=mfcc_features,
+    encoder_states = encoder_bilstm(mfcc_features=cnn_model_output_shape,
                                         encoder_inputs=cnn_output,
                                         batch_size=batch_size,
                                         latent_dim=latent_dim)
