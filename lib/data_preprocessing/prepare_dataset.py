@@ -1,9 +1,9 @@
 from utils import get_longest_sample_size, get_character_set
-from . import generate_decoder_input_target
+from . import generate_decoder_input_target, normalize_encoder_input
 import numpy as np
 from etc import settings
-from utils import load_pickle_data
-from etc import PICKLE_PAD_FILE_PATH
+from utils import load_pickle_data, file_exists
+from etc import PICKLE_PAD_FILE_PATH, NORMALIZED_ENCODER_INPUT_PATH
 
 
 def _get_train_test_data(train_ratio=0.8, padding=False):
@@ -94,6 +94,7 @@ def upload_dataset(train_ratio=0.8, padding=False):
     # Saving mfcc features and length for global use
     settings.MFCC_FEATURES_LENGTH = train_audio[0].shape[1]
     settings.ENCODER_INPUT_MAX_LENGTH = train_audio[0].shape[0]
+
     # get max transcript size and character_set
     all_transcripts = train_transcripts + test_transcripts
     # transcript_max_length = get_longest_sample_size(all_transcripts)
@@ -103,10 +104,16 @@ def upload_dataset(train_ratio=0.8, padding=False):
     # Saving character set for global use
     settings.CHARACTER_SET = character_set
 
-    # generate 3D numpy arrays for train encoder inputs and test encoder inputs
-    train_encoder_input = _get_encoder_input_data(train_audio)
 
-    test_encoder_input = _get_encoder_input_data(test_audio)
+    # generate and normalize 3D numpy arrays for train encoder inputs and test encoder inputs
+    train_encoder_input = _get_encoder_input_data(audio_data=train_audio)
+    train_encoder_input = normalize_encoder_input(dataset=train_encoder_input)
+
+    test_encoder_input = _get_encoder_input_data(audio_data=test_audio)
+    # TODO : Normalize test using existing min-max
+    # test_encoder_input = normalize_encoder_input(dataset=test_encoder_input)
+
+    print(train_encoder_input[0])
 
     # generate 3D numpy arrays for train and test decoder input and decoder target
     train_decoder_input, train_decoder_target = generate_decoder_input_target(character_set=character_set,
@@ -120,7 +127,7 @@ def upload_dataset(train_ratio=0.8, padding=False):
 
     test_decoder_input, test_decoder_target = generate_decoder_input_target(character_set=character_set,
                                                                             transcripts=test_transcripts)
-    
+
     #settings.DECODER_INPUT_MAX_LENGTH = train_decoder_input.shape[1]
 
     return (train_encoder_input, train_decoder_input, train_decoder_target), \
