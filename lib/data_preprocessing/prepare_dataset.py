@@ -105,16 +105,23 @@ def upload_dataset(train_ratio=0.8, padding=False):
 
     # generate 3D numpy arrays for train encoder inputs and test encoder inputs
     train_encoder_input = _get_encoder_input_data(train_audio)
+
     test_encoder_input = _get_encoder_input_data(test_audio)
 
     # generate 3D numpy arrays for train and test decoder input and decoder target
     train_decoder_input, train_decoder_target = generate_decoder_input_target(character_set=character_set,
-                                                                              transcripts=train_transcripts)
+                                                                              transcripts=train_transcripts,
+                                                                              fixed_size=False)
+
+    # generate fixed size 3D numpy arrays for train and test decoder input and decoder target
+    #train_decoder_input, train_decoder_target = generate_decoder_input_target(character_set=character_set,
+    #                                                                          transcripts=train_transcripts,
+    #                                                                          fixed_size=True)
 
     test_decoder_input, test_decoder_target = generate_decoder_input_target(character_set=character_set,
                                                                             transcripts=test_transcripts)
     
-    settings.DECODER_INPUT_MAX_LENGTH = train_decoder_input.shape[1]
+    #settings.DECODER_INPUT_MAX_LENGTH = train_decoder_input.shape[1]
 
     return (train_encoder_input, train_decoder_input, train_decoder_target), \
            (test_encoder_input, test_decoder_input, test_decoder_target)

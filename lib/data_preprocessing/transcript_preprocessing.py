@@ -28,6 +28,7 @@ def special_characters_table():
     special_characters["ﻹ"] = ""
     special_characters["ﻷ"] = ""
     special_characters["ﻵ"] = ""
+    special_characters["ﺇ"] = ""
     special_characters["٠"] = convert_numeral_to_written_number(0)
     special_characters["١"] = convert_numeral_to_written_number(1)
     special_characters["٢"] = convert_numeral_to_written_number(2)

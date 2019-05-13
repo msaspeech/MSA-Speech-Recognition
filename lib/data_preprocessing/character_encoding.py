@@ -64,6 +64,50 @@ def _generate_input_target_data(transcripts, char_to_int, num_distinct_chars):
     return decoder_input_data, decoder_target_data
 
 
+def generate_variable_size_input_target_data(transcripts, char_to_int):
+    """
+        Generates two 3D arrays for the decoder input data and target data.
+        Fills the 3D arrays for each sample of our dataset
+        Return OneHotEncoded Decoder Input data
+        Return OneHotEncoded Target data
+        :param transcripts: List of Strings
+        :param char_to_int: Dict
+        :return: 3D numpy Array, 3D numpy Array
+        """
+
+    # Init numpy array
+    num_transcripts = len(transcripts)
+    decoder_input_data = np.array([None]*num_transcripts)
+    decoder_target_data = np.array([None]*num_transcripts)
+
+    for i, transcript in enumerate(transcripts):
+        # Encode each transcript
+        encoded_transcript_input = []
+        encoded_transcript_target = []
+
+        for index, character in enumerate(transcript):
+            # Encode each character
+            encoded_character = []
+            for c in char_to_int:
+                if character == c:
+                    encoded_character.append(1)
+                else:
+                    encoded_character.append(0)
+
+            encoded_transcript_input.append(encoded_character)
+            encoded_transcript_target.append([])
+
+            if index > 0:
+                encoded_transcript_target[index-1] = encoded_character
+
+        decoder_input_data[i] = encoded_transcript_input
+
+        encoded_transcript_target.pop()
+        decoder_target_data[i] = encoded_transcript_target
+
+    return decoder_input_data, decoder_target_data
+
+
 def _generate_fixed_size_input_target_data(transcripts, char_to_int, num_transcripts, max_length, num_distinct_chars):
     """
     Generates two 3D arrays for the decoder input data and target data.
@@ -97,18 +141,23 @@ def _generate_fixed_size_input_target_data(transcripts, char_to_int, num_transcr
     return decoder_input_data, decoder_target_data
 
 
-def generate_decoder_input_target(character_set, transcripts):
+def generate_decoder_input_target(character_set, transcripts, fixed_size=True):
     """
     Wrapper for the _generate_input_target_data method.
     :return: 3D numpy Array, 3D numpy Array
     """
-    char_to_int = convert_to_int(character_set)
+    char_to_int = convert_to_int(sorted(character_set))
     max_transcript_length = get_longest_sample_size(transcripts)
-    decoder_input, decoder_target = _generate_fixed_size_input_target_data(transcripts=transcripts,
-                                                                           char_to_int=char_to_int,
-                                                                           num_transcripts=len(transcripts),
-                                                                           max_length=max_transcript_length,
-                                                                           num_distinct_chars=len(character_set))
+    if fixed_size:
+        decoder_input, decoder_target = _generate_fixed_size_input_target_data(transcripts=transcripts,
+                                                                               char_to_int=char_to_int,
+                                                                               num_transcripts=len(transcripts),
+                                                                               max_length=max_transcript_length,
+                                                                               num_distinct_chars=len(character_set))
+    else:
+        decoder_input, decoder_target = generate_variable_size_input_target_data(transcripts=transcripts,
+                                                                               char_to_int=char_to_int,)
+
     #decoder_input, decoder_target = _generate_input_target_data(transcripts,
     #                                                           char_to_int,
     #                                                            len(character_set))
