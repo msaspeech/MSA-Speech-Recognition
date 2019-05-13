@@ -23,7 +23,7 @@ def get_encoder_states(mfcc_features, encoder_inputs, latent_dim, batch_size, re
 def get_decoder_outputs(target_length, encoder_states, decoder_inputs, batch_size, latent_dim):
     # First Layer
     decoder_lstm1_layer = CuDNNLSTM(latent_dim,
-                                    input_shape=(None, None),
+                                    input_shape=(None, target_length),
                                     batch_size=batch_size,
                                     return_sequences=True,
                                     return_state=False,
