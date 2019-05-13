@@ -17,9 +17,9 @@ def train_cnn_seq2seq_model(audio_length, mfcc_features, target_length, batch_si
     """
     cnn_input_shape = (audio_length, mfcc_features)
     # getting CNN model
-    cnn_inputs = Input(shape=cnn_input_shape, name="encoder_inputs")
     cnn_model = get_cnn_model(cnn_input_shape)
-
+    cnn_model_output_shape = cnn_model.layers[-1].output_shape[2]
+    cnn_inputs = Input(shape=(None, cnn_model_output_shape), name="encoder_inputs")
     # Preparing Input shape for LSTM layer from CNN model
     cnn_output = cnn_model(cnn_inputs)
     encoder_states = get_encoder_states(mfcc_features=mfcc_features,
