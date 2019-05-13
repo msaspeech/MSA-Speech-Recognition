@@ -5,7 +5,6 @@ from utils import generate_pickle_file
 
 def get_attribute_values(dataset, attribute_index):
     attribute_values = []
-    print("yes here")
     for sample in dataset:
         attribute_values.append(sample[:, attribute_index])
 
@@ -44,4 +43,5 @@ def normalize_encoder_input(dataset):
             normalized_encoder_input.append(normalized_line)
         dataset[i] = normalized_encoder_input
 
+    generate_pickle_file(dataset, settings.NORMALIZED_ENCODER_INPUT_PATH)
     return dataset

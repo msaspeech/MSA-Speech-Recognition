@@ -104,10 +104,13 @@ def upload_dataset(train_ratio=0.8, padding=False):
     # Saving character set for global use
     settings.CHARACTER_SET = character_set
 
-
-    # generate and normalize 3D numpy arrays for train encoder inputs and test encoder inputs
-    train_encoder_input = _get_encoder_input_data(audio_data=train_audio)
-    train_encoder_input = normalize_encoder_input(dataset=train_encoder_input)
+    # Checking if data is already normalized
+    if file_exists(NORMALIZED_ENCODER_INPUT_PATH):
+        train_encoder_input = load_pickle_data(NORMALIZED_ENCODER_INPUT_PATH)
+    else:
+        # generate and normalize 3D numpy arrays for train encoder inputs and test encoder inputs
+        train_encoder_input = _get_encoder_input_data(audio_data=train_audio)
+        train_encoder_input = normalize_encoder_input(dataset=train_encoder_input)
 
     test_encoder_input = _get_encoder_input_data(audio_data=test_audio)
     # TODO : Normalize test using existing min-max
@@ -120,15 +123,9 @@ def upload_dataset(train_ratio=0.8, padding=False):
                                                                               transcripts=train_transcripts,
                                                                               fixed_size=True)
 
-    # generate fixed size 3D numpy arrays for train and test decoder input and decoder target
-    #train_decoder_input, train_decoder_target = generate_decoder_input_target(character_set=character_set,
-    #                                                                          transcripts=train_transcripts,
-    #                                                                          fixed_size=True)
-
     test_decoder_input, test_decoder_target = generate_decoder_input_target(character_set=character_set,
                                                                             transcripts=test_transcripts)
 
-    #settings.DECODER_INPUT_MAX_LENGTH = train_decoder_input.shape[1]
 
     return (train_encoder_input, train_decoder_input, train_decoder_target), \
            (test_encoder_input, test_decoder_input, test_decoder_target)
