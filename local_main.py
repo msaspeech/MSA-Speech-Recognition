@@ -5,7 +5,7 @@ from utils import load_pickle_data
 from etc import DRIVE_INSTANCE_PATH
 from etc import settings
 
-#settings.DRIVE_INSTANCE = load_pickle_data(DRIVE_INSTANCE_PATH)
+settings.DRIVE_INSTANCE = load_pickle_data(DRIVE_INSTANCE_PATH)
 
 architecture = 5
 batch_size = 512

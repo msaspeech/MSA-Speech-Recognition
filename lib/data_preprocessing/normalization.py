@@ -13,7 +13,7 @@ def get_attribute_values(dataset, attribute_index):
 
 def min_max_normalization(value, index_column, min_attributes, max_attributes):
     normalized = (value - min_attributes[index_column]) / (max_attributes[index_column] - min_attributes[index_column])
-    return normalized*60
+    return normalized
 
 
 def normalize_encoder_input(dataset):

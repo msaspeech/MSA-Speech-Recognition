@@ -96,6 +96,7 @@ def train_cnn_attention_seq2seq_model(audio_length, mfcc_features, target_length
 
     return model, encoder_states
 
+
 def train_cnn_bidirectional_attention_seq2seq_model(audio_length, mfcc_features, target_length, batch_size, latent_dim):
     """
     trains Encoder/Decoder CNN based architecture and prepares encoder_model and decoder_model for prediction part

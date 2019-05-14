@@ -112,7 +112,7 @@ def upload_dataset(train_ratio=0.8, padding=False):
         train_encoder_input = _get_encoder_input_data(audio_data=train_audio)
         train_encoder_input = normalize_encoder_input(dataset=train_encoder_input)
 
-    #train_encoder_input = _get_encoder_input_data(audio_data=train_audio)
+    train_encoder_input = _get_encoder_input_data(audio_data=train_audio)
     test_encoder_input = _get_encoder_input_data(audio_data=test_audio)
     # TODO : Normalize test using existing min-max
     # test_encoder_input = normalize_encoder_input(dataset=test_encoder_input)
