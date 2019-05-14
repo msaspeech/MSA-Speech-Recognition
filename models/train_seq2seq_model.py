@@ -74,6 +74,9 @@ def train_model(encoder_input_data, decoder_input_data,decoder_target_data,
     model_name = "architecture" + str(model_architecture) + ".h5"
     model_path = settings.TRAINED_MODELS_PATH+model_name
 
+    if file_exists(model_path):
+        model = models.load_model(model_path)
+    
     model_saver = ModelSaver(model_name=model_name, model_path=model_path, drive_instance=settings.DRIVE_INSTANCE)
 
     history = model.fit([encoder_input_data, decoder_input_data], decoder_target_data,
