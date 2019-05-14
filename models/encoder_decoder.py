@@ -42,19 +42,8 @@ def get_decoder_outputs(target_length, encoder_states, decoder_inputs, batch_siz
                                     kernel_regularizer=None,
                                     name="decoder_lstm_2layer")
 
-    decoder_lstm2 = decoder_lstm2_layer(decoder_lstm1)
 
-    # Second LSTM Layer
-    decoder_lstm3_layer = CuDNNLSTM(latent_dim,
-                                    stateful=False,
-                                    return_sequences=True,
-                                    batch_size=batch_size,
-                                    return_state=True,
-                                    kernel_constraint=None,
-                                    kernel_regularizer=None,
-                                    name="decoder_lstm_3layer")
-
-    decoder_outputs, _, _ = decoder_lstm3_layer(decoder_lstm2)
+    decoder_outputs, _, _ = decoder_lstm2_layer(decoder_lstm1)
     return decoder_outputs
 
 

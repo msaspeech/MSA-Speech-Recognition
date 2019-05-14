@@ -116,9 +116,9 @@ def train_cnn_bidirectional_attention_seq2seq_model(audio_length, mfcc_features,
     # Preparing Input shape for LSTM layer from CNN model
     cnn_output = cnn_model(cnn_inputs)
     encoder_states = encoder_bilstm(mfcc_features=cnn_model_output_shape,
-                                        encoder_inputs=cnn_output,
-                                        batch_size=batch_size,
-                                        latent_dim=latent_dim)
+                                    encoder_inputs=cnn_output,
+                                    batch_size=batch_size,
+                                    latent_dim=latent_dim)
 
     # Decoder training, using 'encoder_states' as initial state.
     decoder_inputs = Input(shape=(None, target_length), name="decoder_inputs")
@@ -128,7 +128,8 @@ def train_cnn_bidirectional_attention_seq2seq_model(audio_length, mfcc_features,
                                           batch_size=batch_size,
                                           latent_dim=latent_dim)
 
-    # Dense Output Layers
+    decoder_dropout = Dropout(0.2)
+    decoder_outputs = decoder_dropout(decoder_outputs)
     decoder_dense = Dense(target_length, activation='softmax', name="decoder_dense")
     decoder_outputs = decoder_dense(decoder_outputs)
 
