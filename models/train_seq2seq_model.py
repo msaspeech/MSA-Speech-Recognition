@@ -23,60 +23,60 @@ def train_model(encoder_input_data, decoder_input_data,decoder_target_data,
     mfcc_features_length = settings.MFCC_FEATURES_LENGTH
     target_length = len(settings.CHARACTER_SET)
 
-    if model_architecture == 1:
-        model, encoder_states = train_baseline_seq2seq_model(mfcc_features=mfcc_features_length,
-                                                             target_length=target_length,
-                                                             batch_size=batch_size,
-                                                             latent_dim=latent_dim)
-    elif model_architecture == 2:
-        model, encoder_states = train_bidirectional_baseline_seq2seq_model(mfcc_features=mfcc_features_length,
-                                                                           target_length=target_length,
-                                                                           batch_size=batch_size,
-                                                                           latent_dim=latent_dim)
-
-    elif model_architecture == 3:
-        model, encoder_states = train_attention_seq2seq_model(mfcc_features=mfcc_features_length,
-                                                              target_length=target_length,
-                                                              batch_size=batch_size,
-                                                              latent_dim=latent_dim)
-    elif model_architecture == 4:
-        model, encoder_states = train_bidirectional_attention_seq2seq_model(mfcc_features=mfcc_features_length,
-                                                                            target_length=target_length,
-                                                                            batch_size=batch_size,
-                                                                            latent_dim=latent_dim)
-
-    elif model_architecture == 5:
-        length = encoder_input_data.shape[1]
-        model, encoder_states = train_cnn_seq2seq_model(audio_length=length,
-                                                                  mfcc_features=mfcc_features_length,
-                                                                  target_length=target_length,
-                                                                  batch_size=batch_size,
-                                                                  latent_dim=latent_dim)
-    elif model_architecture == 6:
-        length = encoder_input_data.shape[1]
-        model, encoder_states = train_cnn_attention_seq2seq_model(audio_length=length,
-                                                                  mfcc_features=mfcc_features_length,
-                                                                  target_length=target_length,
-                                                                  batch_size=batch_size,
-                                                                  latent_dim=latent_dim)
-
-    else:
-        length = encoder_input_data.shape[1]
-        model, encoder_states = train_cnn_bidirectional_attention_seq2seq_model(audio_length=length,
-                                                                  mfcc_features=mfcc_features_length,
-                                                                  target_length=target_length,
-                                                                  batch_size=batch_size,
-                                                                  latent_dim=latent_dim)
-
-    # Training model
-    model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
-
     model_name = "architecture" + str(model_architecture) + ".h5"
     model_path = settings.TRAINED_MODELS_PATH+model_name
 
     if file_exists(model_path):
         model = models.load_model(model_path)
-    
+    else:
+        if model_architecture == 1:
+            model, encoder_states = train_baseline_seq2seq_model(mfcc_features=mfcc_features_length,
+                                                                 target_length=target_length,
+                                                                 batch_size=batch_size,
+                                                                 latent_dim=latent_dim)
+        elif model_architecture == 2:
+            model, encoder_states = train_bidirectional_baseline_seq2seq_model(mfcc_features=mfcc_features_length,
+                                                                               target_length=target_length,
+                                                                               batch_size=batch_size,
+                                                                               latent_dim=latent_dim)
+
+        elif model_architecture == 3:
+            model, encoder_states = train_attention_seq2seq_model(mfcc_features=mfcc_features_length,
+                                                                  target_length=target_length,
+                                                                  batch_size=batch_size,
+                                                                  latent_dim=latent_dim)
+        elif model_architecture == 4:
+            model, encoder_states = train_bidirectional_attention_seq2seq_model(mfcc_features=mfcc_features_length,
+                                                                                target_length=target_length,
+                                                                                batch_size=batch_size,
+                                                                                latent_dim=latent_dim)
+
+        elif model_architecture == 5:
+            length = encoder_input_data.shape[1]
+            model, encoder_states = train_cnn_seq2seq_model(audio_length=length,
+                                                                      mfcc_features=mfcc_features_length,
+                                                                      target_length=target_length,
+                                                                      batch_size=batch_size,
+                                                                      latent_dim=latent_dim)
+        elif model_architecture == 6:
+            length = encoder_input_data.shape[1]
+            model, encoder_states = train_cnn_attention_seq2seq_model(audio_length=length,
+                                                                      mfcc_features=mfcc_features_length,
+                                                                      target_length=target_length,
+                                                                      batch_size=batch_size,
+                                                                      latent_dim=latent_dim)
+
+        else:
+            length = encoder_input_data.shape[1]
+            model, encoder_states = train_cnn_bidirectional_attention_seq2seq_model(audio_length=length,
+                                                                      mfcc_features=mfcc_features_length,
+                                                                      target_length=target_length,
+                                                                      batch_size=batch_size,
+                                                                      latent_dim=latent_dim)
+
+        # Training model
+        model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
+
     model_saver = ModelSaver(model_name=model_name, model_path=model_path, drive_instance=settings.DRIVE_INSTANCE)
 
     history = model.fit([encoder_input_data, decoder_input_data], decoder_target_data,

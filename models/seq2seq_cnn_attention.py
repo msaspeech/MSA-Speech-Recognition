@@ -1,6 +1,5 @@
 from tensorflow.python.keras import Model
-from tensorflow.python.keras.layers import Dense, Input, Concatenate
-from tensorflow.python.keras.layers.convolutional_recurrent import ConvLSTM2D
+from tensorflow.python.keras.layers import Dense, Input, Dropout, Concatenate
 from .encoder_decoder import get_encoder_states, get_decoder_outputs, encoder_bilstm, decoder_for_bidirectional_encoder
 from .layers import get_cnn_model
 from .layers import AttentionLayer
@@ -36,7 +35,9 @@ def train_cnn_seq2seq_model(audio_length, mfcc_features, target_length, batch_si
                                           batch_size=batch_size,
                                           latent_dim=latent_dim)
 
-    # Dense Output Layers
+    # Dropout and Dense Output Layers
+    decoder_dropout = Dropout(0.2)
+    decoder_outputs = decoder_dropout(decoder_outputs)
     decoder_dense = Dense(target_length, activation='softmax', name="decoder_dense")
     decoder_outputs = decoder_dense(decoder_outputs)
 
