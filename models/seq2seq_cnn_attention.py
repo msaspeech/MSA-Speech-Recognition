@@ -123,10 +123,10 @@ def train_cnn_bidirectional_attention_seq2seq_model(audio_length, mfcc_features,
     # Decoder training, using 'encoder_states' as initial state.
     decoder_inputs = Input(shape=(None, target_length), name="decoder_inputs")
     decoder_outputs = decoder_for_bidirectional_encoder(target_length=target_length,
-                                          encoder_states=encoder_states,
-                                          decoder_inputs=decoder_inputs,
-                                          batch_size=batch_size,
-                                          latent_dim=latent_dim)
+                                                        encoder_states=encoder_states,
+                                                        decoder_inputs=decoder_inputs,
+                                                        batch_size=batch_size,
+                                                        latent_dim=latent_dim)
 
     decoder_dropout = Dropout(0.2)
     decoder_outputs = decoder_dropout(decoder_outputs)

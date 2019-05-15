@@ -1,15 +1,18 @@
+import random
+
 import matplotlib.pyplot as plt
 from etc import settings
 from utils import file_exists
 from tensorflow.python.keras import models
 from .seq2seq_baseline import train_baseline_seq2seq_model, train_bidirectional_baseline_seq2seq_model
-from .seq2seq_cnn_attention import train_cnn_seq2seq_model, train_cnn_attention_seq2seq_model, train_cnn_bidirectional_attention_seq2seq_model
+from .seq2seq_cnn_attention import train_cnn_seq2seq_model, train_cnn_attention_seq2seq_model, \
+    train_cnn_bidirectional_attention_seq2seq_model
 from .seq2seq_with_attention import train_attention_seq2seq_model, train_bidirectional_attention_seq2seq_model
 from .model_callback import ModelSaver
 
 
-def train_model(encoder_input_data, decoder_input_data,decoder_target_data,
-                latent_dim=256, batch_size=64, epochs=70, model_architecture=1):
+def train_model(encoder_input_data, decoder_input_data, decoder_target_data,
+                latent_dim=256, batch_size=64, epochs=70, model_architecture=1, data_generation=False):
     """
     Choosing the architecture and running a training
     :param encoder_input_data: Numpy 3dArray
@@ -24,7 +27,7 @@ def train_model(encoder_input_data, decoder_input_data,decoder_target_data,
     target_length = len(settings.CHARACTER_SET)
 
     model_name = "architecture" + str(model_architecture) + ".h5"
-    model_path = settings.TRAINED_MODELS_PATH+model_name
+    model_path = settings.TRAINED_MODELS_PATH + model_name
 
     if file_exists(model_path):
         model = models.load_model(model_path)
@@ -54,10 +57,10 @@ def train_model(encoder_input_data, decoder_input_data,decoder_target_data,
         elif model_architecture == 5:
             length = encoder_input_data.shape[1]
             model, encoder_states = train_cnn_seq2seq_model(audio_length=length,
-                                                                      mfcc_features=mfcc_features_length,
-                                                                      target_length=target_length,
-                                                                      batch_size=batch_size,
-                                                                      latent_dim=latent_dim)
+                                                            mfcc_features=mfcc_features_length,
+                                                            target_length=target_length,
+                                                            batch_size=batch_size,
+                                                            latent_dim=latent_dim)
         elif model_architecture == 6:
             length = encoder_input_data.shape[1]
             model, encoder_states = train_cnn_attention_seq2seq_model(audio_length=length,
@@ -69,21 +72,27 @@ def train_model(encoder_input_data, decoder_input_data,decoder_target_data,
         else:
             length = encoder_input_data.shape[1]
             model, encoder_states = train_cnn_bidirectional_attention_seq2seq_model(audio_length=length,
-                                                                      mfcc_features=mfcc_features_length,
-                                                                      target_length=target_length,
-                                                                      batch_size=batch_size,
-                                                                      latent_dim=latent_dim)
+                                                                                    mfcc_features=mfcc_features_length,
+                                                                                    target_length=target_length,
+                                                                                    batch_size=batch_size,
+                                                                                    latent_dim=latent_dim)
 
         # Training model
         model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
 
     model_saver = ModelSaver(model_name=model_name, model_path=model_path, drive_instance=settings.DRIVE_INSTANCE)
 
-    history = model.fit([encoder_input_data, decoder_input_data], decoder_target_data,
-                        batch_size=batch_size,
-                        epochs=epochs,
-                        validation_split=0.2,
-                        callbacks=[model_saver])
+    if data_generation:
+        history = model.fit_generator(data_generator(encoder_input_data, decoder_input_data, decoder_target_data),
+                                      steps_per_epoch=len(encoder_input_data),
+                                      epochs=epochs,
+                                      callbacks=[model_saver])
+    else:
+        history = model.fit([encoder_input_data, decoder_input_data], decoder_target_data,
+                            batch_size=batch_size,
+                            epochs=epochs,
+                            validation_split=0.2,
+                            callbacks=[model_saver])
 
     # list all data in history
     print(history.history.keys())
@@ -107,12 +116,11 @@ def train_model(encoder_input_data, decoder_input_data,decoder_target_data,
     return model, encoder_states
 
 
+def data_generator(encoder_input, decoder_input, decoder_target):
+    while True:
+        index = random.randint(0, len(encoder_input) - 1)
+        encoder_x = encoder_input[index, :, :]
+        decoder_x = decoder_input[index, :, :]
+        decoder_y = decoder_target[index, :, :]
 
-
-
-
-
-
-
-
-
+        yield [encoder_x, decoder_x], decoder_y

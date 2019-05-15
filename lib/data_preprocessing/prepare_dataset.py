@@ -121,10 +121,17 @@ def upload_dataset(train_ratio=0.8, padding=False):
     # generate 3D numpy arrays for train and test decoder input and decoder target
     train_decoder_input, train_decoder_target = generate_decoder_input_target(character_set=character_set,
                                                                               transcripts=train_transcripts,
-                                                                              fixed_size=True)
+                                                                              fixed_size=False)
 
     test_decoder_input, test_decoder_target = generate_decoder_input_target(character_set=character_set,
                                                                             transcripts=test_transcripts)
+
+    def test(y):
+        return [np.argmax(a) for a in y[0]]
+
+    print(test(train_decoder_input))
+    print(test(train_decoder_target))
+
 
 
     return (train_encoder_input, train_decoder_input, train_decoder_target), \
