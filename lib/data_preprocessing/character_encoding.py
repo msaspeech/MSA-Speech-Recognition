@@ -100,10 +100,11 @@ def generate_variable_size_input_target_data(transcripts, char_to_int):
             if index > 0:
                 encoded_transcript_target[index-1] = encoded_character
 
-        decoder_input_data[i] = encoded_transcript_input
+        decoder_input_data[i] = encoded_transcript_input.pop()
 
         encoded_transcript_target.pop()
         decoder_target_data[i] = encoded_transcript_target
+
 
     return decoder_input_data, decoder_target_data
 
