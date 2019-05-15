@@ -46,6 +46,17 @@ def _get_audio_transcripts(data):
 
     return audio_samples, transcripts
 
+def _get_audio_transcripts_word_level(data):
+    audio_samples = []
+    transcripts = []
+
+    for sample in data:
+        audio_samples.append(sample.mfcc.transpose())
+        transcript = "SOS_ " + sample.audio_transcript + " _EOS"
+        transcripts.append(transcript)
+
+    return audio_samples, transcripts
+
 
 #def print_suspicious_characters(data):
 #    """

@@ -5,7 +5,7 @@ from lib import get_fixed_size_data
 from lib import transcript_preprocessing
 from lib import special_characters_table
 from . import numerical_to_written_numbers_table
-from etc import PICKLE_PAD_FILE_PATH
+from etc import PICKLE_PAD_FILE_PATH, PICKLE_FILE_PATH
 
 
 def generate_pickle_dataset():
@@ -20,7 +20,7 @@ def generate_pickle_dataset():
 
         audioInput.append(AudioInput(path=path, transcript=transcription))
 
-    updated_data = get_fixed_size_data(audioInput_data=audioInput)
+    #updated_data = get_fixed_size_data(audioInput_data=audioInput)
 
-    generate_pickle_file(updated_data, PICKLE_PAD_FILE_PATH)
+    generate_pickle_file(audioInput, PICKLE_FILE_PATH)
 

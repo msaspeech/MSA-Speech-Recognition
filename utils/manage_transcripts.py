@@ -1,3 +1,6 @@
+from . import file_exists, generate_pickle_file
+from etc import DISTINCT_WORDS_PATH
+
 def get_character_set(transcripts):
     """
     Gets distincts characters for all dataset
@@ -44,6 +47,26 @@ def convert_to_char(character_set):
         int_to_char[i] = char
 
     return int_to_char
+
+
+def get_distinct_words(transcripts):
+    distinct_words = []
+    for transcript in transcripts:
+        for word in transcript:
+            if word not in distinct_words:
+                distinct_words.append(word)
+
+    generate_pickle_file(data=distinct_words, file_path=DISTINCT_WORDS_PATH)
+    return distinct_words
+
+
+def convert_words_to_int(distinct_words):
+    word_to_int = dict()
+    int_to_word = dict()
+    for i, word in enumerate(distinct_words):
+        word_to_int[word] = i
+        int_to_word[i] = word
+    return word_to_int, int_to_word
 
 
 def decode_transcript(encoded_transcript, character_set):
