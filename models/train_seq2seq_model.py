@@ -122,6 +122,6 @@ def data_generator(encoder_input, decoder_input, decoder_target):
         index = random.randint(0, len(encoder_input) - 1)
         encoder_x = np.array([encoder_input[index]])
         decoder_x = np.array([np.array([decoder_input[index]])])
-        decoder_y = np.array([np.array([decoder_target[index]])])
+        decoder_y = np.array([decoder_target[index]])
 
         yield [encoder_x, decoder_x], decoder_y
