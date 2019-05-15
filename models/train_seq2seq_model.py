@@ -1,5 +1,5 @@
 import random
-
+import numpy as np
 import matplotlib.pyplot as plt
 from etc import settings
 from utils import file_exists
@@ -123,8 +123,8 @@ def data_generator(encoder_input, decoder_input, decoder_target):
         print(decoder_target.shape)
         index = random.randint(0, len(encoder_input) - 1)
         encoder_x = encoder_input[index, :, :]
-        print(decoder_input[index])
-        decoder_x = decoder_input[index, :, :]
-        decoder_y = decoder_target[index, :, :]
+        print(np.array(decoder_input[index]))
+        decoder_x = np.array([decoder_input[index]])
+        decoder_y = np.array([decoder_target[index]])
 
         yield [encoder_x, decoder_x], decoder_y
