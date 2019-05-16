@@ -6,9 +6,11 @@ from utils import generate_pickle_file
 def get_attribute_values(dataset, attribute_index):
     attribute_values = []
     for sample in dataset:
-        attribute_values.append(sample[:, attribute_index])
+        elements = sample[:, attribute_index]
+        for elt in elements:
+            attribute_values.append(elt)
 
-    return np.array(attribute_values)
+    return attribute_values
 
 
 def min_max_normalization(value, index_column, min_attributes, max_attributes):
@@ -23,7 +25,6 @@ def normalize_encoder_input(dataset):
     print("into normalization")
     # Calculating and saving min and max values of dataset
     for attribute_index in range(0, settings.MFCC_FEATURES_LENGTH):
-
             attribute_values = get_attribute_values(dataset, attribute_index)
             min_attributes.append(np.min(attribute_values))
             max_attributes.append(np.max(attribute_values))
@@ -34,6 +35,7 @@ def normalize_encoder_input(dataset):
     generate_pickle_file(max_attributes, settings.ENCODER_INPUT_MAX_VALUES_PATH)
 
     print("generating new dataset")
+    print(len(dataset))
     for i, encoder_input in enumerate(dataset):
         normalized_encoder_input = []
         for line in encoder_input:
@@ -41,6 +43,7 @@ def normalize_encoder_input(dataset):
             for index_column, value in enumerate(line):
                 normalized_line.append(min_max_normalization(value, index_column, min_attributes, max_attributes))
             normalized_encoder_input.append(normalized_line)
+        print("normalized "+str(i))
         dataset[i] = normalized_encoder_input
 
     generate_pickle_file(dataset, settings.NORMALIZED_ENCODER_INPUT_PATH)
