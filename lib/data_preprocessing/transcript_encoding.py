@@ -89,12 +89,14 @@ def _generate_variable_size_character_input_target_data(transcripts, char_to_int
 
         for index, character in enumerate(transcript):
             # Encode each character
-            encoded_character = []
-            for c in char_to_int:
-                if character == c:
-                    encoded_character.append(1)
-                else:
-                    encoded_character.append(0)
+            encoded_character = [0]*len(char_to_int)
+            encoded_character[char_to_int[character]] = 1
+            #encoded_character = []
+            #for c in char_to_int:
+            #    if character == c:
+            #        encoded_character.append(1)
+            #    else:
+            #        encoded_character.append(0)
 
             encoded_transcript_input.append(encoded_character)
             encoded_transcript_target.append([])
@@ -102,10 +104,12 @@ def _generate_variable_size_character_input_target_data(transcripts, char_to_int
             if index > 0:
                 encoded_transcript_target[index - 1] = encoded_character
 
-        decoder_input_data[i] = encoded_transcript_input.pop()
+        del encoded_transcript_input[-1]
+        decoder_input_data[i] = encoded_transcript_input
 
         encoded_transcript_target.pop()
         decoder_target_data[i] = encoded_transcript_target
+
 
     return decoder_input_data, decoder_target_data
 
@@ -197,6 +201,8 @@ def generate_decoder_input_target(character_set, transcripts, word_level=False, 
                 distinct_words = get_distinct_words(transcripts=transcripts)
 
             word_to_int, _ = convert_words_to_int(distinct_words=distinct_words)
+            print(len(word_to_int))
+            print(word_to_int)
             decoder_input, decoder_target = _generate_variable_size_word_input_target_data(transcripts=transcripts,
                                                                                            words_to_int=word_to_int)
         else:

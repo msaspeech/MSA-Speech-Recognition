@@ -1,4 +1,4 @@
-from . import file_exists, generate_pickle_file
+from . import  generate_pickle_file
 from etc import DISTINCT_WORDS_PATH
 
 def get_character_set(transcripts):

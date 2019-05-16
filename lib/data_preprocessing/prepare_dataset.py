@@ -14,9 +14,9 @@ def _get_train_test_data(train_ratio=0.8, padding=False):
     :return: List of InputAudio, List of InputAudio
     """
     if padding is False:
-        data = load_pickle_data(PICKLE_PAD_FILE_PATH)
-    else:
         data = load_pickle_data(PICKLE_FILE_PATH)
+    else:
+        data = load_pickle_data(PICKLE_PAD_FILE_PATH)
 
     train_length = int(len(data) * train_ratio)
     train_data = []
@@ -143,9 +143,8 @@ def upload_dataset(train_ratio=0.8, padding=False):
     def test(y):
         return [np.argmax(a) for a in y[0]]
 
-    print(test(train_decoder_input))
-    print(test(train_decoder_target))
-
+    print(len(test(train_decoder_input)))
+    print(len(test(train_decoder_target)))
 
 
     return (train_encoder_input, train_decoder_input, train_decoder_target), \
