@@ -116,12 +116,12 @@ def upload_dataset(train_ratio=0.8, padding=False):
     settings.CHARACTER_SET = character_set
 
     # Checking if data is already normalized
-    if file_exists(NORMALIZED_ENCODER_INPUT_PATH):
-        train_encoder_input = load_pickle_data(NORMALIZED_ENCODER_INPUT_PATH)
-    else:
-        # generate and normalize 3D numpy arrays for train encoder inputs and test encoder inputs
-        train_encoder_input = _get_encoder_input_data(audio_data=train_audio)
-        train_encoder_input = normalize_encoder_input(dataset=train_encoder_input)
+    #if file_exists(NORMALIZED_ENCODER_INPUT_PATH):
+    #    train_encoder_input = load_pickle_data(NORMALIZED_ENCODER_INPUT_PATH)
+    #else:
+    #    # generate and normalize 3D numpy arrays for train encoder inputs and test encoder inputs
+    #    train_encoder_input = _get_encoder_input_data(audio_data=train_audio)
+    #    train_encoder_input = normalize_encoder_input(dataset=train_encoder_input)
 
     train_encoder_input = _get_encoder_input_data(audio_data=train_audio)
     test_encoder_input = _get_encoder_input_data(audio_data=test_audio)
