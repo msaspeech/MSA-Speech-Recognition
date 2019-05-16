@@ -3,7 +3,7 @@ from . import generate_decoder_input_target, normalize_encoder_input
 import numpy as np
 from etc import settings
 from utils import load_pickle_data, file_exists
-from etc import PICKLE_PAD_FILE_PATH, NORMALIZED_ENCODER_INPUT_PATH
+from etc import PICKLE_PAD_FILE_PATH, PICKLE_FILE_PATH, NORMALIZED_ENCODER_INPUT_PATH
 
 
 def _get_train_test_data(train_ratio=0.8, padding=False):
@@ -16,7 +16,7 @@ def _get_train_test_data(train_ratio=0.8, padding=False):
     if padding is False:
         data = load_pickle_data(PICKLE_PAD_FILE_PATH)
     else:
-        data = load_pickle_data(PICKLE_PAD_FILE_PATH)
+        data = load_pickle_data(PICKLE_FILE_PATH)
 
     train_length = int(len(data) * train_ratio)
     train_data = []
@@ -132,10 +132,13 @@ def upload_dataset(train_ratio=0.8, padding=False):
     # generate 3D numpy arrays for train and test decoder input and decoder target
     train_decoder_input, train_decoder_target = generate_decoder_input_target(character_set=character_set,
                                                                               transcripts=train_transcripts,
+                                                                              word_level=False,
                                                                               fixed_size=False)
 
     test_decoder_input, test_decoder_target = generate_decoder_input_target(character_set=character_set,
-                                                                            transcripts=test_transcripts)
+                                                                            transcripts=test_transcripts,
+                                                                            word_level=False,
+                                                                            fixed_size=False)
 
     def test(y):
         return [np.argmax(a) for a in y[0]]
