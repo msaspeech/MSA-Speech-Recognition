@@ -5,7 +5,7 @@ from .layers import get_cnn_model
 from .layers import AttentionLayer
 
 
-def train_cnn_seq2seq_model(audio_length, mfcc_features, target_length, batch_size, latent_dim):
+def train_cnn_seq2seq_model(mfcc_features, target_length, batch_size, latent_dim):
     """
     trains Encoder/Decoder CNN based architecture and prepares encoder_model and decoder_model for prediction part
     :param audio_length: int
@@ -14,12 +14,12 @@ def train_cnn_seq2seq_model(audio_length, mfcc_features, target_length, batch_si
     :param latent_dim: int
     :return: Model, Model, Model
     """
-    cnn_input_shape = (audio_length, mfcc_features)
+
     # getting CNN model
-    cnn_model = get_cnn_model(cnn_input_shape)
+    cnn_model = get_cnn_model()
 
     cnn_model_output_shape = cnn_model.layers[-1].output_shape[2]
-    cnn_inputs = Input(shape=cnn_input_shape, name="encoder_inputs")
+    cnn_inputs = Input(shape=(None, mfcc_features), name="encoder_inputs")
 
     # Preparing Input shape for LSTM layer from CNN model
     cnn_output = cnn_model(cnn_inputs)
@@ -49,7 +49,7 @@ def train_cnn_seq2seq_model(audio_length, mfcc_features, target_length, batch_si
     return model, encoder_states
 
 
-def train_cnn_attention_seq2seq_model(audio_length, mfcc_features, target_length, batch_size, latent_dim):
+def train_cnn_attention_seq2seq_model( mfcc_features, target_length, batch_size, latent_dim):
     """
     trains Encoder/Decoder CNN based architecture and prepares encoder_model and decoder_model for prediction part
     :param audio_length: int
@@ -58,10 +58,10 @@ def train_cnn_attention_seq2seq_model(audio_length, mfcc_features, target_length
     :param latent_dim: int
     :return: Model, Model, Model
     """
-    cnn_input_shape = (audio_length, mfcc_features)
+    #cnn_input_shape = (audio_length, mfcc_features)
     # getting CNN model
-    cnn_inputs = Input(shape=cnn_input_shape, name="encoder_inputs")
-    cnn_model = get_cnn_model(cnn_input_shape)
+    cnn_inputs = Input(shape=(None, mfcc_features), name="encoder_inputs")
+    cnn_model = get_cnn_model()
 
     # Preparing Input shape for LSTM layer from CNN model
     cnn_output = cnn_model(cnn_inputs)
@@ -99,7 +99,7 @@ def train_cnn_attention_seq2seq_model(audio_length, mfcc_features, target_length
     return model, encoder_states
 
 
-def train_cnn_bidirectional_attention_seq2seq_model(audio_length, mfcc_features, target_length, batch_size, latent_dim):
+def train_cnn_bidirectional_attention_seq2seq_model(mfcc_features, target_length, batch_size, latent_dim):
     """
     trains Encoder/Decoder CNN based architecture and prepares encoder_model and decoder_model for prediction part
     :param audio_length: int
@@ -108,10 +108,10 @@ def train_cnn_bidirectional_attention_seq2seq_model(audio_length, mfcc_features,
     :param latent_dim: int
     :return: Model, Model, Model
     """
-    cnn_input_shape = (audio_length, mfcc_features)
+    #cnn_input_shape = (audio_length, mfcc_features)
     # getting CNN model
-    cnn_inputs = Input(shape=cnn_input_shape, name="encoder_inputs")
-    cnn_model = get_cnn_model(cnn_input_shape)
+    cnn_inputs = Input(shape=(None, mfcc_features), name="encoder_inputs")
+    cnn_model = get_cnn_model()
     cnn_model_output_shape = cnn_model.layers[-1].output_shape[2]
 
     # Preparing Input shape for LSTM layer from CNN model

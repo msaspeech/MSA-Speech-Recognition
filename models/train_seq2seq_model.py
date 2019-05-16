@@ -55,23 +55,23 @@ def train_model(encoder_input_data, decoder_input_data, decoder_target_data,
                                                                                 latent_dim=latent_dim)
 
         elif model_architecture == 5:
-            length = encoder_input_data.shape[1]
-            model, encoder_states = train_cnn_seq2seq_model(audio_length=length,
+            #length = encoder_input_data.shape[1]
+            model, encoder_states = train_cnn_seq2seq_model(
                                                             mfcc_features=mfcc_features_length,
                                                             target_length=target_length,
                                                             batch_size=batch_size,
                                                             latent_dim=latent_dim)
         elif model_architecture == 6:
-            length = encoder_input_data.shape[1]
-            model, encoder_states = train_cnn_attention_seq2seq_model(audio_length=length,
+            #length = encoder_input_data.shape[1]
+            model, encoder_states = train_cnn_attention_seq2seq_model(
                                                                       mfcc_features=mfcc_features_length,
                                                                       target_length=target_length,
                                                                       batch_size=batch_size,
                                                                       latent_dim=latent_dim)
 
         else:
-            length = encoder_input_data.shape[1]
-            model, encoder_states = train_cnn_bidirectional_attention_seq2seq_model(audio_length=length,
+            #length = encoder_input_data.shape[1]
+            model, encoder_states = train_cnn_bidirectional_attention_seq2seq_model(
                                                                                     mfcc_features=mfcc_features_length,
                                                                                     target_length=target_length,
                                                                                     batch_size=batch_size,

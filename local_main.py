@@ -7,7 +7,7 @@ from etc import settings
 
 settings.DRIVE_INSTANCE = load_pickle_data(DRIVE_INSTANCE_PATH)
 
-architecture = 1
+architecture = 5
 batch_size = 512
 latent_dim = 512
 epochs = 100
