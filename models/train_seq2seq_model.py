@@ -139,7 +139,6 @@ def data_generator_dict(data):
 
     while True :
         pair_key = random.choice(list(data.keys()))
-        print(pair_key)
         output = data[pair_key]
         encoder_x = []
         decoder_x = []
@@ -153,9 +152,6 @@ def data_generator_dict(data):
         decoder_x = np.array(decoder_x)
         decoder_y = np.array(decoder_y)
 
-        print(encoder_x.shape)
-        print(decoder_x.shape)
-        print(decoder_y.shape)
 
         yield [encoder_x, decoder_x], decoder_y
 
