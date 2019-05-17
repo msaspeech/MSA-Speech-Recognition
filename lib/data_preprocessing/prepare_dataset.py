@@ -140,11 +140,6 @@ def upload_dataset(train_ratio=0.8, padding=False):
                                                                             word_level=False,
                                                                             fixed_size=True)
 
-    def test(y):
-        return [np.argmax(a) for a in y[0]]
-
-    print(len(test(train_decoder_input)))
-    print(len(test(train_decoder_target)))
 
 
     return (train_encoder_input, train_decoder_input, train_decoder_target), \

@@ -156,7 +156,7 @@ def _generate_fixed_size_character_input_target_data(transcripts, char_to_int, n
     :param num_distinct_chars: int
     :return: 3D numpy Array, 3D numpy Array
     """
-    print("got here")
+
     # Initializing empty 3D array for decoder input
     decoder_input_data = np.zeros((num_transcripts,
                                    max_length,
@@ -174,6 +174,7 @@ def _generate_fixed_size_character_input_target_data(transcripts, char_to_int, n
             if index > 0:
                 decoder_target_data[i, index - 1, char_to_int[character]] = 1
 
+    print("Returning data")
     return decoder_input_data, decoder_target_data
 
 
