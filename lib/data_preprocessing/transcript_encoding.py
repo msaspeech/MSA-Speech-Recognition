@@ -186,14 +186,14 @@ def generate_decoder_input_target(character_set, transcripts, word_level=False, 
 
     if fixed_size:
         max_transcript_length = get_longest_sample_size(transcripts)
-        char_to_int = convert_to_int(sorted(character_set))
+        num_transcripts = len(transcripts)
+        num_distinct_chars = len(character_set)
+        char_to_int = convert_to_int(character_set)
         decoder_input, decoder_target = _generate_fixed_size_character_input_target_data(transcripts=transcripts,
                                                                                          char_to_int=char_to_int,
-                                                                                         num_transcripts=len(
-                                                                                             transcripts),
+                                                                                         num_transcripts=num_transcripts,
                                                                                          max_length=max_transcript_length,
-                                                                                         num_distinct_chars=len(
-                                                                                             character_set))
+                                                                                         num_distinct_chars=num_distinct_chars)
     else:
         if word_level :
             if file_exists(DISTINCT_WORDS_PATH):

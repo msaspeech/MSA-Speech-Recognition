@@ -138,7 +138,7 @@ def upload_dataset(train_ratio=0.8, padding=False):
     test_decoder_input, test_decoder_target = generate_decoder_input_target(character_set=character_set,
                                                                             transcripts=test_transcripts,
                                                                             word_level=False,
-                                                                            fixed_size=True)
+                                                                            fixed_size=False)
 
 
 
