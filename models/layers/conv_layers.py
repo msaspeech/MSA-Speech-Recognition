@@ -2,7 +2,7 @@ from tensorflow.python.keras import Sequential
 from tensorflow.python.keras.layers import Conv1D, MaxPooling1D
 
 
-def get_cnn_model():
+def get_cnn_model(  ):
     """
     Creates a Sequential model with Conv and MaxPooling layers
     Prints summary of model

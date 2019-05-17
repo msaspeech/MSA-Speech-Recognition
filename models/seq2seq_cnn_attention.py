@@ -16,6 +16,7 @@ def train_cnn_seq2seq_model(mfcc_features, target_length, batch_size, latent_dim
     """
 
     # getting CNN model
+    # cnn_input_shape = (audio_length, mfcc_features)
     cnn_model = get_cnn_model()
 
     cnn_model_output_shape = cnn_model.layers[-1].output_shape[2]
