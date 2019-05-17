@@ -110,7 +110,6 @@ def _generate_variable_size_character_input_target_data(transcripts, char_to_int
         encoded_transcript_target.pop()
         decoder_target_data[i] = encoded_transcript_target
 
-
     return decoder_input_data, decoder_target_data
 
 

@@ -1,5 +1,5 @@
 from tensorflow.python.keras import Model
-from tensorflow.python.keras.layers import Dense, Input
+from tensorflow.python.keras.layers import Dense, Input, Masking
 from .encoder_decoder import get_encoder_states, get_decoder_outputs, encoder_bilstm, decoder_for_bidirectional_encoder
 
 
@@ -20,6 +20,7 @@ def train_baseline_seq2seq_model(mfcc_features, target_length, batch_size, laten
 
     # Decoder training, using 'encoder_states' as initial state.
     decoder_inputs = Input(shape=(None, target_length), name="decoder_inputs")
+    decoder_inputs = Masking(mask_value=0)(decoder_inputs)
     decoder_outputs = get_decoder_outputs(target_length=target_length,
                                           encoder_states=encoder_states,
                                           decoder_inputs=decoder_inputs,
