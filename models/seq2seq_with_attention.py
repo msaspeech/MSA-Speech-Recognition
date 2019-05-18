@@ -14,7 +14,7 @@ def train_attention_seq2seq_model(mfcc_features, target_length, latent_dim, batc
     :return:
     """
     # Encoder training
-    encoder_inputs = Input(shape=(settings.ENCODER_INPUT_MAX_LENGTH, mfcc_features), name="encoder_inputs")
+    encoder_inputs = Input(shape=(None, mfcc_features), name="encoder_inputs")
     encoder_outputs, encoder_states = get_encoder_states(mfcc_features=mfcc_features,
                                                          encoder_inputs=encoder_inputs,
                                                          latent_dim=latent_dim,
@@ -22,7 +22,7 @@ def train_attention_seq2seq_model(mfcc_features, target_length, latent_dim, batc
                                                          return_sequences=True)
 
     # Decoder training, using 'encoder_states' as initial state.
-    decoder_inputs = Input(shape=(settings.DECODER_INPUT_MAX_LENGTH, target_length), name="decoder_inputs")
+    decoder_inputs = Input(shape=(None, target_length), name="decoder_inputs")
     decoder_outputs = get_decoder_outputs(target_length=target_length,
                                           encoder_states=encoder_states,
                                           decoder_inputs=decoder_inputs,
