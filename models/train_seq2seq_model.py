@@ -78,7 +78,6 @@ def train_model(encoder_input_data, decoder_input_data, decoder_target_data,
 
         # Training model
         model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
-
     model_saver = ModelSaver(model_name=model_name, model_path=model_path, drive_instance=settings.DRIVE_INSTANCE)
 
     if data_generation:

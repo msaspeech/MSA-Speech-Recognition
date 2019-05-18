@@ -5,14 +5,16 @@ from etc import MODEL_HISTORY_PLOTS
 
 class ModelSaver(Callback):
 
-    def __init__(self, model_name, model_path, drive_instance):
+    def __init__(self, model_name, model_path, drive_instance, logs={}):
         super().__init__()
         self.model_name = model_name
         self.model_path = model_path
         self.drive_instance = drive_instance
         self.history = History()
+        self.logs = logs
 
     def on_epoch_end(self, epoch, logs=None):
+        print(self.logs)
         self.model.save(self.model_path)
         parent_directory_id = '0B5fJkPjHLj3Jdkw5ZnFiY0lZV1U'
         file_list = self.drive_instance.ListFile({'q': "\'"+parent_directory_id+"\'"+" in parents  and trashed=false"}).GetList()
@@ -36,5 +38,6 @@ class ModelSaver(Callback):
         plt.ylabel('accuracy')
         plt.xlabel('epoch')
         plt.legend(['train'], loc='upper left')
-        plt.savefig(MODEL_HISTORY_PLOTS+self.model_name+".png")
+        save_path =  MODEL_HISTORY_PLOTS+self.model_name.split(".h5")[0]+"_train_accuracy.png"
+        plt.savefig(save_path)
 
