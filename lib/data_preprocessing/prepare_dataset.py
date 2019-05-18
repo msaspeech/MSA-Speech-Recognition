@@ -140,8 +140,6 @@ def upload_dataset(train_ratio=0.8, padding=False):
                                                                             word_level=False,
                                                                             fixed_size=False)
 
-
-
     return (train_encoder_input, train_decoder_input, train_decoder_target), \
            (test_encoder_input, test_decoder_input, test_decoder_target)
 

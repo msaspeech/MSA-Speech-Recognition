@@ -42,7 +42,6 @@ def get_decoder_outputs(target_length, encoder_states, decoder_inputs, batch_siz
                                     kernel_regularizer=None,
                                     name="decoder_lstm_2layer")
 
-
     decoder_outputs, _, _ = decoder_lstm2_layer(decoder_lstm1)
     return decoder_outputs
 
