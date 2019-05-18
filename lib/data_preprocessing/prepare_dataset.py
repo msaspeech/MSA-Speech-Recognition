@@ -40,9 +40,10 @@ def _get_audio_transcripts(data):
     transcripts = []
 
     for sample in data:
-        audio_samples.append(sample.mfcc.transpose())
-        transcript = "\t" + sample.audio_transcript + "\n"
-        transcripts.append(transcript)
+        if 130 <= sample.mfcc.shape[1] <= 1000:
+            audio_samples.append(sample.mfcc.transpose())
+            transcript = "\t" + sample.audio_transcript + "\n"
+            transcripts.append(transcript)
 
     return audio_samples, transcripts
 

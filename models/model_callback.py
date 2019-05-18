@@ -32,12 +32,12 @@ class ModelSaver(Callback):
 
         #Model saving
 
-        plt.plot(self.history.history['acc'])
+        #plt.plot(self.history.history['acc'])
         # plt.plot(history.history['val_acc'])
-        plt.title('model accuracy')
-        plt.ylabel('accuracy')
-        plt.xlabel('epoch')
-        plt.legend(['train'], loc='upper left')
-        save_path =  MODEL_HISTORY_PLOTS+self.model_name.split(".h5")[0]+"_train_accuracy.png"
-        plt.savefig(save_path)
+        #plt.title('model accuracy')
+        #plt.ylabel('accuracy')
+        #plt.xlabel('epoch')
+        #plt.legend(['train'], loc='upper left')
+        #save_path =  MODEL_HISTORY_PLOTS+self.model_name.split(".h5")[0]+"_train_accuracy.png"
+        #plt.savefig(save_path)
 
