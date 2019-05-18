@@ -173,6 +173,8 @@ def _generate_fixed_size_character_input_target_data(transcripts, char_to_int, n
             decoder_input_data[i, index, char_to_int[character]] = 1
             if index > 0:
                 decoder_target_data[i, index - 1, char_to_int[character]] = 1
+    print(decoder_input_data.shape)
+    print(decoder_target_data.shape)
 
     print("Returning data")
     return decoder_input_data, decoder_target_data
