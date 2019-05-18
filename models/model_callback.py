@@ -30,7 +30,6 @@ class ModelSaver(Callback):
 
         #Model saving
 
-        self.model.
         plt.plot(self.history.history['acc'])
         # plt.plot(history.history['val_acc'])
         plt.title('model accuracy')
