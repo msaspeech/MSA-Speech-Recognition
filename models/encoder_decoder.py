@@ -1,4 +1,4 @@
-from tensorflow.python.keras.layers import CuDNNLSTM, Bidirectional, Concatenate
+from tensorflow.python.keras.layers import CuDNNLSTM, Bidirectional, Concatenate, LSTM
 
 
 def get_encoder_states(mfcc_features, encoder_inputs, latent_dim, batch_size, return_sequences=False):
@@ -41,7 +41,6 @@ def get_decoder_outputs(target_length, encoder_states, decoder_inputs, batch_siz
                                     kernel_constraint=None,
                                     kernel_regularizer=None,
                                     name="decoder_lstm_2layer")
-
 
     decoder_outputs, _, _ = decoder_lstm2_layer(decoder_lstm1)
     return decoder_outputs

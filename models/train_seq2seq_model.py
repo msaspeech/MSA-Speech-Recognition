@@ -83,10 +83,12 @@ def train_model(encoder_input_data, decoder_input_data, decoder_target_data,
     model_saver = ModelSaver(model_name=model_name, model_path=model_path, drive_instance=settings.DRIVE_INSTANCE)
 
     if data_generation:
-        history = model.fit_generator(data_generator(encoder_input_data, decoder_input_data, decoder_target_data),
+        generated_data = generate_timestep_dict(encoder_input_data, decoder_input_data, decoder_target_data)
+        history = model.fit_generator(data_generator_dict(generated_data),
                                       steps_per_epoch=len(encoder_input_data),
                                       epochs=epochs,
                                       callbacks=[model_saver])
+
     else:
         history = model.fit([encoder_input_data, decoder_input_data], decoder_target_data,
                             batch_size=batch_size,
@@ -125,3 +127,35 @@ def data_generator(encoder_input, decoder_input, decoder_target):
         decoder_y = np.array([decoder_target[index]])
 
         yield [encoder_x, decoder_x], decoder_y
+
+
+def data_generator_dict(data):
+
+    while True :
+        pair_key = random.choice(list(data.keys()))
+        output = data[pair_key]
+        encoder_x = []
+        decoder_x = []
+        decoder_y = []
+        for element in output:
+            encoder_x.append(element[0][0])
+            decoder_x.append(element[0][1])
+            decoder_y.append(element[1])
+
+        encoder_x = np.array(encoder_x)
+        decoder_x = np.array(decoder_x)
+        decoder_y = np.array(decoder_y)
+
+        yield [encoder_x, decoder_x], decoder_y
+
+
+def generate_timestep_dict(encoder_input_data, decoder_input_data, decoder_target_data):
+    generated_data = dict()
+    for index, encoder_input in enumerate(encoder_input_data):
+        key_pair = (len(encoder_input), len(decoder_input_data[index]))
+        if not key_pair in generated_data:
+            generated_data[key_pair] = []
+        generated_data[key_pair].append([[encoder_input, decoder_input_data[index]], decoder_target_data[index]])
+
+    return generated_data
+

@@ -110,7 +110,6 @@ def _generate_variable_size_character_input_target_data(transcripts, char_to_int
         encoded_transcript_target.pop()
         decoder_target_data[i] = encoded_transcript_target
 
-
     return decoder_input_data, decoder_target_data
 
 
@@ -157,6 +156,7 @@ def _generate_fixed_size_character_input_target_data(transcripts, char_to_int, n
     :param num_distinct_chars: int
     :return: 3D numpy Array, 3D numpy Array
     """
+
     # Initializing empty 3D array for decoder input
     decoder_input_data = np.zeros((num_transcripts,
                                    max_length,
@@ -173,7 +173,10 @@ def _generate_fixed_size_character_input_target_data(transcripts, char_to_int, n
             decoder_input_data[i, index, char_to_int[character]] = 1
             if index > 0:
                 decoder_target_data[i, index - 1, char_to_int[character]] = 1
+    print(decoder_input_data.shape)
+    print(decoder_target_data.shape)
 
+    print("Returning data")
     return decoder_input_data, decoder_target_data
 
 
@@ -185,14 +188,14 @@ def generate_decoder_input_target(character_set, transcripts, word_level=False, 
 
     if fixed_size:
         max_transcript_length = get_longest_sample_size(transcripts)
-        char_to_int = convert_to_int(sorted(character_set))
+        num_transcripts = len(transcripts)
+        num_distinct_chars = len(character_set)
+        char_to_int = convert_to_int(character_set)
         decoder_input, decoder_target = _generate_fixed_size_character_input_target_data(transcripts=transcripts,
                                                                                          char_to_int=char_to_int,
-                                                                                         num_transcripts=len(
-                                                                                             transcripts),
+                                                                                         num_transcripts=num_transcripts,
                                                                                          max_length=max_transcript_length,
-                                                                                         num_distinct_chars=len(
-                                                                                             character_set))
+                                                                                         num_distinct_chars=num_distinct_chars)
     else:
         if word_level :
             if file_exists(DISTINCT_WORDS_PATH):

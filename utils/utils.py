@@ -26,6 +26,12 @@ def file_exists(file_path):
     return False
 
 
+def empty_directory(directory_path):
+    if not os.listdir(directory_path):
+        return True
+    return False
+
+
 def atoi(text):
     return int(text) if text.isdigit() else text
 
@@ -51,3 +57,4 @@ def load_pickle_data(file_path):
     with open(file_path, "rb") as f:
         data = pickle.load(f)
     return data
+
