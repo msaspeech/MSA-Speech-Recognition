@@ -29,8 +29,6 @@ def train_model(encoder_input_data, decoder_input_data, decoder_target_data,
     model_name = "architecture" + str(model_architecture) + ".h5"
     model_path = settings.TRAINED_MODELS_PATH + model_name
 
-    generated_data = generate_timestep_dict(encoder_input_data, decoder_input_data, decoder_target_data)
-
     if file_exists(model_path):
         model = models.load_model(model_path)
     else:
@@ -85,11 +83,7 @@ def train_model(encoder_input_data, decoder_input_data, decoder_target_data,
     model_saver = ModelSaver(model_name=model_name, model_path=model_path, drive_instance=settings.DRIVE_INSTANCE)
 
     if data_generation:
-        #history = model.fit_generator(data_generator(encoder_input_data, decoder_input_data, decoder_target_data),
-        #                              steps_per_epoch=len(encoder_input_data),
-        #                              epochs=epochs,
-        #                              callbacks=[model_saver])
-
+        generated_data = generate_timestep_dict(encoder_input_data, decoder_input_data, decoder_target_data)
         history = model.fit_generator(data_generator_dict(generated_data),
                                       steps_per_epoch=len(encoder_input_data),
                                       epochs=epochs,
