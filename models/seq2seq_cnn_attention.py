@@ -108,12 +108,11 @@ def train_cnn_bidirectional_attention_seq2seq_model(mfcc_features, target_length
     :param latent_dim: int
     :return: Model, Model, Model
     """
-    #cnn_input_shape = (audio_length, mfcc_features)
-    # getting CNN model
-    cnn_inputs = Input(shape=(None, mfcc_features), name="encoder_inputs")
-    cnn_model = get_cnn_model()
-    cnn_model_output_shape = cnn_model.layers[-1].output_shape[2]
+    cnn_input_shape = (None, mfcc_features)
 
+    cnn_inputs = Input(shape=cnn_input_shape, name="encoder_inputs")
+    cnn_model = get_cnn_model(cnn_input_shape)
+    cnn_model_output_shape = cnn_model.layers[-1].output_shape[2]
     # Preparing Input shape for LSTM layer from CNN model
     cnn_output = cnn_model(cnn_inputs)
     encoder_states = encoder_bilstm(mfcc_features=cnn_model_output_shape,

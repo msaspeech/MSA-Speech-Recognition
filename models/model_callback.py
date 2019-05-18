@@ -1,4 +1,6 @@
-from tensorflow.python.keras.callbacks import Callback
+from tensorflow.python.keras.callbacks import Callback, History
+import matplotlib.pyplot as plt
+from etc import MODEL_HISTORY_PLOTS
 
 
 class ModelSaver(Callback):
@@ -8,6 +10,7 @@ class ModelSaver(Callback):
         self.model_name = model_name
         self.model_path = model_path
         self.drive_instance = drive_instance
+        self.history = History()
 
     def on_epoch_end(self, epoch, logs=None):
         self.model.save(self.model_path)
@@ -24,4 +27,15 @@ class ModelSaver(Callback):
         uploaded = self.drive_instance.CreateFile({model_title: self.model_name, "parents": [{"kind": "drive#fileLink", "id": parent_directory_id}]})
         uploaded.SetContentFile(self.model_path)
         uploaded.Upload()
+
+        #Model saving
+
+        self.model.
+        plt.plot(self.history.history['acc'])
+        # plt.plot(history.history['val_acc'])
+        plt.title('model accuracy')
+        plt.ylabel('accuracy')
+        plt.xlabel('epoch')
+        plt.legend(['train'], loc='upper left')
+        plt.savefig(MODEL_HISTORY_PLOTS+self.model_name+".png")
 
