@@ -152,7 +152,6 @@ def data_generator_dict(data):
         decoder_x = np.array(decoder_x)
         decoder_y = np.array(decoder_y)
 
-
         yield [encoder_x, decoder_x], decoder_y
 
 

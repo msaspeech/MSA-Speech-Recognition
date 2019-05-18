@@ -2,7 +2,7 @@ from tensorflow.python.keras.layers import CuDNNLSTM, Bidirectional, Concatenate
 
 
 def get_encoder_states(mfcc_features, encoder_inputs, latent_dim, batch_size, return_sequences=False):
-    encoder = LSTM(latent_dim,
+    encoder = CuDNNLSTM(latent_dim,
                         input_shape=(None, mfcc_features),
                         batch_size=batch_size,
                         stateful=False,
@@ -22,7 +22,7 @@ def get_encoder_states(mfcc_features, encoder_inputs, latent_dim, batch_size, re
 
 def get_decoder_outputs(target_length, encoder_states, decoder_inputs, batch_size, latent_dim):
     # First Layer
-    decoder_lstm1_layer = LSTM(latent_dim,
+    decoder_lstm1_layer = CuDNNLSTM(latent_dim,
                                     input_shape=(None, target_length),
                                     batch_size=batch_size,
                                     return_sequences=True,
@@ -33,7 +33,7 @@ def get_decoder_outputs(target_length, encoder_states, decoder_inputs, batch_siz
     decoder_lstm1 = decoder_lstm1_layer(decoder_inputs, initial_state=encoder_states)
 
     # Second LSTM Layer
-    decoder_lstm2_layer = LSTM(latent_dim,
+    decoder_lstm2_layer = CuDNNLSTM(latent_dim,
                                     stateful=False,
                                     return_sequences=True,
                                     batch_size=batch_size,
