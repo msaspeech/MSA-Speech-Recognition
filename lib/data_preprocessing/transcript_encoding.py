@@ -115,13 +115,15 @@ def _generate_variable_size_character_input_target_data(transcripts, char_to_int
 
 def _generate_variable_size_word_input_target_data(transcripts, words_to_int):
     num_transcripts = len(transcripts)
+    print(num_transcripts)
     decoder_input_data = np.array([None] * num_transcripts)
     decoder_target_data = np.array([None] * num_transcripts)
 
-    for i, transcript in transcripts:
+    for i, transcript in enumerate(transcripts):
         # Encode each transcript
         encoded_transcript_input = []
         encoded_transcript_target = []
+        print(i)
 
         for index, word in enumerate(transcript.split()):
             # Encode each character
@@ -197,7 +199,7 @@ def generate_decoder_input_target(character_set, transcripts, word_level=False, 
                                                                                          max_length=max_transcript_length,
                                                                                          num_distinct_chars=num_distinct_chars)
     else:
-        if word_level :
+        if word_level:
             if file_exists(DISTINCT_WORDS_PATH):
                 distinct_words = load_pickle_data(DISTINCT_WORDS_PATH)
             else:

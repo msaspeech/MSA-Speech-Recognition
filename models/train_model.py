@@ -3,6 +3,8 @@ import numpy as np
 from etc import settings
 from utils import file_exists
 from tensorflow.python.keras import models
+from tensorflow.python.keras.models import Model
+from tensorflow.python.keras.layers import Input
 from .seq2seq_baseline import train_baseline_seq2seq_model, train_bidirectional_baseline_seq2seq_model
 from .seq2seq_cnn_attention import train_cnn_seq2seq_model, train_cnn_attention_seq2seq_model, \
     train_cnn_bidirectional_attention_seq2seq_model
@@ -78,6 +80,37 @@ class Seq2SeqModel():
                                      epochs=self.epochs,
                                      validation_split=0.2,
                                      callbacks=[model_saver])
+
+    def _get_encoder_decoder_model_base_line(self):
+
+        # Getting layers after training (updated weights)
+        encoder_inputs = self.model.get_layer("encoder_inputs")
+        decoder_inputs = self.model.get_layer("decoder_inputs")
+        decoder_lstm2_layer = self.model.get_layer("decoder_lstm2_layer")
+        decoder_lstm1_layer = self.model.get_layer("decoder_lstm1_layer")
+        decoder_dense = self.model.get_layer("decoder_dense")
+
+        # Creating encoder model
+        encoder_model = Model(encoder_inputs, self.encoder_states)
+
+        # Input shapes for 1st LSTM layer
+        decoder_state_input_h = Input(shape=(self.latent_dim,))
+        decoder_state_input_c = Input(shape=(self.latent_dim,))
+        decoder_states_inputs = [decoder_state_input_h, decoder_state_input_c]
+
+        decoder_lstm1 = decoder_lstm1_layer(decoder_inputs, initial_state=decoder_states_inputs)
+
+        # Outputs and states from final LSTM Layer
+        decoder_outputs, state_h, state_c = decoder_lstm2_layer(decoder_lstm1)
+        decoder_states = [state_h, state_c]
+
+        decoder_outputs = decoder_dense(decoder_outputs)
+        decoder_model = Model(
+            [decoder_inputs] + decoder_states_inputs,
+            [decoder_outputs] + decoder_states)
+
+        return encoder_model, decoder_model
+
 
     def _data_generator(self, encoder_input, decoder_input, decoder_target):
         while True:

@@ -40,7 +40,7 @@ def _get_audio_transcripts(data):
     transcripts = []
 
     for sample in data:
-        if 130 <= sample.mfcc.shape[1] <= 1000  :
+        if 130 <= sample.mfcc.shape[1] <= 1000:
             audio_samples.append(sample.mfcc.transpose())
             transcript = "\t" + sample.audio_transcript + "\n"
             transcripts.append(transcript)
@@ -133,12 +133,12 @@ def upload_dataset(train_ratio=0.8, padding=False):
     # generate 3D numpy arrays for train and test decoder input and decoder target
     train_decoder_input, train_decoder_target = generate_decoder_input_target(character_set=character_set,
                                                                               transcripts=train_transcripts,
-                                                                              word_level=False,
+                                                                              word_level=True,
                                                                               fixed_size=False)
 
     test_decoder_input, test_decoder_target = generate_decoder_input_target(character_set=character_set,
                                                                             transcripts=test_transcripts,
-                                                                            word_level=False,
+                                                                            word_level=True,
                                                                             fixed_size=False)
 
     return (train_encoder_input, train_decoder_input, train_decoder_target), \

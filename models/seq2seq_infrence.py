@@ -13,7 +13,7 @@ def get_encoder_decoder_model_cnn():
     pass
 
 
-def get_encoder_decoder_model_base_line(model, encoder_states, latent_dim):
+def get_encoder_decoder_model_baseline(model, encoder_states, latent_dim):
     """
     Returns the encoder_model and decoder_model for prediction phase
     :param model: Keras Model after training (updated weights)

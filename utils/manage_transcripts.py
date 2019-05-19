@@ -52,7 +52,7 @@ def convert_to_char(character_set):
 def get_distinct_words(transcripts):
     distinct_words = []
     for transcript in transcripts:
-        for word in transcript:
+        for word in transcript.split():
             if word not in distinct_words:
                 distinct_words.append(word)
 
