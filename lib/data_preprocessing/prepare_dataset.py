@@ -105,6 +105,8 @@ def upload_dataset(train_ratio=0.8, padding=False, word_level=False, partitions=
 
         # Upload train and test data, the train ration is 0.8 and can be modified through ration param
         train_data, test_data = _get_train_test_data(train_ratio=0.75, padding=padding)
+        settings.TOTAL_SAMPLES_NUMBER = len(train_data)
+        print(settings.TOTAL_SAMPLES_NUMBER)
         # get mfcc and text transcripts for train and test
         if word_level:
             train_audio, train_transcripts = _get_audio_transcripts_word_level(train_data)
@@ -118,9 +120,7 @@ def upload_dataset(train_ratio=0.8, padding=False, word_level=False, partitions=
 
         # Saving mfcc features and length for global use
         settings.MFCC_FEATURES_LENGTH = train_audio[0].shape[1]
-        settings.ENCODER_INPUT_TOTAL_LENGTH = train_audio[0].shape[0]
-        general_info = [settings.MFCC_FEATURES_LENGTH, settings.ENCODER_INPUT_TOTAL_LENGTH]
-        print(settings.MFCC_FEATURES_LENGTH, settings.ENCODER_INPUT_TOTAL_LENGTH)
+        general_info = [settings.MFCC_FEATURES_LENGTH, settings.TOTAL_SAMPLES_NUMBER]
         # get max transcript size and character_set
         all_transcripts = train_transcripts + test_transcripts
         # transcript_max_length = get_longest_sample_size(all_transcripts)
@@ -153,7 +153,7 @@ def upload_dataset(train_ratio=0.8, padding=False, word_level=False, partitions=
     else:
         general_info = load_pickle_data(settings.DATASET_INFORMATION_PATH)
         settings.MFCC_FEATURES_LENGTH = general_info[0]
-        settings.ENCODER_INPUT_TOTAL_LENGTH = general_info[1]
+        settings.TOTAL_SAMPLES_NUMBER = general_info[1]
         if word_level:
             #distinct_words = load_pickle_data(settings.DISTINCT_WORDS_PATH)
             settings.WORD_SET = general_info[2]

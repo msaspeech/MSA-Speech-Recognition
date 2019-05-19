@@ -74,7 +74,7 @@ class Seq2SeqModel():
         if self.data_generation:
             #generated_data = self._generate_timestep_dict(encoder_input_data, decoder_input_data, decoder_target_data)
             history = self.model.fit_generator(self.split_data_generator_dict(),
-                                               steps_per_epoch=settings.ENCODER_INPUT_TOTAL_LENGTH,
+                                               steps_per_epoch=settings.TOTAL_SAMPLES_NUMBER,
                                                epochs=self.epochs,
                                                callbacks=[model_saver])
 
@@ -136,7 +136,6 @@ class Seq2SeqModel():
                 #retrieving data
 
                 data = self.get_data(audio_file, transcript_files[i])
-
                 pair_key = random.choice(list(data.keys()))
                 output = data[pair_key]
                 encoder_x = []
