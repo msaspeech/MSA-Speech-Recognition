@@ -115,14 +115,15 @@ def _generate_variable_size_character_input_target_data(transcripts, char_to_int
 
 
 def generate_variable_size_word_input_target_data(transcripts, words_to_int):
-    limit1 = int(len(transcripts) / 4)
-    limit2 = int(len(transcripts) / 2)
-    limit3 = int(len(transcripts)* 3 / 4)
-    transcript_dataset1 = transcripts[0:limit1]
-    transcript_dataset2 = transcripts[limit1:limit2]
-    transcript_dataset3 = transcripts[limit2:limit3]
-    transcript_dataset4 = transcripts[limit3:len(transcripts)]
-    transcript_sets = (transcript_dataset1, transcript_dataset2, transcript_dataset3, transcript_dataset4)
+    transcript_sets = []
+    limits = []
+    for i in range(1,9):
+        limits.append(int(len(transcripts)*i / 8))
+
+    transcript_sets.append(transcripts[0: limits[0]])
+    for i in range(1,8):
+        transcript_sets.append(transcripts[limits[i-1]:limits[i]])
+
     del transcripts
 
     for num_dataset, transcript_set in enumerate(transcript_sets):
