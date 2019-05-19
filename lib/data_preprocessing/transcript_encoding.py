@@ -109,7 +109,7 @@ def _generate_variable_size_character_input_target_data(transcripts, char_to_int
     return decoder_input_data, decoder_target_data
 
 
-def generate_variable_size_character_input_target_data(transcripts, char_to_int, partitions=8):
+def generate_variable_size_character_input_target_data(transcripts, char_to_int, partitions=8, test=False):
     """
         Generates two 3D arrays for the decoder input data and target data.
         Fills the 3D arrays for each sample of our dataset
@@ -160,13 +160,17 @@ def generate_variable_size_character_input_target_data(transcripts, char_to_int,
             decoder_input_data[i] = encoded_transcript_input
             encoded_transcript_target.pop()
             decoder_target_data[i] = encoded_transcript_target
-        path = settings.TRANSCRIPTS_ENCODING_SPLIT_TRAIN_PATH + "encoded_transcripts" + str(num_dataset) + ".pkl"
+        if not test:
+            path = settings.TRANSCRIPTS_ENCODING_SPLIT_TRAIN_PATH + "encoded_transcripts" + str(num_dataset) + ".pkl"
+        else:
+            path = settings.TRANSCRIPTS_ENCODING_SPLIT_TEST_PATH + "encoded_transcripts" + str(num_dataset) + ".pkl"
+
         generate_pickle_file((decoder_input_data, decoder_target_data), file_path=path)
 
     # return decoder_input_data, decoder_target_data
 
 
-def generate_variable_word_input_target_data(transcripts, words_to_int, partitions=8):
+def generate_variable_word_input_target_data(transcripts, words_to_int, partitions=8, test=False):
     # Dividing transcripts into subsets
     transcript_sets = []
     limits = []
@@ -205,7 +209,10 @@ def generate_variable_word_input_target_data(transcripts, words_to_int, partitio
             decoder_input_data[i] = encoded_transcript_input.pop()
             encoded_transcript_target.pop()
             decoder_target_data[i] = encoded_transcript_target
-        path = settings.TRANSCRIPTS_ENCODING_SPLIT_TRAIN_PATH + "encoded_transcripts" + str(num_dataset) + ".pkl"
+        if not test:
+            path = settings.TRANSCRIPTS_ENCODING_SPLIT_TRAIN_PATH + "encoded_transcripts" + str(num_dataset) + ".pkl"
+        else:
+            path = settings.TRANSCRIPTS_ENCODING_SPLIT_TEST_PATH + "encoded_transcripts" + str(num_dataset) + ".pkl"
         generate_pickle_file((decoder_input_data, decoder_target_data), file_path=path)
 
 
@@ -247,7 +254,7 @@ def _generate_fixed_size_character_input_target_data(transcripts, char_to_int, n
     return decoder_input_data, decoder_target_data
 
 
-def generate_decoder_input_target(transcripts, word_level=False, fixed_size=True):
+def generate_decoder_input_target(transcripts, word_level=False, fixed_size=True, test=False):
     """
     Wrapper for the _generate_input_target_data method.
     :return: 3D numpy Array, 3D numpy Array
@@ -262,7 +269,7 @@ def generate_decoder_input_target(transcripts, word_level=False, fixed_size=True
             print(word_to_int)
             # decoder_input, decoder_target = _generate_variable_size_word_input_target_data(transcripts=transcripts,
             #                                                                               words_to_int=word_to_int)
-            generate_variable_word_input_target_data(transcripts=transcripts, words_to_int=word_to_int)
+            generate_variable_word_input_target_data(transcripts=transcripts, words_to_int=word_to_int, test=test)
 
     else:
         # Character level recognition
@@ -270,7 +277,8 @@ def generate_decoder_input_target(transcripts, word_level=False, fixed_size=True
         if not fixed_size:
             char_to_int = convert_to_int(sorted(character_set))
             generate_variable_size_character_input_target_data(transcripts=transcripts,
-                                                               char_to_int=char_to_int)
+                                                               char_to_int=char_to_int,
+                                                               test=test)
 
         else:
             max_transcript_length = get_longest_sample_size(transcripts)

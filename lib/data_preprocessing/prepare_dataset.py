@@ -1,4 +1,4 @@
-from utils import get_longest_sample_size, get_character_set, get_distinct_words
+from utils import  get_character_set, get_distinct_words, empty_directory
 from . import generate_decoder_input_target, normalize_encoder_input
 import numpy as np
 from etc import settings
@@ -54,14 +54,15 @@ def _get_audio_transcripts_word_level(data):
     transcripts = []
 
     for sample in data:
-        audio_samples.append(sample.mfcc.transpose())
-        transcript = "SOS_ " + sample.audio_transcript + " _EOS"
-        transcripts.append(transcript)
+        if 130 <= sample.mfcc.shape[1] <= 1000:
+            audio_samples.append(sample.mfcc.transpose())
+            transcript = "SOS_ " + sample.audio_transcript + " _EOS"
+            transcripts.append(transcript)
 
     return audio_samples, transcripts
 
 
-def _generate_spllited_encoder_input_data(audio_data, partitions=8):
+def _generate_spllited_encoder_input_data(audio_data, partitions=8, test=False):
     audio_sets = []
     limits = []
     for i in range(1, partitions + 1):
@@ -75,7 +76,12 @@ def _generate_spllited_encoder_input_data(audio_data, partitions=8):
     audio_data = []
     gc.collect()
     for index, audio_set in enumerate(audio_sets):
-        path = settings.AUDIO_SPLIT_TRAIN_PATH + "audio_set" + str(index) + ".pkl"
+        audio_set = np.array(audio_set)
+        if not test:
+            path = settings.AUDIO_SPLIT_TRAIN_PATH + "audio_set" + str(index) + ".pkl"
+        else:
+            path = settings.AUDIO_SPLIT_TEST_PATH + "audio_set" + str(index) + ".pkl"
+
         generate_pickle_file(audio_set, path)
 
 
@@ -95,48 +101,69 @@ def upload_dataset(train_ratio=0.8, padding=False, word_level=False, partitions=
     test ==>  encoder inputs, decoder inputs, decoder target
     :return: Tuple, Tuple
     """
+    if empty_directory(settings.AUDIO_SPLIT_TRAIN_PATH):
 
-    # Upload train and test data, the train ration is 0.8 and can be modified through ration param
-    train_data, test_data = _get_train_test_data(train_ratio=0.75, padding=padding)
-    # get mfcc and text transcripts for train and test
-    train_audio, train_transcripts = _get_audio_transcripts(train_data)
-    # train_audio, train_transcripts = print_suspicious_characters(train_data)
-    test_audio, test_transcripts = _get_audio_transcripts(test_data)
-
-    # Saving mfcc features and length for global use
-    settings.MFCC_FEATURES_LENGTH = train_audio[0].shape[1]
-    settings.ENCODER_INPUT_MAX_LENGTH = train_audio[0].shape[0]
-
-    # get max transcript size and character_set
-    all_transcripts = train_transcripts + test_transcripts
-    # transcript_max_length = get_longest_sample_size(all_transcripts)
-
-    _generate_spllited_encoder_input_data(train_audio,partitions=partitions)
-    # train_encoder_input = _get_encoder_input_data(audio_data=train_audio)
-    test_encoder_input = _get_encoder_input_data(audio_data=test_audio)
-
-    if word_level:
-        if file_exists(settings.DISTINCT_WORDS_PATH):
-            distinct_words = load_pickle_data(settings.DISTINCT_WORDS_PATH)
+        # Upload train and test data, the train ration is 0.8 and can be modified through ration param
+        train_data, test_data = _get_train_test_data(train_ratio=0.75, padding=padding)
+        # get mfcc and text transcripts for train and test
+        if word_level:
+            train_audio, train_transcripts = _get_audio_transcripts_word_level(train_data)
+            # train_audio, train_transcripts = print_suspicious_characters(train_data)
+            test_audio, test_transcripts = _get_audio_transcripts_word_level(test_data)
 
         else:
+            train_audio, train_transcripts = _get_audio_transcripts(train_data)
+            # train_audio, train_transcripts = print_suspicious_characters(train_data)
+            test_audio, test_transcripts = _get_audio_transcripts(test_data)
+
+        # Saving mfcc features and length for global use
+        settings.MFCC_FEATURES_LENGTH = train_audio[0].shape[1]
+        settings.ENCODER_INPUT_TOTAL_LENGTH = train_audio[0].shape[0]
+        general_info = [settings.MFCC_FEATURES_LENGTH, settings.ENCODER_INPUT_TOTAL_LENGTH]
+        print(settings.MFCC_FEATURES_LENGTH, settings.ENCODER_INPUT_TOTAL_LENGTH)
+        # get max transcript size and character_set
+        all_transcripts = train_transcripts + test_transcripts
+        # transcript_max_length = get_longest_sample_size(all_transcripts)
+
+        _generate_spllited_encoder_input_data(train_audio,partitions=partitions)
+        # train_encoder_input = _get_encoder_input_data(audio_data=train_audio)
+        _generate_spllited_encoder_input_data(test_audio, test=True)
+
+        if word_level:
             distinct_words = get_distinct_words(transcripts=all_transcripts)
-        settings.WORD_SET = distinct_words
+            #generate_pickle_file(distinct_words, file_path=settings.DISTINCT_WORDS_PATH)
+            general_info.append(distinct_words)
+            settings.WORD_SET = distinct_words
+        else:
+            distinct_characters = get_character_set(transcripts=all_transcripts)
+            #generate_pickle_file(distinct_characters, file_path=settings.DISTINCT_CHARACTERS_PATH)
+            general_info.append(distinct_characters)
+            settings.CHARACTER_SET = distinct_characters
+
+        generate_pickle_file(general_info, settings.DATASET_INFORMATION_PATH)
+        generate_decoder_input_target(transcripts=train_transcripts,
+                                      word_level=word_level,
+                                      fixed_size=False)
+
+        generate_decoder_input_target(transcripts=test_transcripts,
+                                      word_level=word_level,
+                                      fixed_size=False,
+                                      test=True)
+
     else:
-        character_set = get_character_set(all_transcripts)
-        print(len(character_set))
-        print(sorted(character_set))
-        # Saving character set for global use
-        settings.CHARACTER_SET = character_set
+        general_info = load_pickle_data(settings.DATASET_INFORMATION_PATH)
+        settings.MFCC_FEATURES_LENGTH = general_info[0]
+        settings.ENCODER_INPUT_TOTAL_LENGTH = general_info[1]
+        if word_level:
+            #distinct_words = load_pickle_data(settings.DISTINCT_WORDS_PATH)
+            settings.WORD_SET = general_info[2]
+        else:
+            #distinct_characters = load_pickle_data(settings.DISTINCT_CHARACTERS_PATH)
+            settings.CHARACTER_SET = general_info[2]
 
-    # generate 3D numpy arrays for train and test decoder input and decoder target
-    generate_decoder_input_target(transcripts=train_transcripts,
-                                  word_level=word_level,
-                                  fixed_size=False)
+    print(len(settings.CHARACTER_SET))
+    print(sorted(settings.CHARACTER_SET))
 
-    generate_decoder_input_target(transcripts=test_transcripts,
-                                  word_level=word_level,
-                                  fixed_size=False)
 
     # return (train_decoder_input, train_decoder_target), \
     #       (test_encoder_input, test_decoder_input, test_decoder_target)

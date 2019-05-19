@@ -1,7 +1,7 @@
 import random
 import numpy as np
 from etc import settings
-from utils import file_exists
+from utils import file_exists, get_files, load_pickle_data
 from tensorflow.python.keras import models
 from tensorflow.python.keras.models import Model
 from tensorflow.python.keras.layers import Input
@@ -21,7 +21,10 @@ class Seq2SeqModel():
         self.model_name = "architecture" + str(self.model_architecture) + ".h5"
         self.model_path = settings.TRAINED_MODELS_PATH + self.model_name
         self.mfcc_features_length = settings.MFCC_FEATURES_LENGTH
-        self.target_length = len(settings.CHARACTER_SET)
+        if word_level:
+            self.target_length = len(settings.WORD_SET)
+        else:
+            self.target_length = len(settings.CHARACTER_SET)
         self.model = None
         self.encoder_states = None
         self._load_model()
@@ -63,23 +66,24 @@ class Seq2SeqModel():
                                                                                                   target_length=self.target_length,
                                                                                                   latent_dim=self.latent_dim)
 
-    def train_model(self, encoder_input_data, decoder_input_data, decoder_target_data):
+    def train_model(self):
         self.model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
         model_saver = ModelSaver(model_name=self.model_name, model_path=self.model_path,
                                  drive_instance=settings.DRIVE_INSTANCE)
 
         if self.data_generation:
-            generated_data = self._generate_timestep_dict(encoder_input_data, decoder_input_data, decoder_target_data)
-            history = self.model.fit_generator(self._data_generator_dict(generated_data),
-                                               steps_per_epoch=len(encoder_input_data),
+            #generated_data = self._generate_timestep_dict(encoder_input_data, decoder_input_data, decoder_target_data)
+            history = self.model.fit_generator(self.split_data_generator_dict(),
+                                               steps_per_epoch=settings.ENCODER_INPUT_TOTAL_LENGTH,
                                                epochs=self.epochs,
                                                callbacks=[model_saver])
 
         else:
-            history = self.model.fit([encoder_input_data, decoder_input_data], decoder_target_data,
-                                     epochs=self.epochs,
-                                     validation_split=0.2,
-                                     callbacks=[model_saver])
+            pass
+            #history = self.model.fit([encoder_input_data, decoder_input_data], decoder_target_data,
+            #                         epochs=self.epochs,
+            #                         validation_split=0.2,
+            #                         callbacks=[model_saver])
 
     def _get_encoder_decoder_model_base_line(self):
 
@@ -111,7 +115,6 @@ class Seq2SeqModel():
 
         return encoder_model, decoder_model
 
-
     def _data_generator(self, encoder_input, decoder_input, decoder_target):
         while True:
             index = random.randint(0, len(encoder_input) - 1)
@@ -120,6 +123,35 @@ class Seq2SeqModel():
             decoder_y = np.array([decoder_target[index]])
 
             yield [encoder_x, decoder_x], decoder_y
+
+    def split_data_generator_dict(self):
+        audio_directory = settings.AUDIO_SPLIT_TRAIN_PATH
+        audio_files = get_files(audio_directory)
+        transcripts_directory = settings.TRANSCRIPTS_ENCODING_SPLIT_TRAIN_PATH
+        transcript_files = get_files(transcripts_directory)
+        visited_files = []
+
+        while True:
+            for i, audio_file in enumerate(audio_files):
+                #retrieving data
+
+                data = self.get_data(audio_file, transcript_files[i])
+
+                pair_key = random.choice(list(data.keys()))
+                output = data[pair_key]
+                encoder_x = []
+                decoder_x = []
+                decoder_y = []
+                for element in output:
+                    encoder_x.append(element[0][0])
+                    decoder_x.append(element[0][1])
+                    decoder_y.append(element[1])
+
+                encoder_x = np.array(encoder_x)
+                decoder_x = np.array(decoder_x)
+                decoder_y = np.array(decoder_y)
+
+                yield [encoder_x, decoder_x], decoder_y
 
     def _data_generator_dict(self, data):
 
@@ -139,6 +171,12 @@ class Seq2SeqModel():
             decoder_y = np.array(decoder_y)
 
             yield [encoder_x, decoder_x], decoder_y
+
+    def get_data(self, audio_file, transcripts_file):
+        encoder_input_data = load_pickle_data(audio_file)
+        (decoder_input_data, decoder_target_data) = load_pickle_data(transcripts_file)
+        data = self._generate_timestep_dict(encoder_input_data, decoder_input_data, decoder_target_data)
+        return data
 
     def _generate_timestep_dict(self, encoder_input_data, decoder_input_data, decoder_target_data):
         generated_data = dict()

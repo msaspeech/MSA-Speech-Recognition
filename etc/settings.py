@@ -12,22 +12,30 @@ GENERATED_DATA_TRANSCRIPTS_PATH = "./data/generated_data/transcriptions/"
 RAW_DATASET_AUDIO_PATH = "./data/raw/wav/"
 RAW_DATASET_TRANSCRIPTIONS = "./data/raw/transcriptions/"
 DRIVE_INSTANCE_PATH = "./drive/drive.pkl"
-TRAINED_MODELS_PATH = "./trained_models/"
-DISTINCT_WORDS_PATH = "./normalization/distinct_words.pkl"
+DRIVE_PATH = "./drive/"
+DISTINCT_WORDS_PATH = "./dataset_split/distinct_words.pkl"
+DISTINCT_CHARACTERS_PATH = "dataset_split/distinct_characters.pkl"
+DATASET_INFORMATION_PATH = "dataset_split/info.pkl"
+NORMALIZATION_PATH = "./normalization/"
 ENCODER_INPUT_MIN_VALUES_PATH = "./normalization/min_values.pkl"
 ENCODER_INPUT_MAX_VALUES_PATH = "./normalization/max_values.pkl"
 NORMALIZED_ENCODER_INPUT_PATH = "./normalization/encoder_input.pkl"
+TRAINED_MODELS_PATH = "./trained_models/"
 MODEL_HISTORY_PLOTS = "./trained_models/traning_history/"
 
+DATASET_SPLIT_PATH = "./dataset_split/"
+DATASET_SPLIT_TRAIN_PATH = "./dataset_split/train/"
+DATASET_SPLIT_TEST_PATH = "./dataset_split/test/"
 TRANSCRIPTS_ENCODING_SPLIT_TRAIN_PATH = "./dataset_split/train/transcripts/"
+TRANSCRIPTS_ENCODING_SPLIT_TEST_PATH = "./dataset_split/test/transcripts/"
 AUDIO_SPLIT_TRAIN_PATH = "./dataset_split/train/audio_data/"
+AUDIO_SPLIT_TEST_PATH = "./dataset_split/test/audio_data/"
 
 
 global MFCC_FEATURES_LENGTH
 global CHARACTER_SET
 global WORD_SET
 
-global ENCODER_INPUT_MAX_LENGTH
-global DECODER_INPUT_MAX_LENGTH
+global ENCODER_INPUT_TOTAL_LENGTH
 
 global DRIVE_INSTANCE

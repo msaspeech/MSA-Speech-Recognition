@@ -26,6 +26,7 @@ def file_exists(file_path):
     return False
 
 
+
 def empty_directory(directory_path):
     if not os.listdir(directory_path):
         return True
