@@ -1,4 +1,4 @@
-from utils import get_longest_sample_size, get_character_set
+from utils import get_longest_sample_size, get_character_set, get_distinct_words
 from . import generate_decoder_input_target, normalize_encoder_input
 import numpy as np
 from etc import settings
@@ -75,7 +75,7 @@ def _generate_spllited_encoder_input_data(audio_data, partitions=8):
     audio_data = []
     gc.collect()
     for index, audio_set in enumerate(audio_sets):
-        path = settings.AUDIO_SPLIT_PATH + "audio_set" + str(index) + ".pkl"
+        path = settings.AUDIO_SPLIT_TRAIN_PATH + "audio_set" + str(index) + ".pkl"
         generate_pickle_file(audio_set, path)
 
 
@@ -88,7 +88,7 @@ def _get_encoder_input_data(audio_data):
     return np.array(audio_data)
 
 
-def upload_dataset(train_ratio=0.8, padding=False, word_level=False):
+def upload_dataset(train_ratio=0.8, padding=False, word_level=False, partitions=8):
     """
     Generate :
     train ==> encoder inputs, decoder inputs, decoder target
@@ -111,15 +111,23 @@ def upload_dataset(train_ratio=0.8, padding=False, word_level=False):
     all_transcripts = train_transcripts + test_transcripts
     # transcript_max_length = get_longest_sample_size(all_transcripts)
 
-    _generate_spllited_encoder_input_data(train_audio)
+    _generate_spllited_encoder_input_data(train_audio,partitions=partitions)
     # train_encoder_input = _get_encoder_input_data(audio_data=train_audio)
     test_encoder_input = _get_encoder_input_data(audio_data=test_audio)
 
-    character_set = get_character_set(all_transcripts)
-    print(len(character_set))
-    print(sorted(character_set))
-    # Saving character set for global use
-    settings.CHARACTER_SET = character_set
+    if word_level:
+        if file_exists(settings.DISTINCT_WORDS_PATH):
+            distinct_words = load_pickle_data(settings.DISTINCT_WORDS_PATH)
+
+        else:
+            distinct_words = get_distinct_words(transcripts=all_transcripts)
+        settings.WORD_SET = distinct_words
+    else:
+        character_set = get_character_set(all_transcripts)
+        print(len(character_set))
+        print(sorted(character_set))
+        # Saving character set for global use
+        settings.CHARACTER_SET = character_set
 
     # generate 3D numpy arrays for train and test decoder input and decoder target
     generate_decoder_input_target(transcripts=train_transcripts,

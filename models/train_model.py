@@ -13,7 +13,7 @@ from .model_callback import ModelSaver
 
 
 class Seq2SeqModel():
-    def __init__(self, latent_dim=300, epochs=50, model_architecture=5, data_generation=True):
+    def __init__(self, latent_dim=300, epochs=50, model_architecture=5, data_generation=True, word_level=False):
         self.latent_dim = latent_dim
         self.epochs = epochs
         self.model_architecture = model_architecture

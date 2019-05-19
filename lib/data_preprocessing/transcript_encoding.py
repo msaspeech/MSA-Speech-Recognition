@@ -1,7 +1,7 @@
 from utils import convert_to_int, file_exists, load_pickle_data, get_character_set
 from utils import get_distinct_words, convert_words_to_int, generate_pickle_file
 from etc import DISTINCT_WORDS_PATH
-from etc import TRANSCRIPTS_WORD_ENCODING_PATH, settings
+from etc import settings
 from utils import get_longest_sample_size
 import numpy as np
 import gc
@@ -160,7 +160,7 @@ def generate_variable_size_character_input_target_data(transcripts, char_to_int,
             decoder_input_data[i] = encoded_transcript_input
             encoded_transcript_target.pop()
             decoder_target_data[i] = encoded_transcript_target
-        path = TRANSCRIPTS_WORD_ENCODING_PATH + "encoded_transcripts" + str(num_dataset) + ".pkl"
+        path = settings.TRANSCRIPTS_ENCODING_SPLIT_TRAIN_PATH + "encoded_transcripts" + str(num_dataset) + ".pkl"
         generate_pickle_file((decoder_input_data, decoder_target_data), file_path=path)
 
     # return decoder_input_data, decoder_target_data
@@ -205,7 +205,7 @@ def generate_variable_word_input_target_data(transcripts, words_to_int, partitio
             decoder_input_data[i] = encoded_transcript_input.pop()
             encoded_transcript_target.pop()
             decoder_target_data[i] = encoded_transcript_target
-        path = TRANSCRIPTS_WORD_ENCODING_PATH + "encoded_transcripts" + str(num_dataset) + ".pkl"
+        path = settings.TRANSCRIPTS_ENCODING_SPLIT_TRAIN_PATH + "encoded_transcripts" + str(num_dataset) + ".pkl"
         generate_pickle_file((decoder_input_data, decoder_target_data), file_path=path)
 
 
@@ -256,11 +256,7 @@ def generate_decoder_input_target(transcripts, word_level=False, fixed_size=True
     if word_level:
         if not fixed_size:
             # Word level recognition
-            if file_exists(DISTINCT_WORDS_PATH):
-                distinct_words = load_pickle_data(DISTINCT_WORDS_PATH)
-            else:
-                distinct_words = get_distinct_words(transcripts=transcripts)
-
+            distinct_words = settings.WORD_SET
             word_to_int, _ = convert_words_to_int(distinct_words=distinct_words)
             print(len(word_to_int))
             print(word_to_int)
