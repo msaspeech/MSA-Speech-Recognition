@@ -1,6 +1,7 @@
 from utils import convert_to_int, file_exists, load_pickle_data
-from utils import get_distinct_words, convert_words_to_int
+from utils import get_distinct_words, convert_words_to_int, generate_pickle_file
 from etc import DISTINCT_WORDS_PATH
+from etc import TRANSCRIPTS_WORD_ENCODING_PATH
 from utils import get_longest_sample_size
 import numpy as np
 
@@ -113,7 +114,50 @@ def _generate_variable_size_character_input_target_data(transcripts, char_to_int
     return decoder_input_data, decoder_target_data
 
 
+def generate_variable_size_word_input_target_data(transcripts, words_to_int):
+    limit1 = int(len(transcripts) / 4)
+    limit2 = int(len(transcripts) / 2)
+    limit3 = int(len(transcripts)* 3 / 4)
+    transcript_dataset1 = transcripts[0:limit1]
+    transcript_dataset2 = transcripts[limit1:limit2]
+    transcript_dataset3 = transcripts[limit2:limit3]
+    transcript_dataset4 = transcripts[limit3:len(transcripts)]
+    transcript_sets = (transcript_dataset1, transcript_dataset2, transcript_dataset3, transcript_dataset4)
+    del transcripts
+
+    for num_dataset, transcript_set in enumerate(transcript_sets):
+        num_transcripts = len(transcript_set)
+        print(num_transcripts)
+        decoder_input_data = np.array([None] * num_transcripts)
+        decoder_target_data = np.array([None] * num_transcripts)
+
+        for i, transcript in enumerate(transcript_set):
+            # Encode each transcript
+            encoded_transcript_input = []
+            encoded_transcript_target = []
+
+            for index, word in enumerate(transcript.split()):
+                # Encode each character
+                encoded_word = [0] * len(words_to_int)
+                encoded_word[words_to_int[word]] = 1
+
+                encoded_transcript_input.append(encoded_word)
+                encoded_transcript_target.append([])
+
+                if index > 0:
+                    encoded_transcript_target[index - 1] = encoded_word
+
+            decoder_input_data[i] = encoded_transcript_input.pop()
+            encoded_transcript_target.pop()
+            decoder_target_data[i] = encoded_transcript_target
+        path = TRANSCRIPTS_WORD_ENCODING_PATH + "encoded_transcripts"+str(num_dataset)+".pkl"
+        generate_pickle_file((decoder_input_data, decoder_target_data), file_path=path)
+
+    #return decoder_input_data, decoder_target_data
+
+
 def _generate_variable_size_word_input_target_data(transcripts, words_to_int):
+
     num_transcripts = len(transcripts)
     print(num_transcripts)
     decoder_input_data = np.array([None] * num_transcripts)
@@ -123,7 +167,6 @@ def _generate_variable_size_word_input_target_data(transcripts, words_to_int):
         # Encode each transcript
         encoded_transcript_input = []
         encoded_transcript_target = []
-        print(i)
 
         for index, word in enumerate(transcript.split()):
             # Encode each character
@@ -137,7 +180,6 @@ def _generate_variable_size_word_input_target_data(transcripts, words_to_int):
                 encoded_transcript_target[index - 1] = encoded_word
 
         decoder_input_data[i] = encoded_transcript_input.pop()
-
         encoded_transcript_target.pop()
         decoder_target_data[i] = encoded_transcript_target
 
@@ -208,8 +250,9 @@ def generate_decoder_input_target(character_set, transcripts, word_level=False, 
             word_to_int, _ = convert_words_to_int(distinct_words=distinct_words)
             print(len(word_to_int))
             print(word_to_int)
-            decoder_input, decoder_target = _generate_variable_size_word_input_target_data(transcripts=transcripts,
-                                                                                           words_to_int=word_to_int)
+            #decoder_input, decoder_target = _generate_variable_size_word_input_target_data(transcripts=transcripts,
+            #                                                                               words_to_int=word_to_int)
+            generate_variable_size_word_input_target_data(transcripts=transcripts,words_to_int=word_to_int)
         else:
             char_to_int = convert_to_int(sorted(character_set))
             decoder_input, decoder_target = _generate_variable_size_character_input_target_data(transcripts=transcripts,
