@@ -48,6 +48,7 @@ def _get_audio_transcripts(data):
 
     return audio_samples, transcripts
 
+
 def _get_audio_transcripts_word_level(data):
     audio_samples = []
     transcripts = []
@@ -74,8 +75,8 @@ def _generate_spllited_encoder_input_data(audio_data, partitions=8):
     audio_data = []
     gc.collect()
     for index, audio_set in enumerate(audio_sets):
-        path = settings.AUDIO_SPLIT_PATH+"audio_set"+str(index)+".pkl"
-        generate_pickle_file(audio_set,path)
+        path = settings.AUDIO_SPLIT_PATH + "audio_set" + str(index) + ".pkl"
+        generate_pickle_file(audio_set, path)
 
 
 def _get_encoder_input_data(audio_data):
@@ -87,7 +88,7 @@ def _get_encoder_input_data(audio_data):
     return np.array(audio_data)
 
 
-def upload_dataset(train_ratio=0.8, padding=False):
+def upload_dataset(train_ratio=0.8, padding=False, word_level=False):
     """
     Generate :
     train ==> encoder inputs, decoder inputs, decoder target
@@ -99,7 +100,7 @@ def upload_dataset(train_ratio=0.8, padding=False):
     train_data, test_data = _get_train_test_data(train_ratio=0.75, padding=padding)
     # get mfcc and text transcripts for train and test
     train_audio, train_transcripts = _get_audio_transcripts(train_data)
-    #train_audio, train_transcripts = print_suspicious_characters(train_data)
+    # train_audio, train_transcripts = print_suspicious_characters(train_data)
     test_audio, test_transcripts = _get_audio_transcripts(test_data)
 
     # Saving mfcc features and length for global use
@@ -109,31 +110,25 @@ def upload_dataset(train_ratio=0.8, padding=False):
     # get max transcript size and character_set
     all_transcripts = train_transcripts + test_transcripts
     # transcript_max_length = get_longest_sample_size(all_transcripts)
+
+    _generate_spllited_encoder_input_data(train_audio)
+    # train_encoder_input = _get_encoder_input_data(audio_data=train_audio)
+    test_encoder_input = _get_encoder_input_data(audio_data=test_audio)
+
     character_set = get_character_set(all_transcripts)
     print(len(character_set))
     print(sorted(character_set))
     # Saving character set for global use
     settings.CHARACTER_SET = character_set
 
-    _generate_spllited_encoder_input_data(train_audio)
-    #train_encoder_input = _get_encoder_input_data(audio_data=train_audio)
-    test_encoder_input = _get_encoder_input_data(audio_data=test_audio)
-    # TODO : Normalize test using existing min-max
-    # test_encoder_input = normalize_encoder_input(dataset=test_encoder_input)
-
-
     # generate 3D numpy arrays for train and test decoder input and decoder target
-    train_decoder_input, train_decoder_target = generate_decoder_input_target(character_set=character_set,
-                                                                              transcripts=train_transcripts,
-                                                                              word_level=True,
-                                                                              fixed_size=False)
+    generate_decoder_input_target(transcripts=train_transcripts,
+                                  word_level=word_level,
+                                  fixed_size=False)
 
-    test_decoder_input, test_decoder_target = generate_decoder_input_target(character_set=character_set,
-                                                                            transcripts=test_transcripts,
-                                                                            word_level=True,
-                                                                            fixed_size=False)
+    generate_decoder_input_target(transcripts=test_transcripts,
+                                  word_level=word_level,
+                                  fixed_size=False)
 
-    return (train_encoder_input, train_decoder_input, train_decoder_target), \
-           (test_encoder_input, test_decoder_input, test_decoder_target)
-
-
+    # return (train_decoder_input, train_decoder_target), \
+    #       (test_encoder_input, test_decoder_input, test_decoder_target)

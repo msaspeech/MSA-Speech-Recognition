@@ -1,10 +1,11 @@
-from utils import convert_to_int, file_exists, load_pickle_data
+from utils import convert_to_int, file_exists, load_pickle_data, get_character_set
 from utils import get_distinct_words, convert_words_to_int, generate_pickle_file
 from etc import DISTINCT_WORDS_PATH
-from etc import TRANSCRIPTS_WORD_ENCODING_PATH
+from etc import TRANSCRIPTS_WORD_ENCODING_PATH, settings
 from utils import get_longest_sample_size
 import numpy as np
 import gc
+
 
 def _get_transcriptions(audioInput_data):
     """
@@ -40,7 +41,7 @@ def one_hot_encode_transcript(transcript, char_to_int, num_distinct_chars):
     return input_transcript, target_transcript
 
 
-def _generate_input_target_data(transcripts, char_to_int, num_distinct_chars):
+def _generate_character_input_target_data(transcripts, char_to_int, num_distinct_chars):
     """
     Generates two 3D arrays for the decoder input data and target data.
     Fills the 3D arrays with each sample of our dataset
@@ -90,14 +91,8 @@ def _generate_variable_size_character_input_target_data(transcripts, char_to_int
 
         for index, character in enumerate(transcript):
             # Encode each character
-            encoded_character = [0]*len(char_to_int)
+            encoded_character = [0] * len(char_to_int)
             encoded_character[char_to_int[character]] = 1
-            #encoded_character = []
-            #for c in char_to_int:
-            #    if character == c:
-            #        encoded_character.append(1)
-            #    else:
-            #        encoded_character.append(0)
 
             encoded_transcript_input.append(encoded_character)
             encoded_transcript_target.append([])
@@ -114,17 +109,73 @@ def _generate_variable_size_character_input_target_data(transcripts, char_to_int
     return decoder_input_data, decoder_target_data
 
 
-def generate_variable_size_word_input_target_data(transcripts, words_to_int, partitions=8):
+def generate_variable_size_character_input_target_data(transcripts, char_to_int, partitions=8):
+    """
+        Generates two 3D arrays for the decoder input data and target data.
+        Fills the 3D arrays for each sample of our dataset
+        Return OneHotEncoded Decoder Input data
+        Return OneHotEncoded Target data
+        :param transcripts: List of Strings
+        :param char_to_int: Dict
+        :return: 3D numpy Array, 3D numpy Array
+        """
 
     # Dividing transcripts into subsets
     transcript_sets = []
     limits = []
-    for i in range(1,partitions+1):
-        limits.append(int(len(transcripts)*i / partitions))
+    for i in range(1, partitions + 1):
+        limits.append(int(len(transcripts) * i / partitions))
 
     transcript_sets.append(transcripts[0: limits[0]])
-    for i in range(1,partitions):
-        transcript_sets.append(transcripts[limits[i-1]:limits[i]])
+    for i in range(1, partitions):
+        transcript_sets.append(transcripts[limits[i - 1]:limits[i]])
+
+    # Delete original dataset
+    transcripts = []
+    gc.collect()
+
+    for num_dataset, transcript_set in enumerate(transcript_sets):
+        # Init numpy array
+        num_transcripts = len(transcript_set)
+        decoder_input_data = np.array([None] * num_transcripts)
+        decoder_target_data = np.array([None] * num_transcripts)
+
+        for i, transcript in enumerate(transcript_set):
+            # Encode each transcript
+            encoded_transcript_input = []
+            encoded_transcript_target = []
+
+            for index, character in enumerate(transcript):
+                # Encode each character
+                encoded_character = [0] * len(char_to_int)
+                encoded_character[char_to_int[character]] = 1
+
+                encoded_transcript_input.append(encoded_character)
+                encoded_transcript_target.append([])
+
+                if index > 0:
+                    encoded_transcript_target[index - 1] = encoded_character
+
+            del encoded_transcript_input[-1]
+            decoder_input_data[i] = encoded_transcript_input
+            encoded_transcript_target.pop()
+            decoder_target_data[i] = encoded_transcript_target
+        path = TRANSCRIPTS_WORD_ENCODING_PATH + "encoded_transcripts" + str(num_dataset) + ".pkl"
+        generate_pickle_file((decoder_input_data, decoder_target_data), file_path=path)
+
+    # return decoder_input_data, decoder_target_data
+
+
+def generate_variable_word_input_target_data(transcripts, words_to_int, partitions=8):
+    # Dividing transcripts into subsets
+    transcript_sets = []
+    limits = []
+    for i in range(1, partitions + 1):
+        limits.append(int(len(transcripts) * i / partitions))
+
+    transcript_sets.append(transcripts[0: limits[0]])
+    for i in range(1, partitions):
+        transcript_sets.append(transcripts[limits[i - 1]:limits[i]])
 
     # Delete original dataset
     transcripts = []
@@ -132,7 +183,6 @@ def generate_variable_size_word_input_target_data(transcripts, words_to_int, par
 
     for num_dataset, transcript_set in enumerate(transcript_sets):
         num_transcripts = len(transcript_set)
-        print(num_transcripts)
         decoder_input_data = np.array([None] * num_transcripts)
         decoder_target_data = np.array([None] * num_transcripts)
 
@@ -155,40 +205,8 @@ def generate_variable_size_word_input_target_data(transcripts, words_to_int, par
             decoder_input_data[i] = encoded_transcript_input.pop()
             encoded_transcript_target.pop()
             decoder_target_data[i] = encoded_transcript_target
-        path = TRANSCRIPTS_WORD_ENCODING_PATH + "encoded_transcripts"+str(num_dataset)+".pkl"
+        path = TRANSCRIPTS_WORD_ENCODING_PATH + "encoded_transcripts" + str(num_dataset) + ".pkl"
         generate_pickle_file((decoder_input_data, decoder_target_data), file_path=path)
-
-    #return decoder_input_data, decoder_target_data
-
-
-def _generate_variable_size_word_input_target_data(transcripts, words_to_int):
-
-    num_transcripts = len(transcripts)
-    print(num_transcripts)
-    decoder_input_data = np.array([None] * num_transcripts)
-    decoder_target_data = np.array([None] * num_transcripts)
-
-    for i, transcript in enumerate(transcripts):
-        # Encode each transcript
-        encoded_transcript_input = []
-        encoded_transcript_target = []
-
-        for index, word in enumerate(transcript.split()):
-            # Encode each character
-            encoded_word = [0] * len(words_to_int)
-            encoded_word[words_to_int[word]] = 1
-
-            encoded_transcript_input.append(encoded_word)
-            encoded_transcript_target.append([])
-
-            if index > 0:
-                encoded_transcript_target[index - 1] = encoded_word
-
-        decoder_input_data[i] = encoded_transcript_input.pop()
-        encoded_transcript_target.pop()
-        decoder_target_data[i] = encoded_transcript_target
-
-    return decoder_input_data, decoder_target_data
 
 
 def _generate_fixed_size_character_input_target_data(transcripts, char_to_int, num_transcripts, max_length,
@@ -229,24 +247,15 @@ def _generate_fixed_size_character_input_target_data(transcripts, char_to_int, n
     return decoder_input_data, decoder_target_data
 
 
-def generate_decoder_input_target(character_set, transcripts, word_level=False, fixed_size=True):
+def generate_decoder_input_target(transcripts, word_level=False, fixed_size=True):
     """
     Wrapper for the _generate_input_target_data method.
     :return: 3D numpy Array, 3D numpy Array
     """
 
-    if fixed_size:
-        max_transcript_length = get_longest_sample_size(transcripts)
-        num_transcripts = len(transcripts)
-        num_distinct_chars = len(character_set)
-        char_to_int = convert_to_int(character_set)
-        decoder_input, decoder_target = _generate_fixed_size_character_input_target_data(transcripts=transcripts,
-                                                                                         char_to_int=char_to_int,
-                                                                                         num_transcripts=num_transcripts,
-                                                                                         max_length=max_transcript_length,
-                                                                                         num_distinct_chars=num_distinct_chars)
-    else:
-        if word_level:
+    if word_level:
+        if not fixed_size:
+            # Word level recognition
             if file_exists(DISTINCT_WORDS_PATH):
                 distinct_words = load_pickle_data(DISTINCT_WORDS_PATH)
             else:
@@ -255,12 +264,27 @@ def generate_decoder_input_target(character_set, transcripts, word_level=False, 
             word_to_int, _ = convert_words_to_int(distinct_words=distinct_words)
             print(len(word_to_int))
             print(word_to_int)
-            #decoder_input, decoder_target = _generate_variable_size_word_input_target_data(transcripts=transcripts,
+            # decoder_input, decoder_target = _generate_variable_size_word_input_target_data(transcripts=transcripts,
             #                                                                               words_to_int=word_to_int)
-            generate_variable_size_word_input_target_data(transcripts=transcripts,words_to_int=word_to_int)
-        else:
-            char_to_int = convert_to_int(sorted(character_set))
-            decoder_input, decoder_target = _generate_variable_size_character_input_target_data(transcripts=transcripts,
-                                                                                                char_to_int=char_to_int)
+            generate_variable_word_input_target_data(transcripts=transcripts, words_to_int=word_to_int)
 
-    return decoder_input, decoder_target
+    else:
+        # Character level recognition
+        character_set = settings.CHARACTER_SET
+        if not fixed_size:
+            char_to_int = convert_to_int(sorted(character_set))
+            generate_variable_size_character_input_target_data(transcripts=transcripts,
+                                                               char_to_int=char_to_int)
+
+        else:
+            max_transcript_length = get_longest_sample_size(transcripts)
+            num_transcripts = len(transcripts)
+            num_distinct_chars = len(character_set)
+            char_to_int = convert_to_int(character_set)
+            decoder_input, decoder_target = _generate_fixed_size_character_input_target_data(transcripts=transcripts,
+                                                                                             char_to_int=char_to_int,
+                                                                                             num_transcripts=num_transcripts,
+                                                                                             max_length=max_transcript_length,
+                                                                                             num_distinct_chars=num_distinct_chars)
+
+    #return decoder_input, decoder_target
