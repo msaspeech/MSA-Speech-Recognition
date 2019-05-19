@@ -4,7 +4,7 @@ from etc import DISTINCT_WORDS_PATH
 from etc import TRANSCRIPTS_WORD_ENCODING_PATH
 from utils import get_longest_sample_size
 import numpy as np
-
+import gc
 
 def _get_transcriptions(audioInput_data):
     """
@@ -114,17 +114,21 @@ def _generate_variable_size_character_input_target_data(transcripts, char_to_int
     return decoder_input_data, decoder_target_data
 
 
-def generate_variable_size_word_input_target_data(transcripts, words_to_int):
+def generate_variable_size_word_input_target_data(transcripts, words_to_int, partitions=8):
+
+    # Dividing transcripts into subsets
     transcript_sets = []
     limits = []
-    for i in range(1,9):
-        limits.append(int(len(transcripts)*i / 8))
+    for i in range(1,partitions+1):
+        limits.append(int(len(transcripts)*i / partitions))
 
     transcript_sets.append(transcripts[0: limits[0]])
-    for i in range(1,8):
+    for i in range(1,partitions):
         transcript_sets.append(transcripts[limits[i-1]:limits[i]])
 
-    del transcripts
+    # Delete original dataset
+    transcripts = []
+    gc.collect()
 
     for num_dataset, transcript_set in enumerate(transcript_sets):
         num_transcripts = len(transcript_set)

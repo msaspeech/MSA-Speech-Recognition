@@ -14,11 +14,11 @@ RAW_DATASET_TRANSCRIPTIONS = "./data/raw/transcriptions/"
 DRIVE_INSTANCE_PATH = "./drive/drive.pkl"
 TRAINED_MODELS_PATH = "./trained_models/"
 DISTINCT_WORDS_PATH = "./normalization/distinct_words.pkl"
-TRANSCRIPTS_WORD_ENCODING_PATH = "./normalization/transcripts/"
+TRANSCRIPTS_WORD_ENCODING_PATH = "./dataset_split/transcripts/"
+AUDIO_SPLIT_PATH = "./dataset_split/audio_data/"
 ENCODER_INPUT_MIN_VALUES_PATH = "./normalization/min_values.pkl"
 ENCODER_INPUT_MAX_VALUES_PATH = "./normalization/max_values.pkl"
 NORMALIZED_ENCODER_INPUT_PATH = "./normalization/encoder_input.pkl"
-NORMALIZED_ENCODER_INPUT_PATHS = "./normalization/audio_data/"
 MODEL_HISTORY_PLOTS = "./trained_models/traning_history/"
 
 

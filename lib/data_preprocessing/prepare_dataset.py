@@ -2,8 +2,9 @@ from utils import get_longest_sample_size, get_character_set
 from . import generate_decoder_input_target, normalize_encoder_input
 import numpy as np
 from etc import settings
-from utils import load_pickle_data, file_exists
+from utils import load_pickle_data, file_exists, generate_pickle_file
 from etc import PICKLE_PAD_FILE_PATH, PICKLE_FILE_PATH, NORMALIZED_ENCODER_INPUT_PATH
+import gc
 
 
 def _get_train_test_data(train_ratio=0.8, padding=False):
@@ -59,25 +60,23 @@ def _get_audio_transcripts_word_level(data):
     return audio_samples, transcripts
 
 
-#def print_suspicious_characters(data):
-#    """
-#        Returns a list of audio mfcc dta and list of transcripts
-#        :param data: List of Audio Input
-#        :return: List of ndArray, List of Strings
-#        """
-#    audio_samples = []
-#    transcripts = []
-#    special_characters = special_characters_table()
+def _generate_spllited_encoder_input_data(audio_data, partitions=8):
+    audio_sets = []
+    limits = []
+    for i in range(1, partitions + 1):
+        limits.append(int(len(audio_data) * i / partitions))
 
-#    for sample in data:
-#        audio_samples.append(sample.mfcc.transpose())
-#        transcript = "\t" + sample.audio_transcript + "\n"
-#        for character in special_characters:
-#            if character in transcript:
-#                print("CHARACTER "+character+ " is in : "+transcript)
-#        transcripts.append(transcript)
+    audio_sets.append(audio_data[0: limits[0]])
+    for i in range(1, partitions):
+        audio_sets.append(audio_data[limits[i - 1]:limits[i]])
 
-#    return audio_samples, transcripts
+    # Delete original dataset
+    audio_data = []
+    gc.collect()
+    for index, audio_set in enumerate(audio_sets):
+        path = settings.AUDIO_SPLIT_PATH+"audio_set"+str(index)+".pkl"
+        generate_pickle_file(audio_set,path)
+
 
 def _get_encoder_input_data(audio_data):
     """
@@ -116,15 +115,8 @@ def upload_dataset(train_ratio=0.8, padding=False):
     # Saving character set for global use
     settings.CHARACTER_SET = character_set
 
-    # Checking if data is already normalized
-    #if file_exists(NORMALIZED_ENCODER_INPUT_PATH):
-    #    train_encoder_input = load_pickle_data(NORMALIZED_ENCODER_INPUT_PATH)
-    #else:
-    #    # generate and normalize 3D numpy arrays for train encoder inputs and test encoder inputs
-    #    train_encoder_input = _get_encoder_input_data(audio_data=train_audio)
-    #    train_encoder_input = normalize_encoder_input(dataset=train_encoder_input)
-
-    train_encoder_input = _get_encoder_input_data(audio_data=train_audio)
+    _generate_spllited_encoder_input_data(train_audio)
+    #train_encoder_input = _get_encoder_input_data(audio_data=train_audio)
     test_encoder_input = _get_encoder_input_data(audio_data=test_audio)
     # TODO : Normalize test using existing min-max
     # test_encoder_input = normalize_encoder_input(dataset=test_encoder_input)
