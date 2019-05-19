@@ -14,7 +14,7 @@ def train_model(encoder_input_data, decoder_input_data, decoder_target_data,
                 latent_dim=256, batch_size=64, epochs=70, model_architecture=1, data_generation=False):
     """
     Choosing the architecture and running a training
-    :param encoder_input_data: Numpy 3dArray
+    :param encoder_inpu t_data: Numpy 3dArray
     :param decoder_input_data: Numpy 3dArray
     :param decoder_target_data: Numpy 3dArray
     :param latent_dim: int

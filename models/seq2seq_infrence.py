@@ -1,11 +1,19 @@
 import numpy as np
 from utils import convert_to_int, convert_to_char, decode_transcript
-from tensorflow.keras import Model
-from tensorflow.keras.layers import Input
+from tensorflow.python.keras import Model
+from tensorflow.python.keras.layers import Input
 from etc import settings
 
 
-def get_encoder_decoder_model(model, encoder_states, latent_dim):
+def get_encoder_decoder_model_attention():
+    pass
+
+
+def get_encoder_decoder_model_cnn():
+    pass
+
+
+def get_encoder_decoder_model_base_line(model, encoder_states, latent_dim):
     """
     Returns the encoder_model and decoder_model for prediction phase
     :param model: Keras Model after training (updated weights)
@@ -15,9 +23,9 @@ def get_encoder_decoder_model(model, encoder_states, latent_dim):
     """
     # Getting layers after training (updated weights)
     encoder_inputs = model.get_layer("encoder_inputs")
-    decoder_lstm1_layer = model.get_layer("decoder_lstm1_layer")
     decoder_inputs = model.get_layer("decoder_inputs")
     decoder_lstm2_layer = model.get_layer("decoder_lstm2_layer")
+    decoder_lstm1_layer = model.get_layer("decoder_lstm1_layer")
     decoder_dense = model.get_layer("decoder_dense")
 
     # Creating encoder model

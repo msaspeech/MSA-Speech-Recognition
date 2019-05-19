@@ -6,3 +6,4 @@ from .seq2seq_infrence import *
 from .seq2seq_with_attention import *
 from .train_seq2seq_model import *
 from .model_callback import *
+from .train_model import Seq2SeqModel
