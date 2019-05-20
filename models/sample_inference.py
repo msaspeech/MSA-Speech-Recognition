@@ -20,10 +20,11 @@ class Inference():
 
     def _get_encoder_decoder_model_baseline(self):
         # Getting layers after training (updated weights)
-        encoder_inputs = self.model.get_layer("encoder_input")
-        # TODO : REPLACE DECODER_INPUTS BY DECODER_INPUT WHEN GENERATING MODEL
-        decoder_inputs = self.model.get_layer("decoder_input")
-        # TODO : REPLACE DECODER_LSTM_2LAYER BY DECODER_LSTM2_LAYER WHEN GENERATING MODEL
+
+        encoder_inputs = Input(shape=(None, settings.MFCC_FEATURES_LENGTH))
+        decoder_inputs = Input(shape=(None, len(settings.CHARACTER_SET)))
+        #encoder_inputs = self.model.get_layer("encoder_input")
+        #decoder_inputs = self.model.get_layer("decoder_input")
         decoder_lstm1_layer = self.model.get_layer("decoder_lstm1_layer")
         decoder_lstm2_layer = self.model.get_layer("decoder_lstm_2layer")
         decoder_dense = self.model.get_layer("decoder_dense")
