@@ -37,7 +37,7 @@ def get_decoder_outputs(target_length, encoder_states, decoder_inputs, latent_di
                                     return_state=True,
                                     kernel_constraint=None,
                                     kernel_regularizer=None,
-                                    name="decoder_lstm2_layer")
+                                    name="decoder_lstm2layer")
 
     decoder_outputs, _, _ = decoder_lstm2_layer(decoder_lstm1)
     return decoder_outputs
