@@ -7,3 +7,4 @@ from .seq2seq_with_attention import *
 from .train_seq2seq_model import *
 from .model_callback import *
 from .train_model import Seq2SeqModel
+from .sample_inference import Inference

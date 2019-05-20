@@ -20,7 +20,7 @@ ENCODER_INPUT_MIN_VALUES_PATH = "./normalization/min_values.pkl"
 ENCODER_INPUT_MAX_VALUES_PATH = "./normalization/max_values.pkl"
 NORMALIZED_ENCODER_INPUT_PATH = "./normalization/encoder_input.pkl"
 TRAINED_MODELS_PATH = "./trained_models/"
-ENCODER_STATES_PATH= "./trained_models/"
+ENCODER_STATES_PATH= "./trained_models/encoder_states_"
 MODEL_HISTORY_PLOTS = "./trained_models/traninng_history/"
 
 DATASET_SPLIT_PATH = "./dataset_split/"

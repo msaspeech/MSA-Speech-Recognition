@@ -31,7 +31,7 @@ class ModelSaver(Callback):
         uploaded.Upload()
 
         # Saving encoder states
-        path = ENCODER_STATES_PATH+model_title+"_encoder_states.pkl"
+        path = ENCODER_STATES_PATH+model_title+".pkl"
         encoder_states = [self.encoder_states]
         generate_pickle_file(encoder_states, path)
 

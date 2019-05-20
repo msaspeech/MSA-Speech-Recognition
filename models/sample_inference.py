@@ -1,5 +1,5 @@
 import numpy as np
-from utils import convert_to_int, convert_to_char, decode_transcript
+from utils import convert_to_int, convert_to_char, decode_transcript, load_pickle_data
 from tensorflow.python.keras import models
 from tensorflow.python.keras import Model
 from tensorflow.python.keras.layers import Input
@@ -7,12 +7,13 @@ from etc import settings
 
 
 class Inference():
-    def __init__(self, model_path, encoder_states, latent_dim):
+    def __init__(self, model_path, encoder_states_path, latent_dim, word_level=False):
         self.model = models.load_model(model_path)
-        self.encoder_states = encoder_states
+        self.encoder_states = load_pickle_data(encoder_states_path)[0]
         self.latent_dim = latent_dim
-        self.encoder_model, self.decoder_model = self._get_encoder_decoder_model_baseline()
         self.character_set = settings.CHARACTER_SET
+        self.word_level = word_level
+        self.encoder_model, self.decoder_model = self._get_encoder_decoder_model_baseline()
 
     def _get_encoder_decoder_model_baseline(self):
         # Getting layers after training (updated weights)
