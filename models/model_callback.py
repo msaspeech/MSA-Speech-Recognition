@@ -1,14 +1,16 @@
 from tensorflow.python.keras.callbacks import Callback, History
 import matplotlib.pyplot as plt
-from etc import MODEL_HISTORY_PLOTS
+from etc import MODEL_HISTORY_PLOTS, ENCODER_STATES_PATH
+from utils import generate_pickle_file
 
 
 class ModelSaver(Callback):
 
-    def __init__(self, model_name, model_path, drive_instance):
+    def __init__(self, model_name, model_path, encoder_states, drive_instance):
         super().__init__()
         self.model_name = model_name
         self.model_path = model_path
+        self.encoder_states = encoder_states
         self.drive_instance = drive_instance
         self.history = History()
 
@@ -27,6 +29,10 @@ class ModelSaver(Callback):
         uploaded = self.drive_instance.CreateFile({model_title: self.model_name, "parents": [{"kind": "drive#fileLink", "id": parent_directory_id}]})
         uploaded.SetContentFile(self.model_path)
         uploaded.Upload()
+
+        # Saving encoder states
+        path = ENCODER_STATES_PATH+model_title+"_encoder_states.pkl"
+        generate_pickle_file(self.encoder_states, path)
 
         #Model saving
 
