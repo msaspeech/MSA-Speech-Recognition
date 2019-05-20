@@ -127,7 +127,7 @@ def upload_dataset(train_ratio=0.8, padding=False, word_level=False, partitions=
 
         _generate_spllited_encoder_input_data(train_audio,partitions=partitions)
         # train_encoder_input = _get_encoder_input_data(audio_data=train_audio)
-        _generate_spllited_encoder_input_data(test_audio, test=True)
+        _generate_spllited_encoder_input_data(test_audio, test=True,partitions=partitions)
 
         if word_level:
             distinct_words = get_distinct_words(transcripts=all_transcripts)
@@ -143,10 +143,12 @@ def upload_dataset(train_ratio=0.8, padding=False, word_level=False, partitions=
         generate_pickle_file(general_info, settings.DATASET_INFORMATION_PATH)
         generate_decoder_input_target(transcripts=train_transcripts,
                                       word_level=word_level,
+                                      partitions=partitions,
                                       fixed_size=False)
 
         generate_decoder_input_target(transcripts=test_transcripts,
                                       word_level=word_level,
+                                      partitions=partitions,
                                       fixed_size=False,
                                       test=True)
 

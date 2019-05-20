@@ -15,8 +15,7 @@ architecture = int(sys.argv[2])
 latent_dim = int(sys.argv[3])
 epochs = int(sys.argv[4])
 
-settings.DRIVE_INSTANCE = load_pickle_data(DRIVE_INSTANCE_PATH)
-upload_dataset(word_level=word_level)
+upload_dataset(word_level=word_level, partitions=16)
 model = Seq2SeqModel(latent_dim=latent_dim, epochs=epochs, model_architecture=1)
 model.train_model()
 

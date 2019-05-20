@@ -254,7 +254,7 @@ def _generate_fixed_size_character_input_target_data(transcripts, char_to_int, n
     return decoder_input_data, decoder_target_data
 
 
-def generate_decoder_input_target(transcripts, word_level=False, fixed_size=True, test=False):
+def generate_decoder_input_target(transcripts, word_level=False, fixed_size=True, test=False, partitions=8):
     """
     Wrapper for the _generate_input_target_data method.
     :return: 3D numpy Array, 3D numpy Array
@@ -269,7 +269,7 @@ def generate_decoder_input_target(transcripts, word_level=False, fixed_size=True
             print(word_to_int)
             # decoder_input, decoder_target = _generate_variable_size_word_input_target_data(transcripts=transcripts,
             #                                                                               words_to_int=word_to_int)
-            generate_variable_word_input_target_data(transcripts=transcripts, words_to_int=word_to_int, test=test)
+            generate_variable_word_input_target_data(transcripts=transcripts, words_to_int=word_to_int, partitions=partitions, test=test)
 
     else:
         # Character level recognition
@@ -278,6 +278,7 @@ def generate_decoder_input_target(transcripts, word_level=False, fixed_size=True
             char_to_int = convert_to_int(sorted(character_set))
             generate_variable_size_character_input_target_data(transcripts=transcripts,
                                                                char_to_int=char_to_int,
+                                                               partitions=partitions,
                                                                test=test)
 
         else:
