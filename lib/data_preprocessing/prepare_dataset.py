@@ -141,6 +141,7 @@ def upload_dataset(train_ratio=0.8, padding=False, word_level=False, partitions=
             settings.CHARACTER_SET = distinct_characters
 
         generate_pickle_file(general_info, settings.DATASET_INFORMATION_PATH)
+        generate_pickle_file(general_info, settings.DATASET_INFERENCE_INFORMATION_PATH)
         generate_decoder_input_target(transcripts=train_transcripts,
                                       word_level=word_level,
                                       partitions=partitions,
