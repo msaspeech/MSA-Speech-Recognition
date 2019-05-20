@@ -50,7 +50,7 @@ def train_bidirectional_baseline_seq2seq_model(mfcc_features, target_length, lat
                                         latent_dim=latent_dim)
 
     # Decoder training, using 'encoder_states' as initial state.
-    decoder_inputs = Input(shape=(None, target_length), name="decoder_inputs")
+    decoder_inputs = Input(shape=(None, target_length), name="decoder_input")
     decoder_outputs = decoder_for_bidirectional_encoder(target_length=target_length,
                                           encoder_states=encoder_states,
                                           decoder_inputs=decoder_inputs,
