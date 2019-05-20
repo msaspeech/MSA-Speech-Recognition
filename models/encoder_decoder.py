@@ -1,5 +1,5 @@
-from tensorflow.python.keras.layers import CuDNNLSTM, Bidirectional, Concatenate, LSTM
-
+#from tensorflow.python.keras.layers import CuDNNLSTM, Bidirectional, Concatenate, LSTM
+from keras.layers import CuDNNLSTM, Bidirectional, Concatenate, LSTM
 
 def get_encoder_states(mfcc_features, encoder_inputs, latent_dim, return_sequences=False):
     encoder = CuDNNLSTM(latent_dim,

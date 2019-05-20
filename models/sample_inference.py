@@ -2,9 +2,9 @@ import numpy as np
 from utils import convert_to_int, convert_to_char, decode_transcript, load_pickle_data
 from tensorflow.python.keras import models
 from tensorflow.python.keras import Model
-#from tensorflow.python.keras.layers import Input
+from tensorflow.python.keras.layers import Input
 from etc import settings
-from keras.layers import Input
+#from keras.layers import Input
 
 class Inference():
     def __init__(self, model_path, encoder_states_path, latent_dim, word_level=False):
@@ -22,7 +22,7 @@ class Inference():
         # Getting layers after training (updated weights)
         encoder_inputs = self.model.get_layer("encoder_input")
         # TODO : REPLACE DECODER_INPUTS BY DECODER_INPUT WHEN GENERATING MODEL
-        decoder_inputs = self.model.get_layer("decoder_inputs")
+        decoder_inputs = self.model.get_layer("decoder_input")
         # TODO : REPLACE DECODER_LSTM_2LAYER BY DECODER_LSTM2_LAYER WHEN GENERATING MODEL
         decoder_lstm1_layer = self.model.get_layer("decoder_lstm1_layer")
         decoder_lstm2_layer = self.model.get_layer("decoder_lstm_2layer")

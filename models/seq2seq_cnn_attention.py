@@ -1,5 +1,7 @@
-from tensorflow.python.keras import Model
-from tensorflow.python.keras.layers import Dense, Input, Dropout, Concatenate
+#from tensorflow.python.keras import Model
+#from tensorflow.python.keras.layers import Dense, Input, Dropout, Concatenate
+from keras.layers import Dense, Input, Dropout, Concatenate
+from keras import Model
 from .encoder_decoder import get_encoder_states, get_decoder_outputs, encoder_bilstm, decoder_for_bidirectional_encoder
 from .layers import get_cnn_model
 from .layers import AttentionLayer
