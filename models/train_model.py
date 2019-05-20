@@ -73,7 +73,7 @@ class Seq2SeqModel():
 
         if self.data_generation:
             #generated_data = self._generate_timestep_dict(encoder_input_data, decoder_input_data, decoder_target_data)
-            history = self.model.fit_generator(self.split_data_generator_dict_bis(),
+            history = self.model.fit_generator(self.split_data_generator_dict(),
                                                steps_per_epoch=settings.TOTAL_SAMPLES_NUMBER,
                                                epochs=self.epochs,
                                                callbacks=[model_saver])
@@ -134,7 +134,6 @@ class Seq2SeqModel():
         data = self.get_data(audio_files[0], transcript_files[0])
         while True:
                 #retrieving data
-
             pair_key = random.choice(list(data.keys()))
             output = data[pair_key]
             encoder_x = []
@@ -164,21 +163,22 @@ class Seq2SeqModel():
                 #retrieving data
 
                 data = self.get_data(audio_file, transcript_files[i])
-                pair_key = random.choice(list(data.keys()))
-                output = data[pair_key]
-                encoder_x = []
-                decoder_x = []
-                decoder_y = []
-                for element in output:
-                    encoder_x.append(element[0][0])
-                    decoder_x.append(element[0][1])
-                    decoder_y.append(element[1])
+                for pair_key in data:
+                    #pair_key = random.choice(list(d.keys()))
+                    output = data[pair_key]
+                    encoder_x = []
+                    decoder_x = []
+                    decoder_y = []
+                    for element in output:
+                        encoder_x.append(element[0][0])
+                        decoder_x.append(element[0][1])
+                        decoder_y.append(element[1])
 
-                encoder_x = np.array(encoder_x)
-                decoder_x = np.array(decoder_x)
-                decoder_y = np.array(decoder_y)
+                    encoder_x = np.array(encoder_x)
+                    decoder_x = np.array(decoder_x)
+                    decoder_y = np.array(decoder_y)
 
-                yield [encoder_x, decoder_x], decoder_y
+                    yield [encoder_x, decoder_x], decoder_y
 
     def _data_generator_dict(self, data):
 

@@ -15,7 +15,7 @@ latent_dim = 512
 epochs = 100
 
 settings.DRIVE_INSTANCE = load_pickle_data(DRIVE_INSTANCE_PATH)
-upload_dataset(word_level=word_level)
+upload_dataset(word_level=word_level,partitions=16)
 model = Seq2SeqModel(latent_dim=latent_dim, epochs=epochs, model_architecture=1)
 model.train_model()
 
