@@ -21,7 +21,7 @@ def train_attention_seq2seq_model(mfcc_features, target_length, latent_dim):
                                                          return_sequences=True)
 
     # Decoder training, using 'encoder_states' as initial state.
-    decoder_inputs = Input(shape=(None, target_length), name="decoder_inputs")
+    decoder_inputs = Input(shape=(None, target_length), name="decoder_input")
     decoder_outputs = get_decoder_outputs(target_length=target_length,
                                           encoder_states=encoder_states,
                                           decoder_inputs=decoder_inputs,
