@@ -25,7 +25,7 @@ class Inference():
         decoder_inputs = self.model.get_layer("decoder_inputs")
         # TODO : REPLACE DECODER_LSTM_2LAYER BY DECODER_LSTM2_LAYER WHEN GENERATING MODEL
         decoder_lstm1_layer = self.model.get_layer("decoder_lstm1_layer")
-        decoder_lstm2_layer = self.model.get_layer("decoder_lstm_2_layer")
+        decoder_lstm2_layer = self.model.get_layer("decoder_lstm_2layer")
         decoder_dense = self.model.get_layer("decoder_dense")
 
         # Creating encoder model
