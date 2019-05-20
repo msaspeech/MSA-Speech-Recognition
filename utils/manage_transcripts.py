@@ -1,5 +1,3 @@
-from .utils import generate_pickle_file
-from etc import DISTINCT_WORDS_PATH
 
 def get_character_set(transcripts):
     """
@@ -56,7 +54,6 @@ def get_distinct_words(transcripts):
             if word not in distinct_words:
                 distinct_words.append(word)
 
-    generate_pickle_file(data=distinct_words, file_path=DISTINCT_WORDS_PATH)
     return distinct_words
 
 

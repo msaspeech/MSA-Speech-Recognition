@@ -159,12 +159,11 @@ def upload_dataset(train_ratio=0.8, padding=False, word_level=False, partitions=
         if word_level:
             #distinct_words = load_pickle_data(settings.DISTINCT_WORDS_PATH)
             settings.WORD_SET = general_info[2]
+            print(settings.WORD_SET)
         else:
             #distinct_characters = load_pickle_data(settings.DISTINCT_CHARACTERS_PATH)
             settings.CHARACTER_SET = general_info[2]
-
-    print(len(settings.CHARACTER_SET))
-    print(sorted(settings.CHARACTER_SET))
+            print(settings.CHARACTER_SET)
 
 
     # return (train_decoder_input, train_decoder_target), \

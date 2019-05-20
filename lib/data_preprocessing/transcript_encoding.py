@@ -1,6 +1,5 @@
 from utils import convert_to_int, file_exists, load_pickle_data, get_character_set
 from utils import get_distinct_words, convert_words_to_int, generate_pickle_file
-from etc import DISTINCT_WORDS_PATH
 from etc import settings
 from utils import get_longest_sample_size
 import numpy as np
@@ -186,6 +185,7 @@ def generate_variable_word_input_target_data(transcripts, words_to_int, partitio
     gc.collect()
 
     for num_dataset, transcript_set in enumerate(transcript_sets):
+        # Init numpy array
         num_transcripts = len(transcript_set)
         decoder_input_data = np.array([None] * num_transcripts)
         decoder_target_data = np.array([None] * num_transcripts)
@@ -194,8 +194,8 @@ def generate_variable_word_input_target_data(transcripts, words_to_int, partitio
             # Encode each transcript
             encoded_transcript_input = []
             encoded_transcript_target = []
-
-            for index, word in enumerate(transcript.split()):
+            list_words = transcript.split()
+            for index, word in enumerate(list_words):
                 # Encode each character
                 encoded_word = [0] * len(words_to_int)
                 encoded_word[words_to_int[word]] = 1
@@ -206,7 +206,8 @@ def generate_variable_word_input_target_data(transcripts, words_to_int, partitio
                 if index > 0:
                     encoded_transcript_target[index - 1] = encoded_word
 
-            decoder_input_data[i] = encoded_transcript_input.pop()
+            del encoded_transcript_input[-1]
+            decoder_input_data[i] = encoded_transcript_input
             encoded_transcript_target.pop()
             decoder_target_data[i] = encoded_transcript_target
         if not test:
@@ -265,11 +266,13 @@ def generate_decoder_input_target(transcripts, word_level=False, fixed_size=True
             # Word level recognition
             distinct_words = settings.WORD_SET
             word_to_int, _ = convert_words_to_int(distinct_words=distinct_words)
-            print(len(word_to_int))
             print(word_to_int)
             # decoder_input, decoder_target = _generate_variable_size_word_input_target_data(transcripts=transcripts,
             #                                                                               words_to_int=word_to_int)
-            generate_variable_word_input_target_data(transcripts=transcripts, words_to_int=word_to_int, partitions=partitions, test=test)
+            generate_variable_word_input_target_data(transcripts=transcripts,
+                                                     words_to_int=word_to_int,
+                                                     partitions=partitions,
+                                                     test=test)
 
     else:
         # Character level recognition
