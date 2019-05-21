@@ -31,6 +31,7 @@ class Inference():
         encoder_inputs = self.model.get_layer("encoder_input").input
         [h, c] = self.model.get_layer("encoder_lstm_layer").output[1], self.model.get_layer("encoder_input").output[2]
         self.encoder_states = [h, c]
+        print(self.encoder_states)
         decoder_inputs = self.model.get_layer("decoder_input").input
         decoder_lstm1_layer = self.model.get_layer("decoder_lstm1_layer")
         decoder_lstm2_layer = self.model.get_layer("decoder_lstm2_layer")
