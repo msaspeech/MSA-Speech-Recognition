@@ -74,8 +74,8 @@ class Inference():
         :return: String
         """
         # Getting converters
-        char_to_int = convert_to_int(settings.CHARACTER_SET)
-        int_to_char = convert_to_char(settings.CHARACTER_SET)
+        char_to_int = convert_to_int(sorted(settings.CHARACTER_SET))
+        int_to_char = convert_to_char(sorted(settings.CHARACTER_SET))
 
         print(int_to_char)
 

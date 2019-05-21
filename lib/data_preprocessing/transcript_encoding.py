@@ -265,7 +265,7 @@ def generate_decoder_input_target(transcripts, word_level=False, fixed_size=True
         if not fixed_size:
             # Word level recognition
             distinct_words = settings.WORD_SET
-            word_to_int, _ = convert_words_to_int(distinct_words=distinct_words)
+            word_to_int, _ = convert_words_to_int(distinct_words=sorted(distinct_words))
             print(word_to_int)
             # decoder_input, decoder_target = _generate_variable_size_word_input_target_data(transcripts=transcripts,
             #                                                                               words_to_int=word_to_int)
