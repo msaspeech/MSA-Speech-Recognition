@@ -1,5 +1,5 @@
 import numpy as np
-from utils import convert_to_int, convert_to_char, decode_transcript, load_pickle_data
+from utils import convert_to_int, convert_int_to_char, decode_transcript, load_pickle_data
 from tensorflow.python.keras import models
 from tensorflow.python.keras import Model
 #import tensorflow.python.keras.backend as K
@@ -75,8 +75,8 @@ class Inference():
         """
         # Getting converters
         char_to_int = convert_to_int(sorted(settings.CHARACTER_SET))
-        int_to_char = convert_to_char(sorted(settings.CHARACTER_SET))
-
+        int_to_char = convert_int_to_char(char_to_int)
+        print(char_to_int)
         print(int_to_char)
 
         # Returns the encoded audio_sequence

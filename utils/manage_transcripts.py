@@ -46,6 +46,11 @@ def convert_to_char(character_set):
 
     return int_to_char
 
+def convert_int_to_char(char_to_int):
+    int_to_char = {}
+    for key, value in char_to_int.items():
+        int_to_char[value] = key
+    return int_to_char
 
 def get_distinct_words(transcripts):
     distinct_words = []
