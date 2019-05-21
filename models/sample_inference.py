@@ -32,7 +32,7 @@ class Inference():
 
         # Creating encoder model
         #encoder_model = Model(encoder_inputs, self.encoder_states)
-        K.function([encoder_inputs, self.encoder_states])
+        K.function([encoder_inputs], [self.encoder_states])
 
         # Input shapes for 1st LSTM layer
         decoder_state_input_h = Input(shape=(self.latent_dim,))
