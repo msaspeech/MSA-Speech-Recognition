@@ -21,8 +21,8 @@ epochs = 100
 architecture_path = TRAINED_MODELS_PATH+"architecture"+str(architecture)+".h5"
 inference = Inference(model_path=architecture_path, latent_dim=350)
 
-#sample = AudioInput("test.wav", "")
-#audio_sequence = sample.mfcc.transpose()
+sample = AudioInput("test.wav", "")
+audio_sequence = sample.mfcc.transpose()
 #inference.predict_sequence(audio_sequence)
 
 
