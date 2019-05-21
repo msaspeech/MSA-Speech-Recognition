@@ -68,8 +68,9 @@ class Seq2SeqModel():
                                                                                                   latent_dim=self.latent_dim)
 
     def train_model(self):
+        print("ENCODER STATES")
+        print(self.encoder_states)
         self.model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
-        print(self.model)
         model_saver = ModelSaver(model_name=self.model_name, model_path=self.model_path,
                                  encoder_states=self.encoder_states,
                                  drive_instance=settings.DRIVE_INSTANCE)
