@@ -5,6 +5,7 @@ from utils import load_pickle_data
 from etc import DRIVE_INSTANCE_PATH, ENCODER_STATES_PATH, TRAINED_MODELS_PATH
 from etc import settings
 from lib import AudioInput
+import numpy as np
 
 settings.DRIVE_INSTANCE = load_pickle_data(DRIVE_INSTANCE_PATH)
 
@@ -23,6 +24,8 @@ inference = Inference(model_path=architecture_path, latent_dim=350)
 
 sample = AudioInput("test.wav", "")
 audio_sequence = sample.mfcc.transpose()
+audio_sequence = np.array(audio_sequence)
+
 transcript = inference.decode_audio_sequence_character_based(audio_sequence)
 print(transcript)
 
