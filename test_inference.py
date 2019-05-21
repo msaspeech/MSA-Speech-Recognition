@@ -7,7 +7,7 @@ from etc import settings
 from lib import AudioInput
 import numpy as np
 
-settings.DRIVE_INSTANCE = load_pickle_data(DRIVE_INSTANCE_PATH)
+#settings.DRIVE_INSTANCE = load_pickle_data(DRIVE_INSTANCE_PATH)
 
 word_level = 0
 architecture = 1
@@ -23,8 +23,8 @@ architecture_path = TRAINED_MODELS_PATH+"architecture"+str(architecture)+".h5"
 inference = Inference(model_path=architecture_path, latent_dim=350)
 
 sample = AudioInput("test.wav", "")
-audio_sequence = sample.mfcc.transpose()
-audio_sequence = np.array(0,audio_sequence)
+audio = [sample.mfcc.transpose()]
+audio_sequence = np.array(audio)
 print(audio_sequence.shape)
 transcript = inference.decode_audio_sequence_character_based(audio_sequence)
 print(transcript)
