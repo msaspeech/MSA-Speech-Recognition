@@ -29,7 +29,8 @@ class Inference():
         #encoder_inputs = Input(shape=(None, settings.MFCC_FEATURES_LENGTH))
         #decoder_inputs = Input(shape=(None, len(settings.CHARACTER_SET)))
         encoder_inputs = self.model.get_layer("encoder_input").input
-        [h, c] = self.model.get_layer("encoder_lstm_layer").output[1], self.model.get_layer("encoder_input").output[2]
+        print(self.model.get_layer("encoder_lstm_layer").output[0].shape)
+        [h, c] = self.model.get_layer("encoder_lstm_layer").output[0][1], self.model.get_layer("encoder_input").output[0][2]
         self.encoder_states = [h, c]
         print(self.encoder_states)
         decoder_inputs = self.model.get_layer("decoder_input").input
@@ -40,7 +41,7 @@ class Inference():
         # getting_encoder_states
 
         # Creating encoder model
-        self.encoder_states = get_encoder_states(settings.MFCC_FEATURES_LENGTH, encoder_inputs=encoder_inputs, latent_dim=self.latent_dim)
+        #self.encoder_states = get_encoder_states(settings.MFCC_FEATURES_LENGTH, encoder_inputs=encoder_inputs, latent_dim=self.latent_dim)
         print(self.encoder_states)
         encoder_model = Model(encoder_inputs, self.encoder_states)
         #encoder_model = K.function([encoder_inputs], [self.encoder_states])
