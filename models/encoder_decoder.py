@@ -9,7 +9,8 @@ def get_encoder_states(mfcc_features, encoder_inputs, latent_dim, return_sequenc
                         return_state=True,
                         kernel_constraint=None,
                         kernel_regularizer=None,
-                        recurrent_initializer='glorot_uniform')
+                        recurrent_initializer='glorot_uniform',
+                        name="encoder_lstm_layer")
     # 'encoder_outputs' are ignored and only states are kept.
     encoder_outputs, state_h, state_c = encoder(encoder_inputs)
     encoder_states = [state_h, state_c]

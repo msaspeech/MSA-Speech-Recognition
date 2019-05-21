@@ -8,7 +8,10 @@ from etc import settings
 #from keras.layers import Input
 import keras.backend as K
 from .encoder_decoder import get_encoder_states
+
+
 class Inference():
+
     def __init__(self, model_path, encoder_states_path, latent_dim, word_level=False):
         self.model = models.load_model(model_path)
         self.encoder_states = None
@@ -26,6 +29,8 @@ class Inference():
         #encoder_inputs = Input(shape=(None, settings.MFCC_FEATURES_LENGTH))
         #decoder_inputs = Input(shape=(None, len(settings.CHARACTER_SET)))
         encoder_inputs = self.model.get_layer("encoder_input").input
+        [h, c] = self.model.get_layer("encoder_lstm_layer").output[1], self.model.get_layer("encoder_input").output[2]
+        self.encoder_states = [h, c]
         decoder_inputs = self.model.get_layer("decoder_input").input
         decoder_lstm1_layer = self.model.get_layer("decoder_lstm1_layer")
         decoder_lstm2_layer = self.model.get_layer("decoder_lstm2_layer")
@@ -34,7 +39,8 @@ class Inference():
         # getting_encoder_states
 
         # Creating encoder model
-        self.encoder_states = get_encoder_states(settings.MFCC_FEATURES_LENGTH, encoder_inputs=encoder_inputs, latent_dim=self.latent_dim)
+        #self.encoder_states = get_encoder_states(settings.MFCC_FEATURES_LENGTH, encoder_inputs=encoder_inputs, latent_dim=self.latent_dim)
+
         encoder_model = Model(encoder_inputs, self.encoder_states)
         #encoder_model = K.function([encoder_inputs], [self.encoder_states])
 
@@ -69,9 +75,11 @@ class Inference():
         char_to_int = convert_to_int(settings.CHARACTER_SET)
         int_to_char = convert_to_char(settings.CHARACTER_SET)
 
+        # Returns the encoded audio_sequence
         states_value = self.encoder_model.predict(audio_sequence)
 
         num_decoder_tokens = len(char_to_int)
+        #target_character = np.zeros((1, 1, num_decoder_tokens))
         target_sequence = np.zeros((1, 1, num_decoder_tokens))
 
         # Populate the first character of target sequence with the start character.
@@ -85,7 +93,7 @@ class Inference():
                 [target_sequence] + states_value)
 
             sampled_token_index = np.argmax(output_tokens[0, -1, :])
-            sampled_char = char_to_int[sampled_token_index]
+            sampled_char = int_to_char[sampled_token_index]
             decoded_sentence += sampled_char
 
             if sampled_char == "\n":
@@ -93,6 +101,7 @@ class Inference():
                 stop_condition = True
             else:
                 # updating target sequence vector
+                target_sequence = np.zeros((1, 1, num_decoder_tokens))
                 target_sequence[0, 0, sampled_token_index] = 1
 
             states_values = [h, c]
