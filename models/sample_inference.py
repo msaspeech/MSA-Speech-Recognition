@@ -2,6 +2,7 @@ import numpy as np
 from utils import convert_to_int, convert_to_char, decode_transcript, load_pickle_data
 from tensorflow.python.keras import models
 from tensorflow.python.keras import Model
+import tensorflow.python.keras.backend as K
 from tensorflow.python.keras.layers import Input
 from etc import settings
 #from keras.layers import Input
@@ -23,14 +24,15 @@ class Inference():
 
         #encoder_inputs = Input(shape=(None, settings.MFCC_FEATURES_LENGTH))
         #decoder_inputs = Input(shape=(None, len(settings.CHARACTER_SET)))
-        encoder_inputs = self.model.get_layer("encoder_input")
-        decoder_inputs = self.model.get_layer("decoder_input")
+        encoder_inputs = self.model.get_layer("encoder_input").input
+        decoder_inputs = self.model.get_layer("decoder_input").input
         decoder_lstm1_layer = self.model.get_layer("decoder_lstm1_layer")
         decoder_lstm2_layer = self.model.get_layer("decoder_lstm2_layer")
         decoder_dense = self.model.get_layer("decoder_dense")
 
         # Creating encoder model
-        encoder_model = Model(encoder_inputs, self.encoder_states)
+        #encoder_model = Model(encoder_inputs, self.encoder_states)
+        K.function(encoder_inputs, self.encoder_states)
 
         # Input shapes for 1st LSTM layer
         decoder_state_input_h = Input(shape=(self.latent_dim,))
