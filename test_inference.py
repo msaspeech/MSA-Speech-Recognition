@@ -23,7 +23,7 @@ inference = Inference(model_path=architecture_path, latent_dim=350)
 
 sample = AudioInput("test.wav", "")
 audio_sequence = sample.mfcc.transpose()
-#inference.predict_sequence(audio_sequence)
-
+transcript = inference._decode_audio_sequence_character_based(audio_sequence)
+print(transcript)
 
 # accuracy = measure_test_accuracy(test_decoder_input, model, encoder_states, latent_dim=512)

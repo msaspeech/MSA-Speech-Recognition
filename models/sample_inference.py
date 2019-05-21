@@ -64,7 +64,7 @@ class Inference():
 
         return encoder_model, decoder_model
 
-    def _decode_audio_sequence_character_based(self, audio_sequence):
+    def decode_audio_sequence_character_based(self, audio_sequence):
         """
         Decodes audio sequence into a transcript using encoder_model and decoder_model generated from training
         :param audio_sequence: 2D numpy array
@@ -77,16 +77,18 @@ class Inference():
         char_to_int = convert_to_int(settings.CHARACTER_SET)
         int_to_char = convert_to_char(settings.CHARACTER_SET)
 
+        print(int_to_char)
+
         # Returns the encoded audio_sequence
         states_value = self.encoder_model.predict(audio_sequence)
-
+        print("ENCODER PREDICTION DONE")
         num_decoder_tokens = len(char_to_int)
         #target_character = np.zeros((1, 1, num_decoder_tokens))
         target_sequence = np.zeros((1, 1, num_decoder_tokens))
 
         # Populate the first character of target sequence with the start character.
         target_sequence[0, 0, char_to_int['\t']] = 1.
-
+        print(target_sequence)
         stop_condition = False
         decoded_sentence = ''
 
@@ -94,8 +96,10 @@ class Inference():
             output_tokens, h, c = self.decoder_model.predict(
                 [target_sequence] + states_value)
 
+            print("DECODER PREDICTION DONE")
             sampled_token_index = np.argmax(output_tokens[0, -1, :])
             sampled_char = int_to_char[sampled_token_index]
+            print(sampled_char)
             decoded_sentence += sampled_char
 
             if sampled_char == "\n":
