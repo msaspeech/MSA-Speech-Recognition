@@ -19,11 +19,9 @@ class ModelSaver(Callback):
         model_title = self.model_name.split(".h5")[0]
 
         # Saving encoder states
-        path = ENCODER_STATES_PATH + model_title + ".pkl"
-        print("ENCODER STATES")
-        print(self.encoder_states)
-        encoder_states = [self.encoder_states]
-        generate_pickle_file(encoder_states, path)
+        #path = ENCODER_STATES_PATH + model_title + ".pkl"
+        #encoder_states = [self.encoder_states]
+        #generate_pickle_file(encoder_states, path)
 
         parent_directory_id = '0B5fJkPjHLj3Jdkw5ZnFiY0lZV1U'
         file_list = self.drive_instance.ListFile({'q': "\'"+parent_directory_id+"\'"+" in parents  and trashed=false"}).GetList()

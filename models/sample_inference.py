@@ -7,6 +7,7 @@ from tensorflow.python.keras.layers import Input
 from etc import settings
 #from keras.layers import Input
 import keras.backend as K
+from .encoder_decoder import get_encoder_states
 class Inference():
     def __init__(self, model_path, encoder_states_path, latent_dim, word_level=False):
         self.model = models.load_model(model_path)
@@ -30,7 +31,10 @@ class Inference():
         decoder_lstm2_layer = self.model.get_layer("decoder_lstm2_layer")
         decoder_dense = self.model.get_layer("decoder_dense")
 
+        # getting_encoder_states
+
         # Creating encoder model
+        self.encoder_states = get_encoder_states(settings.MFCC_FEATURES_LENGTH, encoder_inputs=encoder_inputs, latent_dim=self.latent_dim)
         #encoder_model = Model(encoder_inputs, self.encoder_states)
         K.function([encoder_inputs], [self.encoder_states])
 
