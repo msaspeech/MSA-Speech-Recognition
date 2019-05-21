@@ -41,7 +41,7 @@ class Inference():
         # getting_encoder_states
 
         # Creating encoder model
-        #self.encoder_states = get_encoder_states(settings.MFCC_FEATURES_LENGTH, encoder_inputs=encoder_inputs, latent_dim=self.latent_dim)
+        self.encoder_states = get_encoder_states(settings.MFCC_FEATURES_LENGTH, encoder_inputs=encoder_inputs, latent_dim=self.latent_dim)
         #print(self.encoder_states)
         encoder_model = Model(encoder_inputs, self.encoder_states)
         #encoder_model = K.function([encoder_inputs], [self.encoder_states])
