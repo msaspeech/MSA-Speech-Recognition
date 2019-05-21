@@ -2,11 +2,11 @@ import numpy as np
 from utils import convert_to_int, convert_to_char, decode_transcript, load_pickle_data
 from tensorflow.python.keras import models
 from tensorflow.python.keras import Model
-import tensorflow.python.keras.backend as K
+#import tensorflow.python.keras.backend as K
 from tensorflow.python.keras.layers import Input
 from etc import settings
 #from keras.layers import Input
-
+import keras.backend as K
 class Inference():
     def __init__(self, model_path, encoder_states_path, latent_dim, word_level=False):
         self.model = models.load_model(model_path)
