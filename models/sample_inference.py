@@ -35,8 +35,8 @@ class Inference():
 
         # Creating encoder model
         self.encoder_states = get_encoder_states(settings.MFCC_FEATURES_LENGTH, encoder_inputs=encoder_inputs, latent_dim=self.latent_dim)
-        #encoder_model = Model(encoder_inputs, self.encoder_states)
-        encoder_model = K.function([encoder_inputs], [self.encoder_states])
+        encoder_model = Model(encoder_inputs, self.encoder_states)
+        #encoder_model = K.function([encoder_inputs], [self.encoder_states])
 
         # Input shapes for 1st LSTM layer
         decoder_state_input_h = Input(shape=(self.latent_dim,))
