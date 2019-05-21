@@ -11,7 +11,7 @@ from .encoder_decoder import get_encoder_states
 class Inference():
     def __init__(self, model_path, encoder_states_path, latent_dim, word_level=False):
         self.model = models.load_model(model_path)
-        self.encoder_states = load_pickle_data(encoder_states_path)[0]
+        self.encoder_states = None
         self.latent_dim = latent_dim
         general_info = load_pickle_data(settings.DATASET_INFERENCE_INFORMATION_PATH)
         settings.MFCC_FEATURES_LENGTH = general_info[0]
@@ -36,7 +36,7 @@ class Inference():
         # Creating encoder model
         self.encoder_states = get_encoder_states(settings.MFCC_FEATURES_LENGTH, encoder_inputs=encoder_inputs, latent_dim=self.latent_dim)
         #encoder_model = Model(encoder_inputs, self.encoder_states)
-        K.function([encoder_inputs], [self.encoder_states])
+        encoder_model = K.function([encoder_inputs], [self.encoder_states])
 
         # Input shapes for 1st LSTM layer
         decoder_state_input_h = Input(shape=(self.latent_dim,))
