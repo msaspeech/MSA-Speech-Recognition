@@ -2,9 +2,9 @@ import numpy as np
 from utils import convert_to_int, convert_to_char, decode_transcript, load_pickle_data
 from tensorflow.python.keras import models
 from tensorflow.python.keras import Model
-#from tensorflow.python.keras.layers import Input
+from tensorflow.python.keras.layers import Input
 from etc import settings
-from keras.layers import Input
+#from keras.layers import Input
 
 class Inference():
     def __init__(self, model_path, encoder_states_path, latent_dim, word_level=False):
