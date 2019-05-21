@@ -23,8 +23,8 @@ class Inference():
 
         #encoder_inputs = Input(shape=(None, settings.MFCC_FEATURES_LENGTH))
         #decoder_inputs = Input(shape=(None, len(settings.CHARACTER_SET)))
-        encoder_inputs = self.model.get_layer("encoder_input").input
-        decoder_inputs = self.model.get_layer("decoder_input").input
+        encoder_inputs = self.model.get_layer("encoder_input")
+        decoder_inputs = self.model.get_layer("decoder_input")
         decoder_lstm1_layer = self.model.get_layer("decoder_lstm1_layer")
         decoder_lstm2_layer = self.model.get_layer("decoder_lstm2_layer")
         decoder_dense = self.model.get_layer("decoder_dense")
