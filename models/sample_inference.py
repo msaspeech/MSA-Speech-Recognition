@@ -11,7 +11,6 @@ class Inference():
     def __init__(self, model_path, encoder_states_path, latent_dim, word_level=False):
         self.model = models.load_model(model_path)
         self.encoder_states = load_pickle_data(encoder_states_path)[0]
-        print(self.encoder_states)
         self.latent_dim = latent_dim
         general_info = load_pickle_data(settings.DATASET_INFERENCE_INFORMATION_PATH)
         settings.MFCC_FEATURES_LENGTH = general_info[0]

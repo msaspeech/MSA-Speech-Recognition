@@ -74,7 +74,6 @@ class Seq2SeqModel():
                                  drive_instance=settings.DRIVE_INSTANCE)
 
         if self.data_generation:
-            #generated_data = self._generate_timestep_dict(encoder_input_data, decoder_input_data, decoder_target_data)
             history = self.model.fit_generator(self.split_data_generator_dict(),
                                                steps_per_epoch=settings.TOTAL_SAMPLES_NUMBER,
                                                epochs=self.epochs,
