@@ -33,6 +33,7 @@ class Seq2SeqModel():
     def _load_model(self):
         if file_exists(self.model_path):
             self.model = models.load_model(self.model_path)
+            print(self.model.summary())
         else:
             if self.model_architecture == 1:
                 self.model, self.encoder_states = train_baseline_seq2seq_model(mfcc_features=self.mfcc_features_length,

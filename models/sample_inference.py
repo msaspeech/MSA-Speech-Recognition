@@ -12,7 +12,7 @@ from .encoder_decoder import get_encoder_states
 
 class Inference():
 
-    def __init__(self, model_path, encoder_states_path, latent_dim, word_level=False):
+    def __init__(self, model_path, latent_dim, word_level=False):
         self.model = models.load_model(model_path)
         self.encoder_states = None
         self.latent_dim = latent_dim
@@ -109,20 +109,6 @@ class Inference():
 
         return decoded_sentence
 
-    def predict_sequence(self, audio_sequence, model, encoder_states, latent_dim):
-        """
-         Decodes an audio sequence to a transcript
-        :param audio_sequence: Numpy 2D array
-        :param model: Keras Model after training (updated weights)
-        :param encoder_states: Tensorflow tensor
-        :param latent_dim: int
-        :return: String
-        """
-        encoder_model, decoder_model = self._get_encoder_decoder_model_baseline()
-
-        decoded_sequence = self._decode_audio_sequence_character_based()
-
-        return decoded_sequence
 
     def measure_test_accuracy(self, test_data, transcripts, model, encoder_states, latent_dim):
         test_size = len(test_data)
