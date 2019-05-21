@@ -30,7 +30,7 @@ class Inference():
         #decoder_inputs = Input(shape=(None, len(settings.CHARACTER_SET)))
         encoder_inputs = self.model.get_layer("encoder_input").input
         #print(self.model.get_layer("encoder_lstm_layer").output[0])
-        [h, c] = self.model.get_layer("encoder_lstm_layer").output[0][1], self.model.get_layer("encoder_lstm_layer").output[0][2]
+        [h, c] = self.model.get_layer("encoder_lstm_layer").output[0], self.model.get_layer("encoder_lstm_layer").output[1]
         self.encoder_states = [h, c]
         #print(self.encoder_states)
         decoder_inputs = self.model.get_layer("decoder_input").input
