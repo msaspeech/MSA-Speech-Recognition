@@ -3,7 +3,6 @@ from tensorflow.python.keras.layers import CuDNNLSTM, Bidirectional, Concatenate
 
 def get_encoder_states(mfcc_features, encoder_inputs, latent_dim, return_sequences=False):
     encoder = CuDNNLSTM(latent_dim,
-                        input_shape=(None, mfcc_features),
                         stateful=False,
                         return_sequences=return_sequences,
                         return_state=True,
@@ -23,7 +22,6 @@ def get_encoder_states(mfcc_features, encoder_inputs, latent_dim, return_sequenc
 def get_decoder_outputs(target_length, encoder_states, decoder_inputs, latent_dim):
     # First Layer
     decoder_lstm1_layer = CuDNNLSTM(latent_dim,
-                                    input_shape=(None, target_length),
                                     return_sequences=True,
                                     return_state=True,
                                     kernel_constraint=None,

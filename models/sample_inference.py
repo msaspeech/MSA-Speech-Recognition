@@ -26,7 +26,8 @@ class Inference():
     def _get_encoder_decoder_model_baseline(self):
         # Getting layers after training (updated weights)
 
-        encoder_inputs = self.model.get_layer("encoder_input").input
+        encoder_inputs = Input(shape=(None, settings.MFCC_FEATURES_LENGTH))
+        #encoder_inputs = self.model.get_layer("encoder_input").input
         #[h, c] = self.model.get_layer("encoder_lstm_layer").output[0], self.model.get_layer("encoder_lstm_layer").output[1]
         #self.encoder_states = [h, c]
         self.encoder_states = get_encoder_states(mfcc_features=settings.MFCC_FEATURES_LENGTH, encoder_inputs=encoder_inputs, latent_dim=self.latent_dim)
