@@ -26,36 +26,27 @@ class Inference():
     def _get_encoder_decoder_model_baseline(self):
         # Getting layers after training (updated weights)
 
-        #encoder_inputs = Input(shape=(None, settings.MFCC_FEATURES_LENGTH))
-        #decoder_inputs = Input(shape=(None, len(settings.CHARACTER_SET)))
         encoder_inputs = self.model.get_layer("encoder_input").input
-        #print(self.model.get_layer("encoder_lstm_layer").output[0])
         [h, c] = self.model.get_layer("encoder_lstm_layer").output[0], self.model.get_layer("encoder_lstm_layer").output[1]
         self.encoder_states = [h, c]
-        #print(self.encoder_states)
         decoder_inputs = self.model.get_layer("decoder_input").input
         decoder_lstm1_layer = self.model.get_layer("decoder_lstm1_layer")
         decoder_lstm2_layer = self.model.get_layer("decoder_lstm2_layer")
         decoder_dense = self.model.get_layer("decoder_dense")
 
-        # getting_encoder_states
-
         # Creating encoder model
-        #self.encoder_states = get_encoder_states(settings.MFCC_FEATURES_LENGTH, encoder_inputs=encoder_inputs, latent_dim=self.latent_dim)
-        #print(self.encoder_states)
         encoder_model = Model(encoder_inputs, self.encoder_states)
-        #encoder_model = K.function([encoder_inputs], [self.encoder_states])
 
         # Input shapes for 1st LSTM layer
         decoder_state_input_h = Input(shape=(self.latent_dim,))
         decoder_state_input_c = Input(shape=(self.latent_dim,))
         decoder_states_inputs = [decoder_state_input_h, decoder_state_input_c]
 
-        decoder_lstm1 = decoder_lstm1_layer(decoder_inputs, initial_state=decoder_states_inputs)
+        decoder_lstm1, state_h, state_c = decoder_lstm1_layer(decoder_inputs, initial_state=decoder_states_inputs)
+        decoder_states = [state_h, state_c]
 
         # Outputs and states from final LSTM Layer
-        decoder_outputs, state_h, state_c = decoder_lstm2_layer(decoder_lstm1)
-        decoder_states = [state_h, state_c]
+        decoder_outputs = decoder_lstm2_layer(decoder_lstm1)
 
         decoder_outputs = decoder_dense(decoder_outputs)
         decoder_model = Model(
@@ -76,14 +67,11 @@ class Inference():
         # Getting converters
         char_to_int = convert_to_int(sorted(settings.CHARACTER_SET))
         int_to_char = convert_int_to_char(char_to_int)
-        print(char_to_int)
-        print(int_to_char)
 
         # Returns the encoded audio_sequence
         states_value = self.encoder_model.predict(audio_sequence)
         print("ENCODER PREDICTION DONE")
         num_decoder_tokens = len(char_to_int)
-        #target_character = np.zeros((1, 1, num_decoder_tokens))
         target_sequence = np.zeros((1, 1, num_decoder_tokens))
 
         # Populate the first character of target sequence with the start character.
@@ -95,7 +83,7 @@ class Inference():
         while not stop_condition:
             output_tokens, h, c = self.decoder_model.predict(
                 [target_sequence] + states_value)
-
+            states_values = [h, c]
             print("DECODER PREDICTION DONE")
             sampled_token_index = np.argmax(output_tokens[0, -1, :])
             sampled_char = int_to_char[sampled_token_index]
@@ -110,7 +98,7 @@ class Inference():
                 target_sequence = np.zeros((1, 1, num_decoder_tokens))
                 target_sequence[0, 0, sampled_token_index] = 1
 
-            states_values = [h, c]
+
 
         return decoded_sentence
 

@@ -25,24 +25,25 @@ def get_decoder_outputs(target_length, encoder_states, decoder_inputs, latent_di
     decoder_lstm1_layer = CuDNNLSTM(latent_dim,
                                     input_shape=(None, target_length),
                                     return_sequences=True,
-                                    return_state=False,
+                                    return_state=True,
                                     kernel_constraint=None,
                                     kernel_regularizer=None,
                                     name="decoder_lstm1_layer")
-    decoder_lstm1 = decoder_lstm1_layer(decoder_inputs, initial_state=encoder_states)
+    decoder_lstm1, state_h, state_c = decoder_lstm1_layer(decoder_inputs, initial_state=encoder_states)
+
+    #decoder_states = [state_h, state_c]
 
     # Second LSTM Layer
     decoder_lstm2_layer = CuDNNLSTM(latent_dim,
                                     stateful=False,
                                     return_sequences=True,
-                                    return_state=True,
+                                    return_state=False,
                                     kernel_constraint=None,
                                     kernel_regularizer=None,
                                     name="decoder_lstm2_layer")
 
-    decoder_outputs, _, _ = decoder_lstm2_layer(decoder_lstm1)
+    decoder_outputs = decoder_lstm2_layer(decoder_lstm1)
     return decoder_outputs
-
 
 def encoder_bilstm(mfcc_features, encoder_inputs, latent_dim, return_sequences=False):
     encoder = Bidirectional(CuDNNLSTM(latent_dim,
