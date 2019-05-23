@@ -81,8 +81,10 @@ class Inference():
         target_sequence[0, 0, char_to_int['\t']] = 1.
         print(target_sequence)
         stop_condition = False
+        t_force = ">hlA bkm yjtmE wzrA' xArjyp dwl Alxlyj wlbnAn wAl>rdn wmSr wtrkyA wwzyr AlxArjyp Al>myrky jwn kyry ywm Alxmys fy jdp"
         decoded_sentence = ''
         max_length = 200
+        i = 0
         while not stop_condition:
             output_tokens, h, c = self.decoder_model.predict(
                 [target_sequence] + states_value)
@@ -100,7 +102,8 @@ class Inference():
             else:
                 # updating target sequence vector
                 target_sequence = np.zeros((1, 1, num_decoder_tokens))
-                target_sequence[0, 0, sampled_token_index] = 1
+                target_sequence[0, 0, char_to_int[t_force[i]]] = 1
+                i += 1
 
 
 
