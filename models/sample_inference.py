@@ -86,7 +86,7 @@ class Inference():
         while not stop_condition:
             output_tokens, h, c = self.decoder_model.predict(
                 [target_sequence] + states_value)
-            states_values = [h, c]
+            states_value = [h, c]
             print("DECODER PREDICTION DONE")
             print(output_tokens.shape)
             sampled_token_index = np.argmax(output_tokens[0, -1, :])
