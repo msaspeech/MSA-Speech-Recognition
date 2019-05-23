@@ -33,6 +33,8 @@ class Seq2SeqModel():
     def _load_model(self):
         if file_exists(self.model_path):
             self.model = models.load_model(self.model_path)
+            model = Model
+            self.model.evaluate_generator(self.validation_generator(), verbose=1)
             print(self.model.summary())
         else:
             if self.model_architecture == 1:
@@ -88,6 +90,30 @@ class Seq2SeqModel():
             #                         validation_split=0.2,
             #                         callbacks=[model_saver])
 
+    def validation_generator(self):
+        audio_directory = settings.AUDIO_SPLIT_TEST_PATH
+        audio_files = get_files(audio_directory)
+        transcripts_directory = settings.TRANSCRIPTS_ENCODING_SPLIT_TEST_PATH
+        transcript_files = get_files(transcripts_directory)
+        data = self.get_data(audio_files[0], transcript_files[0])
+
+        while True:
+            pair_key = random.choice(list(data.keys()))
+            output = data[pair_key]
+            encoder_x = []
+            decoder_x = []
+            decoder_y = []
+            for element in output:
+                encoder_x.append(element[0][0])
+                decoder_x.append(element[0][1])
+                decoder_y.append(element[1])
+
+            encoder_x = np.array(encoder_x)
+            decoder_x = np.array(decoder_x)
+            decoder_y = np.array(decoder_y)
+
+            yield [encoder_x, decoder_x], decoder_y
+
     def _data_generator(self, encoder_input, decoder_input, decoder_target):
         while True:
             index = random.randint(0, len(encoder_input) - 1)
@@ -104,7 +130,6 @@ class Seq2SeqModel():
         audio_files = get_files(audio_directory)
         transcripts_directory = settings.TRANSCRIPTS_ENCODING_SPLIT_TRAIN_PATH
         transcript_files = get_files(transcripts_directory)
-        visited_files = []
 
         while True:
             for i, audio_file in enumerate(audio_files):
@@ -146,6 +171,12 @@ class Seq2SeqModel():
             decoder_y = np.array(decoder_y)
 
             yield [encoder_x, decoder_x], decoder_y
+
+    def get_test_data(self, audio_file, transcripts_file):
+        encoder_input_data = load_pickle_data(audio_file)
+        (decoder_input_data, decoder_target_data) = load_pickle_data(transcripts_file)
+        return encoder_input_data, decoder_input_data, decoder_target_data
+
 
     def get_data(self, audio_file, transcripts_file):
         encoder_input_data = load_pickle_data(audio_file)
