@@ -82,18 +82,19 @@ class Inference():
         print(target_sequence)
         stop_condition = False
         decoded_sentence = ''
-
+        max_length = 200
         while not stop_condition:
             output_tokens, h, c = self.decoder_model.predict(
                 [target_sequence] + states_value)
             states_values = [h, c]
             print("DECODER PREDICTION DONE")
+            print(output_tokens.shapes)
             sampled_token_index = np.argmax(output_tokens[0, -1, :])
             sampled_char = int_to_char[sampled_token_index]
             print(sampled_char)
             decoded_sentence += sampled_char
 
-            if sampled_char == "\n":
+            if sampled_char == "\n" or len(decoded_sentence) > max_length :
                 # End of transcription
                 stop_condition = True
             else:
