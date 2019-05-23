@@ -88,7 +88,7 @@ class Inference():
                 [target_sequence] + states_value)
             states_values = [h, c]
             print("DECODER PREDICTION DONE")
-            print(output_tokens.shapes)
+            print(output_tokens.shape)
             sampled_token_index = np.argmax(output_tokens[0, -1, :])
             sampled_char = int_to_char[sampled_token_index]
             print(sampled_char)
