@@ -83,7 +83,7 @@ class Inference():
         stop_condition = False
         t_force = ">hlA bkm yjtmE wzrA' xArjyp dwl Alxlyj wlbnAn wAl>rdn wmSr wtrkyA wwzyr AlxArjyp Al>myrky jwn kyry ywm Alxmys fy jdp"
         decoded_sentence = ''
-        max_length = 200
+        max_length = len(t_force)
         i = 0
         while not stop_condition:
             output_tokens, h, c = self.decoder_model.predict(
