@@ -1,5 +1,5 @@
-from utils import  get_character_set, get_distinct_words, empty_directory, get_empty_binary_vector
-from . import generate_decoder_input_target, normalize_encoder_input
+from utils import  get_character_set, get_distinct_words, empty_directory
+from . import generate_decoder_input_target, normalize_encoder_input, get_empty_binary_vector
 import numpy as np
 from etc import settings
 from utils import load_pickle_data, file_exists, generate_pickle_file
@@ -131,10 +131,10 @@ def upload_dataset(train_ratio=0.8, padding=False, word_level=False, partitions=
         if word_level:
 
             distinct_words = get_distinct_words(transcripts=all_transcripts)
-            settings.WORD_SET = len(get_empty_binary_vector(len(distinct_words)))
             #generate_pickle_file(distinct_words, file_path=settings.DISTINCT_WORDS_PATH)
-            general_info.append(settings.WORD_SET)
-            #settings.WORD_SET = distinct_words
+            settings.WORD_SET = distinct_words
+            settings.WORD_TARGET_LENGTH = len(get_empty_binary_vector(len(distinct_words)))
+            general_info.append(distinct_words)
         else:
             distinct_characters = get_character_set(transcripts=all_transcripts)
             #generate_pickle_file(distinct_characters, file_path=settings.DISTINCT_CHARACTERS_PATH)
@@ -161,6 +161,7 @@ def upload_dataset(train_ratio=0.8, padding=False, word_level=False, partitions=
         if word_level:
             #distinct_words = load_pickle_data(settings.DISTINCT_WORDS_PATH)
             settings.WORD_SET = general_info[2]
+            settings.WORD_TARGET_LENGTH = len(get_empty_binary_vector(len(settings.WORD_SET)))
             print(settings.WORD_SET)
         else:
             #distinct_characters = load_pickle_data(settings.DISTINCT_CHARACTERS_PATH)

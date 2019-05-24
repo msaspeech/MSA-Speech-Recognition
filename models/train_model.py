@@ -23,7 +23,7 @@ class Seq2SeqModel():
         self.model_path = settings.TRAINED_MODELS_PATH + self.model_name
         self.mfcc_features_length = settings.MFCC_FEATURES_LENGTH
         if word_level:
-            self.target_length = len(settings.WORD_SET)
+            self.target_length = settings.WORD_TARGET_LENGTH
         else:
             self.target_length = len(settings.CHARACTER_SET)
         self.model = None
