@@ -46,11 +46,9 @@ def generate_pickle_file(data, file_path):
      Uploads AudioInput data from pickle file
      :return:
      """
-    print("Generating pickle file")
     with open(file_path , 'wb') as f:
         pickle.dump(data, f, pickle.HIGHEST_PROTOCOL)
         f.close()
-    print("File generated")
 
 
 def load_pickle_data(file_path):

@@ -15,7 +15,7 @@ architecture = int(sys.argv[2])
 latent_dim = int(sys.argv[3])
 epochs = int(sys.argv[4])
 
-upload_dataset(word_level=word_level, partitions=16)
+upload_dataset(word_level=word_level, partitions=32)
 model = Seq2SeqModel(latent_dim=latent_dim, epochs=epochs, model_architecture=1, word_level=word_level)
 model.train_model()
 
