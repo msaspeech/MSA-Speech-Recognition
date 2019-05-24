@@ -6,7 +6,7 @@ from lib import transcript_preprocessing
 from lib import special_characters_table
 from . import numerical_to_written_numbers_table
 from etc import PICKLE_PAD_FILE_PATH, PICKLE_FILE_PATH, PICKLE_PARTITIONS_PATH
-
+import gc
 
 def generate_pickle_dataset(threshold):
     threshold = threshold*3600
@@ -34,7 +34,7 @@ def generate_pickle_dataset(threshold):
             pickle_file_index += 1
             timing = 0
             audioInput = []
-
+            gc.collect()
     #updated_data = get_fixed_size_data(audioInput_data=audioInput)
 
     #generate_pickle_file(audioInput, PICKLE_FILE_PATH)

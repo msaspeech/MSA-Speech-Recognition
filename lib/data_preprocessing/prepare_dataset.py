@@ -102,7 +102,6 @@ def upload_dataset(train_ratio=0.8, padding=False, word_level=False, partitions=
     :return: Tuple, Tuple
     """
     if empty_directory(settings.AUDIO_SPLIT_TRAIN_PATH):
-
         # Upload train and test data, the train ration is 0.8 and can be modified through ration param
         train_data, test_data = _get_train_test_data(train_ratio=0.75, padding=padding)
         settings.TOTAL_SAMPLES_NUMBER = len(train_data)

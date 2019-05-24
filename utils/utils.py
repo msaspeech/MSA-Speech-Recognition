@@ -41,6 +41,33 @@ def natural_keys(text):
     return [atoi(c) for c in re.split(r'(\d+)', text)]
 
 
+def int_to_binary(num):
+    if num == 0:
+        return [num]
+
+    binary_digits = []
+    while num != 0:
+        modnum = int(num % 2)
+        num = int(num / 2)
+        binary_digits.append(modnum)
+    return list(reversed(binary_digits))
+
+
+def convert_word_to_binary(word_index, output_binary_vector):
+    binary_value = int_to_binary(word_index)
+    for i, value in enumerate(binary_value):
+        output_binary_vector[i] = value
+
+    return output_binary_vector
+
+
+def get_empty_binary_vector(upper_bound):
+    binary_vector = int_to_binary(upper_bound)
+    for i in range(0, len(binary_vector)):
+        binary_vector[i] = 0
+    return binary_vector
+
+
 def generate_pickle_file(data, file_path):
     """
      Uploads AudioInput data from pickle file

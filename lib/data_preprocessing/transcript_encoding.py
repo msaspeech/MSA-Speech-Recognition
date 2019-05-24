@@ -1,5 +1,6 @@
-from utils import convert_to_int, file_exists, load_pickle_data, get_character_set
-from utils import get_distinct_words, convert_words_to_int, generate_pickle_file
+from utils import convert_to_int, file_exists, get_character_set
+from utils import  convert_words_to_int, generate_pickle_file
+from utils import get_empty_binary_vector, convert_word_to_binary
 from etc import settings
 from utils import get_longest_sample_size
 import numpy as np
@@ -169,6 +170,55 @@ def generate_variable_size_character_input_target_data(transcripts, char_to_int,
     # return decoder_input_data, decoder_target_data
 
 
+def generate_variable_word_input_target_binary(transcripts, words_to_int, partitions=8, test=False):
+    transcript_sets = []
+    limits = []
+    for i in range(1, partitions + 1):
+        limits.append(int(len(transcripts) * i / partitions))
+
+    transcript_sets.append(transcripts[0: limits[0]])
+    for i in range(1, partitions):
+        transcript_sets.append(transcripts[limits[i - 1]:limits[i]])
+
+    # Delete original dataset
+    transcripts = []
+    gc.collect()
+
+    for num_dataset, transcript_set in enumerate(transcript_sets):
+        # Init numpy array
+        num_transcripts = len(transcript_set)
+        decoder_input_data = np.array([None] * num_transcripts)
+        decoder_target_data = np.array([None] * num_transcripts)
+
+        for i, transcript in enumerate(transcript_set):
+            # Encode each transcript
+            encoded_transcript_input = []
+            encoded_transcript_target = []
+            list_words = transcript.split()
+            for index, word in enumerate(list_words):
+                word_index = words_to_int[word]
+                output_binary_vector = get_empty_binary_vector(len(words_to_int))
+                encoded_word = convert_word_to_binary(word_index, output_binary_vector)
+
+                encoded_transcript_input.append(encoded_word)
+                encoded_transcript_target.append([])
+                if index > 0:
+                    encoded_transcript_target[index - 1] = encoded_word
+
+            del encoded_transcript_input[-1]
+            decoder_input_data[i] = encoded_transcript_input
+            encoded_transcript_target.pop()
+            decoder_target_data[i] = encoded_transcript_target
+
+
+        if not test:
+            path = settings.TRANSCRIPTS_ENCODING_SPLIT_TRAIN_PATH + "encoded_transcripts" + str(num_dataset) + ".pkl"
+        else:
+            path = settings.TRANSCRIPTS_ENCODING_SPLIT_TEST_PATH + "encoded_transcripts" + str(num_dataset) + ".pkl"
+
+        generate_pickle_file((decoder_input_data, decoder_target_data), file_path=path)
+
+
 def generate_variable_word_input_target_data(transcripts, words_to_int, partitions=8, test=False):
     # Dividing transcripts into subsets
     transcript_sets = []
@@ -210,6 +260,7 @@ def generate_variable_word_input_target_data(transcripts, words_to_int, partitio
             decoder_input_data[i] = encoded_transcript_input
             encoded_transcript_target.pop()
             decoder_target_data[i] = encoded_transcript_target
+
         if not test:
             path = settings.TRANSCRIPTS_ENCODING_SPLIT_TRAIN_PATH + "encoded_transcripts" + str(num_dataset) + ".pkl"
         else:
@@ -269,10 +320,10 @@ def generate_decoder_input_target(transcripts, word_level=False, fixed_size=True
             print(word_to_int)
             # decoder_input, decoder_target = _generate_variable_size_word_input_target_data(transcripts=transcripts,
             #                                                                               words_to_int=word_to_int)
-            generate_variable_word_input_target_data(transcripts=transcripts,
-                                                     words_to_int=word_to_int,
-                                                     partitions=partitions,
-                                                     test=test)
+            generate_variable_word_input_target_binary(transcripts=transcripts,
+                                                       words_to_int=word_to_int,
+                                                       partitions=partitions,
+                                                       test=test)
 
     else:
         # Character level recognition
