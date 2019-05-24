@@ -55,8 +55,12 @@ def int_to_binary(num):
 
 def convert_word_to_binary(word_index, output_binary_vector):
     binary_value = int_to_binary(word_index)
-    for i, value in enumerate(binary_value):
-        output_binary_vector[i] = value
+    input_length = len(binary_value)-1
+    output_length = len(output_binary_vector)-1
+
+    for i in range(0, len(binary_value)):
+    #for i, value in enumerate(binary_value):
+        output_binary_vector[output_length-i] = binary_value[input_length-i]
 
     return output_binary_vector
 

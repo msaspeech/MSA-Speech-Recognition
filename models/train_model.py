@@ -33,7 +33,7 @@ class Seq2SeqModel():
     def _load_model(self):
         if file_exists(self.model_path):
             self.model = models.load_model(self.model_path)
-          
+
             self.model.evaluate_generator(self.validation_generator(), steps=settings.TOTAL_SAMPLES_NUMBER, verbose=1)
             print(self.model.summary())
         else:
