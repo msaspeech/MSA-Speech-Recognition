@@ -141,7 +141,6 @@ class Seq2SeqModel():
 
                 data = self.get_data(audio_file, transcript_files[i])
                 for pair_key in data:
-                    print(pair_key)
                     #pair_key = random.choice(list(d.keys()))
                     output = data[pair_key]
                     encoder_x = []
