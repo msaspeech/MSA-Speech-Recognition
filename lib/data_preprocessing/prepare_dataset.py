@@ -135,6 +135,11 @@ def upload_dataset(train_ratio=0.8, padding=False, word_level=False, partitions=
             settings.WORD_SET = distinct_words
             settings.WORD_TARGET_LENGTH = len(get_empty_binary_vector(len(distinct_words)))
             general_info.append(distinct_words)
+
+            distinct_characters = get_character_set(transcripts=all_transcripts)
+            general_info.append(distinct_characters)
+            settings.CHARACTER_SET = distinct_characters
+
         else:
             distinct_characters = get_character_set(transcripts=all_transcripts)
             #generate_pickle_file(distinct_characters, file_path=settings.DISTINCT_CHARACTERS_PATH)
@@ -161,6 +166,7 @@ def upload_dataset(train_ratio=0.8, padding=False, word_level=False, partitions=
         if word_level:
             #distinct_words = load_pickle_data(settings.DISTINCT_WORDS_PATH)
             settings.WORD_SET = general_info[2]
+            settings.CHARACTER_SET = general_info[3]
             settings.WORD_TARGET_LENGTH = len(get_empty_binary_vector(len(settings.WORD_SET)))
             print(settings.WORD_SET)
         else:

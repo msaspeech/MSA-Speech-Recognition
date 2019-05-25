@@ -367,15 +367,21 @@ def generate_decoder_input_target(transcripts, word_level=False, fixed_size=True
     if word_level:
         if not fixed_size:
             # Word level recognition
-            distinct_words = settings.WORD_SET
-            word_to_int, _ = convert_words_to_int(distinct_words=sorted(distinct_words))
-            print(word_to_int)
+            #distinct_words = settings.WORD_SET
+            #word_to_int, _ = convert_words_to_int(distinct_words=sorted(distinct_words))
+            #print(word_to_int)
             # decoder_input, decoder_target = _generate_variable_size_word_input_target_data(transcripts=transcripts,
             #                                                                               words_to_int=word_to_int)
-            generate_variable_word_input_target_binary(transcripts=transcripts,
-                                                       words_to_int=word_to_int,
-                                                       partitions=partitions,
-                                                       test=test)
+            character_set = settings.CHARACTER_SET
+            char_to_int = convert_to_int(sorted(character_set))
+            generate_variable_word_based_encoding(transcripts=transcripts,
+                                                  char_to_int=char_to_int,
+                                                  test=test)
+
+           # generate_variable_word_input_target_binary(transcripts=transcripts,
+            #                                           words_to_int=word_to_int,
+            #                                           partitions=partitions,
+            #                                           test=test)
 
     else:
         # Character level recognition
