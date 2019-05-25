@@ -26,12 +26,19 @@ def file_exists(file_path):
     return False
 
 
-
 def empty_directory(directory_path):
     if not os.listdir(directory_path):
         return True
     return False
 
+
+def get_longest_word_length(words_list):
+    max_length = 0
+    for word in words_list:
+        if len(word) > max_length:
+            max_length = len(word)
+
+    return max_length
 
 def atoi(text):
     return int(text) if text.isdigit() else text
