@@ -10,7 +10,7 @@ init_directories()
 settings.DRIVE_INSTANCE = load_pickle_data(DRIVE_INSTANCE_PATH)
 
 architecture = 1
-word_level = 0
+word_level = 1
 latent_dim = 350
 epochs = 100
 

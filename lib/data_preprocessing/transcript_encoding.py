@@ -171,6 +171,7 @@ def generate_variable_size_character_input_target_data(transcripts, char_to_int,
 
 
 def generate_variable_word_based_encoding(transcripts, char_to_int, partitions=8, test=False):
+    print("GENERATING")
     words_list = settings.WORD_SET
     max_word_length = get_longest_word_length(words_list)
 
@@ -208,18 +209,18 @@ def generate_variable_word_based_encoding(transcripts, char_to_int, partitions=8
                     if index > 0:
                         encoded_transcript_target[index - 1] = encoded_word
 
-                del encoded_transcript_input[-1]
-                decoder_input_data[i] = encoded_transcript_input
-                encoded_transcript_target.pop()
-                decoder_target_data[i] = encoded_transcript_target
+            del encoded_transcript_input[-1]
+            decoder_input_data[i] = encoded_transcript_input
+            encoded_transcript_target.pop()
+            decoder_target_data[i] = encoded_transcript_target
+        print(decoder_input_data.shape)
+        print(decoder_target_data.shape)
+        if not test:
+            path = settings.TRANSCRIPTS_ENCODING_SPLIT_TRAIN_PATH + "encoded_transcripts" + str(num_dataset) + ".pkl"
+        else:
+            path = settings.TRANSCRIPTS_ENCODING_SPLIT_TEST_PATH + "encoded_transcripts" + str(num_dataset) + ".pkl"
 
-            if not test:
-                path = settings.TRANSCRIPTS_ENCODING_SPLIT_TRAIN_PATH + "encoded_transcripts" + str(
-                    num_dataset) + ".pkl"
-            else:
-                path = settings.TRANSCRIPTS_ENCODING_SPLIT_TEST_PATH + "encoded_transcripts" + str(num_dataset) + ".pkl"
-
-            generate_pickle_file((decoder_input_data, decoder_target_data), file_path=path)
+        generate_pickle_file((decoder_input_data, decoder_target_data), file_path=path)
 
 
 def generate_variable_word_input_target_binary(transcripts, words_to_int, partitions=8, test=False):
