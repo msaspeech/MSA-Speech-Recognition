@@ -22,6 +22,7 @@ class Seq2SeqModel():
         self.model_name = "architecture" + str(self.model_architecture) + ".h5"
         self.model_path = settings.TRAINED_MODELS_PATH + self.model_name
         self.mfcc_features_length = settings.MFCC_FEATURES_LENGTH
+        self.word_level = word_level
         if word_level:
             self.target_length = settings.WORD_TARGET_LENGTH
         else:
@@ -72,7 +73,10 @@ class Seq2SeqModel():
 
     def train_model(self):
         print("ENCODER STATES")
-        self.model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
+        if self.word_level:
+            self.model.compile(optimizer='rmsprop', loss='rossentropy', metrics=['accuracy'])
+        else:
+            self.model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
         model_saver = ModelSaver(model_name=self.model_name, model_path=self.model_path,
                                  encoder_states=self.encoder_states,
                                  drive_instance=settings.DRIVE_INSTANCE)
@@ -137,6 +141,7 @@ class Seq2SeqModel():
 
                 data = self.get_data(audio_file, transcript_files[i])
                 for pair_key in data:
+                    print(pair_key)
                     #pair_key = random.choice(list(d.keys()))
                     output = data[pair_key]
                     encoder_x = []

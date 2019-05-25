@@ -10,11 +10,11 @@ init_directories()
 settings.DRIVE_INSTANCE = load_pickle_data(DRIVE_INSTANCE_PATH)
 
 architecture = 1
-word_level = 1
+word_level = 0
 latent_dim = 350
 epochs = 100
 
-upload_dataset(word_level=word_level,partitions=16)
+upload_dataset(word_level=word_level,partitions=32)
 model = Seq2SeqModel(latent_dim=latent_dim, epochs=epochs, model_architecture=architecture, word_level=word_level)
 model.train_model()
 

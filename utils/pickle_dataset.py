@@ -33,8 +33,9 @@ def generate_pickle_dataset(threshold):
             generate_pickle_file(audioInput, path)
             pickle_file_index += 1
             timing = 0
-            audioInput = []
+            del audioInput
             gc.collect()
+            audioInput = []
     #updated_data = get_fixed_size_data(audioInput_data=audioInput)
 
     #generate_pickle_file(audioInput, PICKLE_FILE_PATH)
