@@ -134,7 +134,6 @@ class Seq2SeqModel():
         audio_files = get_files(audio_directory)
         transcripts_directory = settings.TRANSCRIPTS_ENCODING_SPLIT_TRAIN_PATH
         transcript_files = get_files(transcripts_directory)
-
         while True:
             for i, audio_file in enumerate(audio_files):
                 #retrieving data

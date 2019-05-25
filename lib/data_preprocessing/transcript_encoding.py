@@ -171,10 +171,6 @@ def generate_variable_size_character_input_target_data(transcripts, char_to_int,
 
 
 def generate_variable_word_based_encoding(transcripts, char_to_int, partitions=8, test=False):
-    print("GENERATING")
-    words_list = settings.WORD_SET
-    max_word_length = get_longest_word_length(words_list)
-
     transcript_sets = []
     limits = []
     for i in range(1, partitions + 1):
@@ -199,22 +195,21 @@ def generate_variable_word_based_encoding(transcripts, char_to_int, partitions=8
             encoded_transcript_target = []
             list_words = transcript.split()
             for index, word in enumerate(list_words):
-                encoded_word = [0] * (len(settings.CHARACTER_SET) * max_word_length)
+                encoded_word = [0] * settings.WORD_TARGET_LENGTH
+                #encoded_word = [0] * (len(settings.CHARACTER_SET) * max_word_length)
                 for character_index, character in enumerate(word):
                     position = char_to_int[character] + len(settings.CHARACTER_SET)*character_index
                     encoded_word[position] = 1
 
-                    encoded_transcript_input.append(encoded_word)
-                    encoded_transcript_target.append([])
-                    if index > 0:
-                        encoded_transcript_target[index - 1] = encoded_word
+                encoded_transcript_input.append(encoded_word)
+                encoded_transcript_target.append([])
+                if index > 0:
+                    encoded_transcript_target[index - 1] = encoded_word
 
             del encoded_transcript_input[-1]
             decoder_input_data[i] = encoded_transcript_input
             encoded_transcript_target.pop()
             decoder_target_data[i] = encoded_transcript_target
-        print(decoder_input_data.shape)
-        print(decoder_target_data.shape)
         if not test:
             path = settings.TRANSCRIPTS_ENCODING_SPLIT_TRAIN_PATH + "encoded_transcripts" + str(num_dataset) + ".pkl"
         else:
@@ -377,6 +372,7 @@ def generate_decoder_input_target(transcripts, word_level=False, fixed_size=True
             char_to_int = convert_to_int(sorted(character_set))
             generate_variable_word_based_encoding(transcripts=transcripts,
                                                   char_to_int=char_to_int,
+                                                  partitions=partitions,
                                                   test=test)
 
            # generate_variable_word_input_target_binary(transcripts=transcripts,
