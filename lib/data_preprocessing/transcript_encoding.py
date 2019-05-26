@@ -171,6 +171,8 @@ def generate_variable_size_character_input_target_data(transcripts, char_to_int,
 
 
 def generate_variable_word_based_encoding(transcripts, char_to_int, partitions=8, test=False):
+    print(char_to_int)
+    print(settings.WORD_TARGET_LENGTH)
     transcript_sets = []
     limits = []
     for i in range(1, partitions + 1):
@@ -196,7 +198,6 @@ def generate_variable_word_based_encoding(transcripts, char_to_int, partitions=8
             list_words = transcript.split()
             for index, word in enumerate(list_words):
                 encoded_word = [0] * settings.WORD_TARGET_LENGTH
-                #encoded_word = [0] * (len(settings.CHARACTER_SET) * max_word_length)
                 for character_index, character in enumerate(word):
                     position = char_to_int[character] + len(settings.CHARACTER_SET)*character_index
                     encoded_word[position] = 1
