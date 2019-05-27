@@ -6,7 +6,7 @@ from tensorflow.python.keras import models
 #from keras import models
 from tensorflow.python.keras.models import Model
 from tensorflow.python.keras.layers import Input
-from .seq2seq_baseline import train_baseline_seq2seq_model, train_bidirectional_baseline_seq2seq_model
+from .seq2seq_baseline import train_baseline_seq2seq_model, train_baseline_seq2seq_model_bis,  train_bidirectional_baseline_seq2seq_model
 from .seq2seq_cnn_attention import train_cnn_seq2seq_model, train_cnn_attention_seq2seq_model, \
     train_cnn_bidirectional_attention_seq2seq_model
 from .seq2seq_with_attention import train_attention_seq2seq_model, train_bidirectional_attention_seq2seq_model
@@ -39,7 +39,7 @@ class Seq2SeqModel():
             print(self.model.summary())
         else:
             if self.model_architecture == 1:
-                self.model, self.encoder_states = train_baseline_seq2seq_model(mfcc_features=self.mfcc_features_length,
+                self.model, self.encoder_states = train_baseline_seq2seq_model_bis(mfcc_features=self.mfcc_features_length,
                                                                                target_length=self.target_length,
                                                                                latent_dim=self.latent_dim)
             elif self.model_architecture == 2:
@@ -74,7 +74,7 @@ class Seq2SeqModel():
     def train_model(self):
         print("ENCODER STATES")
         if self.word_level:
-            self.model.compile(optimizer='rmsprop', loss='mse', metrics=['binary_accuracy'])
+            self.model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
         else:
             self.model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
         model_saver = ModelSaver(model_name=self.model_name, model_path=self.model_path,
