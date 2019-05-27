@@ -26,5 +26,5 @@ for word_index, word in enumerate(transcript):
 
 target_sequence[0] = encoded_transcript
 
-#output = model.predict([audio, transcript])
-#print(output)
+output = model.predict([audio, target_sequence])
+print(output)
