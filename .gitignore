@@ -15,3 +15,5 @@ dside/cover/
 .cover
 htmlcov/
 /data/
+/dataset_split/
+/trained_models/

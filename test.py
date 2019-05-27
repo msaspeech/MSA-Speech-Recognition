@@ -20,12 +20,26 @@ for word_index, word in enumerate(transcript.split()):
         index = char_to_int[character] + (index_character * len(settings.CHARACTER_SET))
         target_sequence[0, word_index, index] = 1
 
-print(target_sequence)
-print(target_sequence.shape)
+#print(target_sequence)
+for word in target_sequence[0]:
+    indices = []
+    for index, character in enumerate(word):
+        if character==1:
+            indices.append(index)
+    print(indices)
+
+#print(target_sequence.shape)
 
 model = models.load_model("trained_models/architecture1.h5")
 output = model.predict([audio, target_sequence])
-np.round(output)
+output = np.round(output)
+
 print(output.shape)
 
-print(output)
+#print(output)
+for word in output[0]:
+    indices = []
+    for index, character in enumerate(word):
+        if character==1:
+            indices.append(index)
+    print(indices)
