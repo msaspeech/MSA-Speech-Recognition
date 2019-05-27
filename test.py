@@ -24,4 +24,5 @@ print(target_sequence.shape)
 
 model = models.load_model("trained_models/architecture1.h5")
 output = model.predict([audio, target_sequence])
+print(output.shape)
 print(output)

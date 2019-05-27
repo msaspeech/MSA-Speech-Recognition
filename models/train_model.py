@@ -127,8 +127,6 @@ class Seq2SeqModel():
 
             yield [encoder_x, decoder_x], decoder_y
 
-
-
     def split_data_generator_dict(self):
         audio_directory = settings.AUDIO_SPLIT_TRAIN_PATH
         audio_files = get_files(audio_directory)
@@ -140,7 +138,6 @@ class Seq2SeqModel():
 
                 data = self.get_data(audio_file, transcript_files[i])
                 for pair_key in data:
-                    #pair_key = random.choice(list(d.keys()))
                     output = data[pair_key]
                     encoder_x = []
                     decoder_x = []
