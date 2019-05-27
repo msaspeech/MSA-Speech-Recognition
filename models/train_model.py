@@ -74,7 +74,7 @@ class Seq2SeqModel():
     def train_model(self):
         print("ENCODER STATES")
         if self.word_level:
-            self.model.compile(optimizer='rmsprop', loss='binary_crossentropy', metrics=['accuracy'])
+            self.model.compile(optimizer='rmsprop', loss='mse', metrics=['accuracy'])
         else:
             self.model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
         model_saver = ModelSaver(model_name=self.model_name, model_path=self.model_path,
@@ -176,7 +176,6 @@ class Seq2SeqModel():
         encoder_input_data = load_pickle_data(audio_file)
         (decoder_input_data, decoder_target_data) = load_pickle_data(transcripts_file)
         return encoder_input_data, decoder_input_data, decoder_target_data
-
 
     def get_data(self, audio_file, transcripts_file):
         encoder_input_data = load_pickle_data(audio_file)
