@@ -74,7 +74,7 @@ class Seq2SeqModel():
     def train_model(self):
         print("ENCODER STATES")
         if self.word_level:
-            self.model.compile(optimizer='rmsprop', loss='mse', metrics=['accuracy'])
+            self.model.compile(optimizer='rmsprop', loss='mse', metrics=['binary_accuracy'])
         else:
             self.model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
         model_saver = ModelSaver(model_name=self.model_name, model_path=self.model_path,
