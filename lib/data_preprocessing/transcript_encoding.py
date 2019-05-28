@@ -192,6 +192,7 @@ def generate_variable_word_based_encoding_bis(transcripts, char_to_int, partitio
         num_transcripts = len(transcript_set)
         decoder_input_data = np.array([None] * num_transcripts)
         decoder_target_data = np.array([None] * num_transcripts)
+        character_set_length = len(settings.CHARACTER_SET)+1
         for i, transcript in enumerate(transcript_set):
             # Encode each transcript
             encoded_transcript_input = []
@@ -203,15 +204,23 @@ def generate_variable_word_based_encoding_bis(transcripts, char_to_int, partitio
                 encoded_word_target = []
                 for j in range(0, longest_word_length):
                     #encoded_word.append([0] * len(settings.CHARACTER_SET))
-                    encoded_word_target.append([0] * len(settings.CHARACTER_SET))
+                    encoded_word_target.append([0] * character_set_length)
 
+                character_index = 0
                 for character_index, character in enumerate(word):
                     # Encoding words for decoder inputs
-                    position = char_to_int[character] + len(settings.CHARACTER_SET) * character_index  # working fine
+                    position = char_to_int[character] + character_set_length * character_index  # working fine
                     encoded_word[position] = 1
 
                     # Encoding word for decoder targets
                     encoded_word_target[character_index][char_to_int[character]] = 1
+
+                if character_index < longest_word_length-1:
+                    for k in range(character_index+1, longest_word_length):
+                        position = character_set_length * k
+                        encoded_word[position] = 1
+
+                        encoded_word_target[k][-1] = 1
 
                 encoded_transcript_input.append(encoded_word)
                 encoded_transcript_target.append([])

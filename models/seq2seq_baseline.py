@@ -60,16 +60,30 @@ def train_baseline_seq2seq_model_bis(mfcc_features, target_length, latent_dim):
                                           latent_dim=latent_dim)
 
     # Dense Output Layers
-    decoder_dense = Dense(target_length, activation='softmax', name="decoder_dense")
-    decoder_outputs = decoder_dense(decoder_outputs)
+    #decoder_dense = Dense(target_length, activation='softmax', name="decoder_dense")
+    #decoder_outputs = decoder_dense(decoder_outputs)
 
-    decoder_reshape = TimeDistributed(Reshape((18, len(settings.CHARACTER_SET))))
-    decoder_outputs = decoder_reshape(decoder_outputs)
+    #decoder_reshape = TimeDistributed(Reshape((18, len(settings.CHARACTER_SET))))
+    #decoder_outputs = decoder_reshape(decoder_outputs)
+
+    decoder_outputs = get_multi_output_dense(decoder_outputs, target_length=(len(settings.CHARACTER_SET)+1))
 
     # Generating Keras Model
     model = Model([encoder_inputs, decoder_inputs], decoder_outputs)
    # print(model.summary())
     return model, encoder_states
+
+
+def get_multi_output_dense(decoder_outputs, target_length):
+
+    dense_layers = []
+
+    for i in range(0, settings.LONGEST_WORD_LENGTH):
+        decoder_dense = Dense(target_length, activation='softmax', name="dense"+str(i))
+        new_decoder_output = decoder_dense(decoder_outputs)
+        dense_layers.append(new_decoder_output)
+
+    return dense_layers
 
 
 def train_bidirectional_baseline_seq2seq_model(mfcc_features, target_length, latent_dim):

@@ -37,6 +37,7 @@ AUDIO_SPLIT_TEST_PATH = "./dataset_split/test/audio_data/"
 global MFCC_FEATURES_LENGTH
 global CHARACTER_SET
 global WORD_SET
+global LONGEST_WORD_LENGTH
 global WORD_TARGET_LENGTH
 
 global TOTAL_SAMPLES_NUMBER

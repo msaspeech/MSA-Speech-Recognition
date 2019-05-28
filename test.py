@@ -4,6 +4,13 @@ from lib import AudioInput
 import numpy as np
 from etc import settings
 
+x = [1, 3, 5, 15, 16]
+i= 0
+for i, elt in enumerate(x):
+    print(elt)
+
+print(i)
+
 infos = load_pickle_data(settings.DATASET_INFORMATION_PATH)
 settings.CHARACTER_SET = infos[3]
 char_to_int = convert_to_int(settings.CHARACTER_SET)

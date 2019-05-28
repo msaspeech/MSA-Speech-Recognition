@@ -136,10 +136,14 @@ def upload_dataset(train_ratio=0.8, padding=False, word_level=False, partitions=
             #settings.WORD_TARGET_LENGTH = len(get_empty_binary_vector(len(distinct_words)))
             general_info.append(settings.WORD_SET)
 
+            settings.LONGEST_WORD_LENGTH = get_longest_word_length(settings.WORD_SET)
+            general_info.append(settings.LONGEST_WORD_LENGTH)
+
             distinct_characters = get_character_set(transcripts=all_transcripts)
             general_info.append(distinct_characters)
             settings.CHARACTER_SET = distinct_characters
-            settings.WORD_TARGET_LENGTH = len(settings.CHARACTER_SET) * get_longest_word_length(settings.WORD_SET)
+
+            settings.WORD_TARGET_LENGTH = len(settings.CHARACTER_SET) * settings.LONGEST_WORD_LENGTH
 
         else:
             distinct_characters = get_character_set(transcripts=all_transcripts)
@@ -167,10 +171,10 @@ def upload_dataset(train_ratio=0.8, padding=False, word_level=False, partitions=
         if word_level:
             #distinct_words = load_pickle_data(settings.DISTINCT_WORDS_PATH)
             settings.WORD_SET = general_info[2]
-            settings.CHARACTER_SET = general_info[3]
+            settings.LONGEST_WORD_LENGTH = general_info[3]
+            settings.CHARACTER_SET = general_info[4]
             print(get_longest_word_length(words_list=settings.WORD_SET))
-            settings.WORD_TARGET_LENGTH = len(settings.CHARACTER_SET) * get_longest_word_length(settings.WORD_SET)
-            print(settings.WORD_TARGET_LENGTH)
+            settings.WORD_TARGET_LENGTH = len(settings.CHARACTER_SET) * settings.LONGEST_WORD_LENGTH
             print(settings.WORD_SET)
         else:
             #distinct_characters = load_pickle_data(settings.DISTINCT_CHARACTERS_PATH)

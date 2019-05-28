@@ -40,8 +40,8 @@ class Seq2SeqModel():
         else:
             if self.model_architecture == 1:
                 self.model, self.encoder_states = train_baseline_seq2seq_model_bis(mfcc_features=self.mfcc_features_length,
-                                                                               target_length=self.target_length,
-                                                                               latent_dim=self.latent_dim)
+                                                                                   target_length=self.target_length,
+                                                                                   latent_dim=self.latent_dim)
             elif self.model_architecture == 2:
                 self.model, self.encoder_states = train_bidirectional_baseline_seq2seq_model(mfcc_features=self.mfcc_features_length,
                                                                                              target_length=self.target_length,
@@ -74,7 +74,11 @@ class Seq2SeqModel():
     def train_model(self):
         print("ENCODER STATES")
         if self.word_level:
-            self.model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
+            loss = dict()
+            for i in range(0, settings.LONGEST_WORD_LENGTH):
+                layer_name = "dense"+str(i)
+                loss[layer_name] = 'categorical_crossentropy'
+            self.model.compile(optimizer='rmsprop', loss=loss, metrics=['accuracy'])
         else:
             self.model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
         model_saver = ModelSaver(model_name=self.model_name, model_path=self.model_path,
@@ -82,7 +86,7 @@ class Seq2SeqModel():
                                  drive_instance=settings.DRIVE_INSTANCE)
 
         if self.data_generation:
-            history = self.model.fit_generator(self.split_data_generator_dict(),
+            history = self.model.fit_generator(self.split_data_generator_dict_word_level(),
                                                steps_per_epoch=settings.TOTAL_SAMPLES_NUMBER,
                                                epochs=self.epochs,
                                                callbacks=[model_saver])
@@ -152,6 +156,43 @@ class Seq2SeqModel():
                     decoder_y = np.array(decoder_y)
 
                     yield [encoder_x, decoder_x], decoder_y
+
+    def split_data_generator_dict_word_level(self):
+        audio_directory = settings.AUDIO_SPLIT_TRAIN_PATH
+        audio_files = get_files(audio_directory)
+        transcripts_directory = settings.TRANSCRIPTS_ENCODING_SPLIT_TRAIN_PATH
+        transcript_files = get_files(transcripts_directory)
+        while True:
+            for i, audio_file in enumerate(audio_files):
+                #retrieving data
+
+                data = self.get_data(audio_file, transcript_files[i])
+                for pair_key in data:
+                    output = data[pair_key]
+                    encoder_x = []
+                    decoder_x = []
+                    decoder_y = []
+                    for element in output:
+                        encoder_x.append(element[0][0])
+                        decoder_x.append(element[0][1])
+                        decoder_y.append(element[1])
+
+                    encoder_x = np.array(encoder_x)
+                    decoder_x = np.array(decoder_x)
+                    #generating decoder targets
+                    decoder_target = []
+                    for element in decoder_y:
+                        decoder_target.append(element.copy())
+
+                    num_words = len(decoder_y[0])
+                    decoder_targets = []
+                    for j in range(0, settings.LONGEST_WORD_LENGTH):
+                        for i in range(0, num_words):
+                            decoder_target[0][i] = decoder_y[0][i][j]
+
+                        decoder_targets.append(np.array(decoder_target))
+
+                    yield [encoder_x, decoder_x], decoder_targets
 
     def _data_generator_dict(self, data):
 
