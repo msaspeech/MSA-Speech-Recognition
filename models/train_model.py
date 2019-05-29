@@ -86,7 +86,7 @@ class Seq2SeqModel():
                                  drive_instance=settings.DRIVE_INSTANCE)
 
         if self.data_generation:
-            batch_size = 64
+            batch_size = 512
             steps = int(settings.TOTAL_SAMPLES_NUMBER/batch_size)+1
             history = self.model.fit_generator(self.split_data_generator_dict_word_level(batch_size),
                                                steps_per_epoch=settings.TOTAL_SAMPLES_NUMBER,
