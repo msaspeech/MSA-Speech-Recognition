@@ -19,18 +19,6 @@ def get_encoder_states(mfcc_features, encoder_inputs, latent_dim, return_sequenc
         return encoder_states
 
 
-def get_decoder_outputs(target_length, encoder_states, decoder_inputs, latent_dim):
-    # First Layer
-    decoder_lstm1_layer = CuDNNLSTM(latent_dim,
-                                    return_sequences=True,
-                                    return_state=True,
-                                    kernel_constraint=None,
-                                    kernel_regularizer=None,
-                                    name="decoder_lstm1_layer")
-    decoder_outputs, h, c = decoder_lstm1_layer(decoder_inputs, initial_state=encoder_states)
-
-    return decoder_outputs, [h, c]
-
 def get_decoder_outputs_bis(target_length, encoder_states, decoder_inputs, latent_dim):
     # First Layer
     decoder_lstm1_layer = LSTM(latent_dim,
@@ -53,6 +41,28 @@ def get_decoder_outputs_bis(target_length, encoder_states, decoder_inputs, laten
                                     name="decoder_lstm2_layer")
 
     decoder_outputs, h, c = decoder_lstm2_layer(decoder_lstm1)
+
+    decoder_lstm3_layer = CuDNNLSTM(latent_dim,
+                                    stateful=False,
+                                    return_sequences=True,
+                                    return_state=True,
+                                    kernel_constraint=None,
+                                    kernel_regularizer=None,
+                                    name="decoder_lstm2_layer")
+
+    decoder_outputs, h, c = decoder_lstm3_layer(decoder_outputs)
+
+
+    decoder_lstm4_layer = CuDNNLSTM(latent_dim,
+                                    stateful=False,
+                                    return_sequences=True,
+                                    return_state=True,
+                                    kernel_constraint=None,
+                                    kernel_regularizer=None,
+                                    name="decoder_lstm2_layer")
+
+    decoder_outputs, h, c = decoder_lstm4_layer(decoder_outputs)
+
     return decoder_outputs, [h, c]
 
 def encoder_bilstm(mfcc_features, encoder_inputs, latent_dim, return_sequences=False):
