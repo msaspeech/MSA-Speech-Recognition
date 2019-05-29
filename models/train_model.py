@@ -75,10 +75,10 @@ class Seq2SeqModel():
         print("ENCODER STATES")
         if self.word_level:
             loss = dict()
-            for i in range(0, settings.LONGEST_WORD_LENGTH):
-                layer_name = "dense"+str(i)
-                loss[layer_name] = 'categorical_crossentropy'
-            self.model.compile(optimizer='rmsprop', loss=loss, metrics=['accuracy'])
+            #for i in range(0, settings.LONGEST_WORD_LENGTH):
+                #layer_name = "dense"+str(i)
+                #loss[layer_name] = 'categorical_crossentropy'
+            self.model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
         else:
             self.model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
         model_saver = ModelSaver(model_name=self.model_name, model_path=self.model_path,
@@ -86,7 +86,9 @@ class Seq2SeqModel():
                                  drive_instance=settings.DRIVE_INSTANCE)
 
         if self.data_generation:
-            history = self.model.fit_generator(self.split_data_generator_dict_word_level(),
+            batch_size = 64
+            steps = int(settings.TOTAL_SAMPLES_NUMBER/batch_size)+1
+            history = self.model.fit_generator(self.split_data_generator_dict_word_level(batch_size),
                                                steps_per_epoch=settings.TOTAL_SAMPLES_NUMBER,
                                                epochs=self.epochs,
                                                callbacks=[model_saver])
@@ -157,7 +159,7 @@ class Seq2SeqModel():
 
                     yield [encoder_x, decoder_x], decoder_y
 
-    def split_data_generator_dict_word_level(self):
+    def split_data_generator_dict_word_level(self, batch_size):
         audio_directory = settings.AUDIO_SPLIT_TRAIN_PATH
         audio_files = get_files(audio_directory)
         transcripts_directory = settings.TRANSCRIPTS_ENCODING_SPLIT_TRAIN_PATH
@@ -166,8 +168,19 @@ class Seq2SeqModel():
             for i, audio_file in enumerate(audio_files):
                 #retrieving data
                 data = self.get_data(audio_file, transcript_files[i])
-                for pair_key in data:
-                    output = data[pair_key]
+                size = sum(len(d) for d in data.values())
+                probas = dict((d, len(data[d])/size) for d in data)
+                keys = sorted(data.keys())
+                loop_size = int(size/batch_size)+1
+                for i in range(loop_size):
+                    r = random.random()
+                    for key in keys:
+                        if r < probas[key]:
+                            break
+                        r -= probas[key]
+                    output = data[key]
+                    b_size = min((batch_size, len(output)))
+                    output = random.sample(output,b_size)
                     encoder_x = []
                     decoder_x = []
                     decoder_y = []
@@ -179,7 +192,8 @@ class Seq2SeqModel():
                     encoder_x = np.array(encoder_x)
                     decoder_x = np.array(decoder_x)
 
-                    #decoder_target = decoder_y.copy()
+                    # decoder_target = decoder_y.copy()
+
                     decoder_target = []
                     for h in range(0, len(decoder_y)):
                         decoder_target.append(decoder_y[h].copy())
@@ -193,6 +207,7 @@ class Seq2SeqModel():
                         decoder_targets.append(np.array(decoder_target))
 
                     yield [encoder_x, decoder_x], decoder_targets
+
 
 
     def _data_generator_dict(self, data):
