@@ -19,7 +19,7 @@ def get_encoder_states(mfcc_features, encoder_inputs, latent_dim, return_sequenc
         return encoder_states
 
 
-def get_decoder_outputs_bis(target_length, encoder_states, decoder_inputs, latent_dim):
+def get_decoder_outputs(target_length, encoder_states, decoder_inputs, latent_dim):
     # First Layer
     decoder_lstm1_layer = LSTM(latent_dim,
                                     return_sequences=True,
