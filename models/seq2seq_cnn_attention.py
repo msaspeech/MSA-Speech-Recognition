@@ -5,7 +5,7 @@ from tensorflow.python.keras.layers import Dense, Input, Dropout, Concatenate
 from .encoder_decoder import get_encoder_states, get_decoder_outputs, encoder_bilstm, decoder_for_bidirectional_encoder
 from .layers import get_cnn_model
 from .layers import AttentionLayer
-
+from etc import settings
 
 def train_cnn_seq2seq_model(mfcc_features, target_length, latent_dim):
     """
@@ -126,11 +126,22 @@ def train_cnn_bidirectional_attention_seq2seq_model(mfcc_features, target_length
 
     decoder_dropout = Dropout(0.2)
     decoder_outputs = decoder_dropout(decoder_outputs)
-    decoder_dense = Dense(target_length, activation='softmax', name="decoder_dense")
-    decoder_outputs = decoder_dense(decoder_outputs)
+    #decoder_dense = Dense(target_length, activation='softmax', name="decoder_dense")
+    #decoder_outputs = decoder_dense(decoder_outputs)
 
+    decoder_outputs = get_multi_output_dense(decoder_outputs, target_length)
     # Generating Keras Model
     model = Model([cnn_inputs, decoder_inputs], decoder_outputs)
     print(model.summary())
 
     return model, encoder_states
+
+
+def get_multi_output_dense(decoder_outputs, target_length):
+    dense_layers = []
+
+    for i in range(0, settings.LONGEST_WORD_LENGTH):
+        decoder_dense = Dense(target_length, activation='softmax', name="dense"+str(i))
+        new_decoder_output = decoder_dense(decoder_outputs)
+        dense_layers.append(new_decoder_output)
+    return dense_layers
