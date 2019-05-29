@@ -4,6 +4,10 @@ from lib import AudioInput
 import numpy as np
 from etc import settings
 
+x = 3
+if x % 2 == 0:
+    print("OUIIIIIIIIIIIIIIIIII")
+
 x = [1, 3, 5, 15, 16]
 i= 0
 for i, elt in enumerate(x):
