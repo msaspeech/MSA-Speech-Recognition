@@ -98,8 +98,8 @@ class Seq2SeqModel():
             #                                   epochs=self.epochs,
             #                                   callbacks=[model_saver])
             batch_size = 32
-            #steps = int(settings.TOTAL_SAMPLES_NUMBER/batch_size)+1
-            history = self.model.fit_generator(self.split_data_generator_dict(batch_size),
+            steps = int(settings.TOTAL_SAMPLES_NUMBER/batch_size)+1
+            history = self.model.fit_generator(self.split_data_generator_dict_word_level(batch_size),
                                                steps_per_epoch=settings.TOTAL_SAMPLES_NUMBER,
                                                epochs=self.epochs,
                                                callbacks=[model_saver])
