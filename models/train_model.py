@@ -64,6 +64,7 @@ class Seq2SeqModel():
                     latent_dim=self.latent_dim)
 
             elif self.model_architecture == 5:
+                print("yes loading this model")
                 self.model, self.encoder_states = train_cnn_seq2seq_model(mfcc_features=self.mfcc_features_length,
                                                                           target_length=self.target_length,
                                                                           latent_dim=self.latent_dim)
@@ -81,9 +82,11 @@ class Seq2SeqModel():
         print("ENCODER STATES")
         if self.word_level:
             loss = dict()
+            print("yes heeeeeeere")
             for i in range(0, settings.LONGEST_WORD_LENGTH):
                 layer_name = "dense"+str(i)
                 loss[layer_name] = 'categorical_crossentropy'
+
             self.model.compile(optimizer='rmsprop', loss=loss, metrics=['accuracy'])
         else:
             self.model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
