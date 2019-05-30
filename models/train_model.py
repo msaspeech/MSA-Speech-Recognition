@@ -81,10 +81,10 @@ class Seq2SeqModel():
         print("ENCODER STATES")
         if self.word_level:
             loss = dict()
-            #for i in range(0, settings.LONGEST_WORD_LENGTH):
-                #layer_name = "dense"+str(i)
-                #loss[layer_name] = 'categorical_crossentropy'
-            self.model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
+            for i in range(0, settings.LONGEST_WORD_LENGTH):
+                layer_name = "dense"+str(i)
+                loss[layer_name] = 'categorical_crossentropy'
+            self.model.compile(optimizer='rmsprop', loss=loss, metrics=['accuracy'])
         else:
             self.model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
         model_saver = ModelSaver(model_name=self.model_name, model_path=self.model_path,
