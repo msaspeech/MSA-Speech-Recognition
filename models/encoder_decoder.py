@@ -55,7 +55,7 @@ def get_decoder_outputs(target_length, encoder_states, decoder_inputs, latent_di
     return decoder_outputs, [h, c]
 
 def encoder_bilstm(mfcc_features, encoder_inputs, latent_dim, return_sequences=False):
-    encoder = Bidirectional(LSTM(latent_dim,
+    encoder = Bidirectional(CuDNNLSTM(latent_dim,
                             input_shape=(None, mfcc_features),
                             stateful=False,
                             return_sequences=return_sequences,
@@ -76,7 +76,7 @@ def encoder_bilstm(mfcc_features, encoder_inputs, latent_dim, return_sequences=F
 
 def decoder_for_bidirectional_encoder(target_length, encoder_states, decoder_inputs, latent_dim):
     # First Layer
-    decoder_lstm1_layer = LSTM(latent_dim*2,
+    decoder_lstm1_layer = CuDNNLSTM(latent_dim*2,
                                     input_shape=(None, target_length),
                                     return_sequences=True,
                                     return_state=False,
@@ -86,7 +86,7 @@ def decoder_for_bidirectional_encoder(target_length, encoder_states, decoder_inp
     decoder_lstm1 = decoder_lstm1_layer(decoder_inputs, initial_state=encoder_states)
 
     # Second LSTM Layer
-    decoder_lstm2_layer = LSTM(latent_dim*2,
+    decoder_lstm2_layer = CuDNNLSTM(latent_dim*2,
                                     stateful=False,
                                     return_sequences=True,
                                     return_state=True,
