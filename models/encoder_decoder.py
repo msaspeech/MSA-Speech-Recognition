@@ -2,7 +2,7 @@ from tensorflow.python.keras.layers import CuDNNLSTM, Bidirectional, Concatenate
 #from keras.layers import CuDNNLSTM, Bidirectional, Concatenate, LSTM
 
 def get_encoder_states(mfcc_features, encoder_inputs, latent_dim, return_sequences=False):
-    encoder = LSTM(latent_dim,
+    encoder = CuDNNLSTM(latent_dim,
                         stateful=False,
                         return_sequences=return_sequences,
                         return_state=True,
@@ -21,7 +21,7 @@ def get_encoder_states(mfcc_features, encoder_inputs, latent_dim, return_sequenc
 
 def get_decoder_outputs(target_length, encoder_states, decoder_inputs, latent_dim):
     # First Layer
-    decoder_lstm1_layer = LSTM(latent_dim,
+    decoder_lstm1_layer = CuDNNLSTM(latent_dim,
                                     return_sequences=True,
                                     return_state=True,
                                     kernel_constraint=None,
@@ -32,7 +32,7 @@ def get_decoder_outputs(target_length, encoder_states, decoder_inputs, latent_di
     #decoder_states = [state_h, state_c]
 
     # Second LSTM Layer
-    decoder_lstm2_layer = LSTM(latent_dim,
+    decoder_lstm2_layer = CuDNNLSTM(latent_dim,
                                     stateful=False,
                                     return_sequences=True,
                                     return_state=True,
@@ -42,7 +42,7 @@ def get_decoder_outputs(target_length, encoder_states, decoder_inputs, latent_di
 
     decoder_outputs, h, c = decoder_lstm2_layer(decoder_lstm1)
 
-    decoder_lstm3_layer = LSTM(latent_dim,
+    decoder_lstm3_layer = CuDNNLSTM(latent_dim,
                                     stateful=False,
                                     return_sequences=True,
                                     return_state=True,
@@ -51,17 +51,6 @@ def get_decoder_outputs(target_length, encoder_states, decoder_inputs, latent_di
                                     name="decoder_lstm3_layer")
 
     decoder_outputs, h, c = decoder_lstm3_layer(decoder_outputs)
-
-
-    decoder_lstm4_layer = LSTM(latent_dim,
-                                    stateful=False,
-                                    return_sequences=True,
-                                    return_state=True,
-                                    kernel_constraint=None,
-                                    kernel_regularizer=None,
-                                    name="decoder_lstm4_layer")
-
-    decoder_outputs, h, c = decoder_lstm4_layer(decoder_outputs)
 
     return decoder_outputs, [h, c]
 
