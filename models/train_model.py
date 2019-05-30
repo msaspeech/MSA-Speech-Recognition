@@ -3,9 +3,7 @@ import numpy as np
 from etc import settings
 from utils import file_exists, get_files, load_pickle_data, get_files_full_path
 from tensorflow.python.keras import models
-#from keras import models
-from tensorflow.python.keras.models import Model
-from tensorflow.python.keras.layers import Input
+
 from .seq2seq_baseline import train_baseline_seq2seq_model, train_baseline_seq2seq_model_bis,  train_bidirectional_baseline_seq2seq_model
 from .seq2seq_cnn_attention import train_cnn_seq2seq_model, train_cnn_attention_seq2seq_model, \
     train_cnn_bidirectional_attention_seq2seq_model
