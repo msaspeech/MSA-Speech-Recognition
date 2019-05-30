@@ -98,9 +98,9 @@ class Seq2SeqModel():
             #                                   epochs=self.epochs,
             #                                   callbacks=[model_saver])
             batch_size = 32
-            steps = int(settings.TOTAL_SAMPLES_NUMBER/batch_size)+1
+            #steps = int(settings.TOTAL_SAMPLES_NUMBER/batch_size)+1
             history = self.model.fit_generator(self.split_data_generator_dict(batch_size),
-                                               steps_per_epoch=steps ,
+                                               steps_per_epoch=settings.TOTAL_SAMPLES_NUMBER,
                                                epochs=self.epochs,
                                                callbacks=[model_saver])
 
@@ -154,20 +154,8 @@ class Seq2SeqModel():
                 #retrieving data
 
                 data = self.get_data(audio_file, transcript_files[i])
-                size = sum(len(d) for d in data.values())
-                probas = dict((d, len(data[d]) / size) for d in data)
-                keys = sorted(data.keys())
-                loop_size = int(size / batch_size) + 1
-                for i in range(loop_size):
-                    r = random.random()
-                    for key in keys:
-                        if r < probas[key]:
-                            break
-                        r -= probas[key]
-                    output = data[key]
-                    b_size = min((batch_size, len(output)))
-                    output = random.sample(output, b_size)
-
+                for key_pair in data:
+                    output = data[key_pair]
                     encoder_x = []
                     decoder_x = []
                     decoder_y = []
