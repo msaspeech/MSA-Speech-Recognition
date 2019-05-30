@@ -77,14 +77,19 @@ def _remove_noisy_numbers(transcription):
 
 def transcript_preprocessing(transcription, special_characters_table):
     #replacing special characters
-    transcription = _replace_special_characters(transcription, special_characters_table)
+
+    new_transcription = _replace_special_characters(transcription, special_characters_table)
 
     # Replacing numbers
-    transcription = _replace_numbers(transcription)
+    new_transcription = _replace_numbers(new_transcription)
 
     # deleting remaining numbers
-    transcription = _remove_noisy_numbers(transcription)
+    new_transcription = _remove_noisy_numbers(new_transcription)
 
-    return transcription
+    if transcription == new_transcription:
+        return transcription
+    else:
+        print("TO BE REMOVED")
+        return None
 
 

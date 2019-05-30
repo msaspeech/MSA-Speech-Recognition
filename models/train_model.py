@@ -1,7 +1,7 @@
 import random
 import numpy as np
 from etc import settings
-from utils import file_exists, get_files, load_pickle_data
+from utils import file_exists, get_files, load_pickle_data, get_files_full_path
 from tensorflow.python.keras import models
 #from keras import models
 from tensorflow.python.keras.models import Model
@@ -39,9 +39,15 @@ class Seq2SeqModel():
             print(self.model.summary())
         else:
             if self.model_architecture == 1:
-                self.model, self.encoder_states = train_baseline_seq2seq_model_bis(mfcc_features=self.mfcc_features_length,
-                                                                                   target_length=self.target_length,
-                                                                                   latent_dim=self.latent_dim)
+                #self.model, self.encoder_states = train_baseline_seq2seq_model_bis(mfcc_features=self.mfcc_features_length,
+                #                                                                   target_length=self.target_length,
+                #                                                                   latent_dim=self.latent_dim)
+
+                self.model, self.encoder_states = train_baseline_seq2seq_model(
+                    mfcc_features=self.mfcc_features_length,
+                    target_length=self.target_length,
+                    latent_dim=self.latent_dim)
+
             elif self.model_architecture == 2:
                 self.model, self.encoder_states = train_bidirectional_baseline_seq2seq_model(mfcc_features=self.mfcc_features_length,
                                                                                              target_length=self.target_length,
@@ -86,10 +92,15 @@ class Seq2SeqModel():
                                  drive_instance=settings.DRIVE_INSTANCE)
 
         if self.data_generation:
+            #steps = int(settings.TOTAL_SAMPLES_NUMBER/batch_size)+1
+            #history = self.model.fit_generator(self.split_data_generator_dict_word_level(batch_size),
+            #                                   steps_per_epoch=steps,
+            #                                   epochs=self.epochs,
+            #                                   callbacks=[model_saver])
             batch_size = 32
             steps = int(settings.TOTAL_SAMPLES_NUMBER/batch_size)+1
-            history = self.model.fit_generator(self.split_data_generator_dict_word_level(batch_size),
-                                               steps_per_epoch=steps,
+            history = self.model.fit_generator(self.split_data_generator_dict(batch_size),
+                                               steps_per_epoch=steps ,
                                                epochs=self.epochs,
                                                callbacks=[model_saver])
 
@@ -133,18 +144,30 @@ class Seq2SeqModel():
 
             yield [encoder_x, decoder_x], decoder_y
 
-    def split_data_generator_dict(self):
+    def split_data_generator_dict(self, batch_size):
         audio_directory = settings.AUDIO_SPLIT_TRAIN_PATH
-        audio_files = get_files(audio_directory)
+        audio_files = get_files_full_path(audio_directory)
         transcripts_directory = settings.TRANSCRIPTS_ENCODING_SPLIT_TRAIN_PATH
-        transcript_files = get_files(transcripts_directory)
+        transcript_files = get_files_full_path(transcripts_directory)
         while True:
             for i, audio_file in enumerate(audio_files):
                 #retrieving data
 
                 data = self.get_data(audio_file, transcript_files[i])
-                for pair_key in data:
-                    output = data[pair_key]
+                size = sum(len(d) for d in data.values())
+                probas = dict((d, len(data[d]) / size) for d in data)
+                keys = sorted(data.keys())
+                loop_size = int(size / batch_size) + 1
+                for i in range(loop_size):
+                    r = random.random()
+                    for key in keys:
+                        if r < probas[key]:
+                            break
+                        r -= probas[key]
+                    output = data[key]
+                    b_size = min((batch_size, len(output)))
+                    output = random.sample(output, b_size)
+
                     encoder_x = []
                     decoder_x = []
                     decoder_y = []
@@ -161,9 +184,13 @@ class Seq2SeqModel():
 
     def split_data_generator_dict_word_level(self, batch_size):
         audio_directory = settings.AUDIO_SPLIT_TRAIN_PATH
-        audio_files = get_files(audio_directory)
+        audio_files = get_files_full_path(audio_directory)
         transcripts_directory = settings.TRANSCRIPTS_ENCODING_SPLIT_TRAIN_PATH
-        transcript_files = get_files(transcripts_directory)
+        transcript_files = get_files_full_path(transcripts_directory)
+
+        print(audio_files)
+        print(transcript_files)
+
         while True:
             for i, audio_file in enumerate(audio_files):
                 #retrieving data

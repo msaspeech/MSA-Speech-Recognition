@@ -33,6 +33,12 @@ TRANSCRIPTS_ENCODING_SPLIT_TEST_PATH = "./dataset_split/test/transcripts/"
 AUDIO_SPLIT_TRAIN_PATH = "./dataset_split/train/audio_data/"
 AUDIO_SPLIT_TEST_PATH = "./dataset_split/test/audio_data/"
 
+#PARTITION DATASET
+TRANSCRIPTS_ENCODING_SPLIT_TRAIN_PATH_PARTITION = "./dataset_split/train/transcripts/"
+TRANSCRIPTS_ENCODING_SPLIT_TEST_PATH_PARTITION = "./dataset_split/test/transcripts/"
+AUDIO_SPLIT_TRAIN_PATH_PARTITION = "./dataset_split/train/audio_data/"
+AUDIO_SPLIT_TEST_PATH_PARTITION = "./dataset_split/test/audio_data/"
+
 
 global MFCC_FEATURES_LENGTH
 global CHARACTER_SET

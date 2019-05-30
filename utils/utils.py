@@ -20,6 +20,16 @@ def get_files(directory):
     return list_files
 
 
+def get_files_full_path(directory):
+    files_to_return = []
+    for path, subdirs, files in os.walk(directory):
+        for name in sorted(files):
+            file_path = os.path.join(path, name)
+            files_to_return.append(file_path)
+    files_to_return.sort(key=natural_keys)
+    return files_to_return
+
+
 def file_exists(file_path):
     if os.path.exists(file_path):
         return True

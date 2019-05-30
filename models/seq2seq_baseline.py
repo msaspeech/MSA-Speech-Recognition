@@ -24,7 +24,7 @@ def train_baseline_seq2seq_model(mfcc_features, target_length, latent_dim):
     # Decoder training, using 'encoder_states' as initial state.
     decoder_inputs = Input(shape=(None, target_length), name="decoder_input")
     # masked_inputs = Masking(mask_value=0,)(decoder_inputs)
-    decoder_outputs = get_decoder_outputs(target_length=target_length,
+    decoder_outputs, decoder_states = get_decoder_outputs(target_length=target_length,
                                           encoder_states=encoder_states,
                                           decoder_inputs=decoder_inputs,
                                           latent_dim=latent_dim)
