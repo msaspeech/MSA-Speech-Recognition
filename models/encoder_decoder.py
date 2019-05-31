@@ -72,14 +72,6 @@ def get_decoder_outputs_GRU(target_length, encoder_states, decoder_inputs, laten
                                     name="decoder_lstm2_layer")
     decoder_outputs, state_h = decoder_lstm2_layer(decoder_outputs, initial_state=state_h)
 
-    decoder_lstm3_layer = CuDNNGRU(latent_dim,
-                                    return_sequences=True,
-                                    return_state=True,
-                                    kernel_constraint=None,
-                                    kernel_regularizer=None,
-                                    name="decoder_lstm3_layer")
-    decoder_outputs, state_h = decoder_lstm3_layer(decoder_outputs, initial_state=state_h)
-
     decoder_states = [state_h]
 
     return decoder_outputs, decoder_states
