@@ -97,7 +97,7 @@ class Seq2SeqModel():
                                                epochs=self.epochs,
                                                callbacks=[model_saver])
         else:
-            self.model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
+            self.model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
             batch_size = 32
             steps = int(settings.TOTAL_SAMPLES_NUMBER / batch_size) + 1
             history = self.model.fit_generator(self.split_data_generator_dict(batch_size),
