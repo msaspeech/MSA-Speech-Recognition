@@ -37,10 +37,10 @@ def train_cnn_seq2seq_model(mfcc_features, target_length, latent_dim):
                                           decoder_inputs=decoder_inputs,
                                           latent_dim=latent_dim)
 
-    decoder_dense = Dense(target_length, activation='softmax', name="decoder_dense")
-    decoder_outputs = decoder_dense(decoder_outputs)
-    #target_length = len(settings.CHARACTER_SET) + 1
-    #decoder_outputs = get_multi_output_dense(decoder_outputs, target_length=target_length)
+    #decoder_dense = Dense(target_length, activation='softmax', name="decoder_dense")
+    #decoder_outputs = decoder_dense(decoder_outputs)
+    target_length = len(settings.CHARACTER_SET) + 1
+    decoder_outputs = get_multi_output_dense(decoder_outputs, target_length=target_length)
     # Generating Keras Model
     model = Model([cnn_inputs, decoder_inputs], decoder_outputs)
     print(model.summary())

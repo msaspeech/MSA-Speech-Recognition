@@ -31,7 +31,6 @@ def get_encoder_states_GRU(mfcc_features, encoder_inputs, latent_dim, return_seq
     # 'encoder_outputs' are ignored and only states are kept.
     encoder_outputs, state_h= encoder(encoder_inputs)
 
-
     encoder_states = [state_h]
     if return_sequences:
         return encoder_outputs, encoder_states
