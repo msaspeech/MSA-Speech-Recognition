@@ -1,5 +1,5 @@
 from scipy.optimize._trustregion_constr.canonical_constraint import initial_constraints_as_canonical
-from tensorflow.python.keras.layers import CuDNNLSTM, Bidirectional, Concatenate, LSTM, GRU
+from tensorflow.python.keras.layers import CuDNNLSTM, Bidirectional, Concatenate, LSTM, GRU, CuDNNGRU
 #from keras.layers import CuDNNLSTM, Bidirectional, Concatenate, LSTM
 
 def get_encoder_states(mfcc_features, encoder_inputs, latent_dim, return_sequences=False):
@@ -21,7 +21,7 @@ def get_encoder_states(mfcc_features, encoder_inputs, latent_dim, return_sequenc
 
 
 def get_encoder_states_GRU(mfcc_features, encoder_inputs, latent_dim, return_sequences=False):
-    encoder = GRU(latent_dim,
+    encoder = CuDNNGRU(latent_dim,
                         stateful=False,
                         return_sequences=return_sequences,
                         return_state=True,
@@ -56,7 +56,7 @@ def get_decoder_outputs(target_length, encoder_states, decoder_inputs, latent_di
 
 def get_decoder_outputs_GRU(target_length, encoder_states, decoder_inputs, latent_dim):
     # First Layer
-    decoder_lstm1_layer = GRU(latent_dim,
+    decoder_lstm1_layer = CuDNNGRU(latent_dim,
                                     return_sequences=True,
                                     return_state=True,
                                     kernel_constraint=None,
@@ -64,7 +64,7 @@ def get_decoder_outputs_GRU(target_length, encoder_states, decoder_inputs, laten
                                     name="decoder_lstm1_layer")
     decoder_outputs, state_h= decoder_lstm1_layer(decoder_inputs, initial_state=encoder_states)
 
-    decoder_lstm2_layer = GRU(latent_dim,
+    decoder_lstm2_layer = CuDNNGRU(latent_dim,
                                     return_sequences=True,
                                     return_state=True,
                                     kernel_constraint=None,
@@ -72,6 +72,13 @@ def get_decoder_outputs_GRU(target_length, encoder_states, decoder_inputs, laten
                                     name="decoder_lstm2_layer")
     decoder_outputs, state_h = decoder_lstm2_layer(decoder_outputs, initial_state=state_h)
 
+    decoder_lstm3_layer = CuDNNGRU(latent_dim,
+                                    return_sequences=True,
+                                    return_state=True,
+                                    kernel_constraint=None,
+                                    kernel_regularizer=None,
+                                    name="decoder_lstm3_layer")
+    decoder_outputs, state_h = decoder_lstm3_layer(decoder_outputs, initial_state=state_h)
 
     decoder_states = [state_h]
 
