@@ -78,35 +78,34 @@ class Seq2SeqModel():
 
     def train_model(self):
         print("ENCODER STATES")
+
+        model_saver = ModelSaver(model_name=self.model_name, model_path=self.model_path,
+                                 encoder_states=self.encoder_states,
+                                 drive_instance=settings.DRIVE_INSTANCE)
+
         if self.word_level:
             loss = dict()
-            print("yes heeeeeeere")
             for i in range(0, settings.LONGEST_WORD_LENGTH):
                 layer_name = "dense"+str(i)
                 loss[layer_name] = 'categorical_crossentropy'
 
             self.model.compile(optimizer='rmsprop', loss=loss, metrics=['accuracy'])
+            batch_size = 32
+            steps = int(settings.TOTAL_SAMPLES_NUMBER / batch_size) + 1
+            history = self.model.fit_generator(self.split_data_generator_dict_word_level(batch_size),
+                                               steps_per_epoch=steps,
+                                               epochs=self.epochs,
+                                               callbacks=[model_saver])
         else:
             self.model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
-        model_saver = ModelSaver(model_name=self.model_name, model_path=self.model_path,
-                                 encoder_states=self.encoder_states,
-                                 drive_instance=settings.DRIVE_INSTANCE)
-
-        if self.data_generation:
-            #steps = int(settings.TOTAL_SAMPLES_NUMBER/batch_size)+1
-            #history = self.model.fit_generator(self.split_data_generator_dict_word_level(batch_size),
-            #                                   steps_per_epoch=steps,
-            #                                   epochs=self.epochs,
-            #                                   callbacks=[model_saver])
             batch_size = 32
-            steps = int(settings.TOTAL_SAMPLES_NUMBER/batch_size)+1
+            steps = int(settings.TOTAL_SAMPLES_NUMBER / batch_size) + 1
             history = self.model.fit_generator(self.split_data_generator_dict(batch_size),
                                                steps_per_epoch=steps,
                                                epochs=self.epochs,
                                                callbacks=[model_saver])
 
-        else:
-            pass
+
             #history = self.model.fit([encoder_input_data, decoder_input_data], decoder_target_data,
             #                         epochs=self.epochs,
             #                         validation_split=0.2,
@@ -168,7 +167,6 @@ class Seq2SeqModel():
                     encoder_x = np.array(encoder_x)
                     decoder_x = np.array(decoder_x)
                     decoder_y = np.array(decoder_y)
-
                     yield [encoder_x, decoder_x], decoder_y
 
     def split_data_generator_dict_word_level(self, batch_size):

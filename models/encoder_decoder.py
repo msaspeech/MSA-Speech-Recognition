@@ -1,4 +1,5 @@
-from tensorflow.python.keras.layers import CuDNNLSTM, Bidirectional, Concatenate, LSTM
+from scipy.optimize._trustregion_constr.canonical_constraint import initial_constraints_as_canonical
+from tensorflow.python.keras.layers import CuDNNLSTM, Bidirectional, Concatenate, LSTM, GRU
 #from keras.layers import CuDNNLSTM, Bidirectional, Concatenate, LSTM
 
 def get_encoder_states(mfcc_features, encoder_inputs, latent_dim, return_sequences=False):
@@ -19,6 +20,25 @@ def get_encoder_states(mfcc_features, encoder_inputs, latent_dim, return_sequenc
         return encoder_states
 
 
+def get_encoder_states_GRU(mfcc_features, encoder_inputs, latent_dim, return_sequences=False):
+    encoder = GRU(latent_dim,
+                        stateful=False,
+                        return_sequences=return_sequences,
+                        return_state=True,
+                        kernel_constraint=None,
+                        kernel_regularizer=None,
+                        name="encoder_lstm_layer")
+    # 'encoder_outputs' are ignored and only states are kept.
+    encoder_outputs, state_h= encoder(encoder_inputs)
+
+
+    encoder_states = [state_h]
+    if return_sequences:
+        return encoder_outputs, encoder_states
+    else:
+        return encoder_states
+
+
 def get_decoder_outputs(target_length, encoder_states, decoder_inputs, latent_dim):
     # First Layer
     decoder_lstm1_layer = LSTM(latent_dim,
@@ -27,35 +47,39 @@ def get_decoder_outputs(target_length, encoder_states, decoder_inputs, latent_di
                                     kernel_constraint=None,
                                     kernel_regularizer=None,
                                     name="decoder_lstm1_layer")
-    decoder_lstm1, state_h, state_c = decoder_lstm1_layer(decoder_inputs, initial_state=encoder_states)
+    decoder_outputs, state_h, state_c = decoder_lstm1_layer(decoder_inputs, initial_state=encoder_states)
 
-    #decoder_states = [state_h, state_c]
+    decoder_states = [state_h, state_c]
 
-    # Second LSTM Layer
-    decoder_lstm2_layer = LSTM(latent_dim,
-                                    stateful=False,
+    return decoder_outputs, decoder_states
+
+
+def get_decoder_outputs_GRU(target_length, encoder_states, decoder_inputs, latent_dim):
+    # First Layer
+    decoder_lstm1_layer = GRU(latent_dim,
+                                    return_sequences=True,
+                                    return_state=True,
+                                    kernel_constraint=None,
+                                    kernel_regularizer=None,
+                                    name="decoder_lstm1_layer")
+    decoder_outputs, state_h= decoder_lstm1_layer(decoder_inputs, initial_state=encoder_states)
+
+    decoder_lstm2_layer = GRU(latent_dim,
                                     return_sequences=True,
                                     return_state=True,
                                     kernel_constraint=None,
                                     kernel_regularizer=None,
                                     name="decoder_lstm2_layer")
+    decoder_outputs, state_h = decoder_lstm2_layer(decoder_outputs, initial_state=state_h)
 
-    decoder_outputs, h, c = decoder_lstm2_layer(decoder_lstm1)
 
-    decoder_lstm3_layer = LSTM(latent_dim,
-                                    stateful=False,
-                                    return_sequences=True,
-                                    return_state=True,
-                                    kernel_constraint=None,
-                                    kernel_regularizer=None,
-                                    name="decoder_lstm3_layer")
+    decoder_states = [state_h]
 
-    decoder_outputs, h, c = decoder_lstm3_layer(decoder_outputs)
+    return decoder_outputs, decoder_states
 
-    return decoder_outputs, [h, c]
 
 def encoder_bilstm(mfcc_features, encoder_inputs, latent_dim, return_sequences=False):
-    encoder = Bidirectional(CuDNNLSTM(latent_dim,
+    encoder = Bidirectional( LSTM(latent_dim,
                             input_shape=(None, mfcc_features),
                             stateful=False,
                             return_sequences=return_sequences,

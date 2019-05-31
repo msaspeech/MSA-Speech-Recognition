@@ -23,18 +23,18 @@ class ModelSaver(Callback):
         #encoder_states = [self.encoder_states]
         #generate_pickle_file(encoder_states, path)
 
-        parent_directory_id = '0B5fJkPjHLj3Jdkw5ZnFiY0lZV1U'
-        file_list = self.drive_instance.ListFile({'q': "\'"+parent_directory_id+"\'"+" in parents  and trashed=false"}).GetList()
-        try:
-            for file1 in file_list:
-                if file1['title'] == self.model_path:
-                    file1.Delete()
-        except:
-            print("File not found")
+        #parent_directory_id = '0B5fJkPjHLj3Jdkw5ZnFiY0lZV1U'
+        #file_list = self.drive_instance.ListFile({'q': "\'"+parent_directory_id+"\'"+" in parents  and trashed=false"}).GetList()
+        #try:
+        #    for file1 in file_list:
+        #        if file1['title'] == self.model_path:
+        #            file1.Delete()
+        #except:
+        #    print("File not found")
 
-        uploaded = self.drive_instance.CreateFile({model_title: self.model_name, "parents": [{"kind": "drive#fileLink", "id": parent_directory_id}]})
-        uploaded.SetContentFile(self.model_path)
-        uploaded.Upload()
+        #uploaded = self.drive_instance.CreateFile({model_title: self.model_name, "parents": [{"kind": "drive#fileLink", "id": parent_directory_id}]})
+        #uploaded.SetContentFile(self.model_path)
+        #uploaded.Upload()
 
 
 

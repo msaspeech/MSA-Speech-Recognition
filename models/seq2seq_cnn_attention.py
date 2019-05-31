@@ -3,6 +3,7 @@ from tensorflow.python.keras.layers import Dense, Input, Dropout, Concatenate
 #from keras.layers import Dense, Input, Dropout, Concatenate
 #from keras import Model
 from .encoder_decoder import get_encoder_states, get_decoder_outputs, encoder_bilstm, decoder_for_bidirectional_encoder
+from .encoder_decoder import get_encoder_states_GRU, get_decoder_outputs_GRU
 from .layers import get_cnn_model
 from .layers import AttentionLayer
 from etc import settings
@@ -25,21 +26,21 @@ def train_cnn_seq2seq_model(mfcc_features, target_length, latent_dim):
     cnn_model_output_shape = cnn_model.layers[-1].output_shape[2]
     # Preparing Input shape for LSTM layer from CNN model
     cnn_output = cnn_model(cnn_inputs)
-    encoder_states = get_encoder_states(mfcc_features=cnn_model_output_shape,
+    encoder_states = get_encoder_states_GRU(mfcc_features=cnn_model_output_shape,
                                         encoder_inputs=cnn_output,
                                         latent_dim=latent_dim)
 
     # Decoder training, using 'encoder_states' as initial state.
     decoder_inputs = Input(shape=(None, target_length), name="decoder_input")
-    decoder_outputs, states = get_decoder_outputs(target_length=target_length,
+    decoder_outputs, states = get_decoder_outputs_GRU(target_length=target_length,
                                           encoder_states=encoder_states,
                                           decoder_inputs=decoder_inputs,
                                           latent_dim=latent_dim)
 
-    #decoder_dense = Dense(target_length, activation='softmax', name="decoder_dense")
-    #decoder_outputs = decoder_dense(decoder_outputs)
-    target_length = len(settings.CHARACTER_SET) + 1
-    decoder_outputs = get_multi_output_dense(decoder_outputs, target_length=target_length)
+    decoder_dense = Dense(target_length, activation='softmax', name="decoder_dense")
+    decoder_outputs = decoder_dense(decoder_outputs)
+    #target_length = len(settings.CHARACTER_SET) + 1
+    #decoder_outputs = get_multi_output_dense(decoder_outputs, target_length=target_length)
     # Generating Keras Model
     model = Model([cnn_inputs, decoder_inputs], decoder_outputs)
     print(model.summary())
