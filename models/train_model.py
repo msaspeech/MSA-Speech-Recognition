@@ -65,7 +65,8 @@ class Seq2SeqModel():
                 print("yes loading this model")
                 self.model, self.encoder_states = train_cnn_seq2seq_model(mfcc_features=self.mfcc_features_length,
                                                                           target_length=self.target_length,
-                                                                          latent_dim=self.latent_dim)
+                                                                          latent_dim=self.latent_dim,
+                                                                          word_based=self.word_level)
             elif self.model_architecture == 6:
                 self.model, self.encoder_states = train_cnn_attention_seq2seq_model(mfcc_features=self.mfcc_features_length,
                                                                                     target_length=self.target_length,
