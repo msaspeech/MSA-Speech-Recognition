@@ -23,7 +23,7 @@ class ModelSaver(Callback):
         encoder_states = [self.encoder_states]
         generate_pickle_file(encoder_states, path)
 
-        #parent_directory_id = '0B5fJkPjHLj3Jdkw5ZnFiY0lZV1U'
+        parent_directory_id = '0B5fJkPjHLj3Jdkw5ZnFiY0lZV1U'
         file_list = self.drive_instance.ListFile({'q': "\'"+parent_directory_id+"\'"+" in parents  and trashed=false"}).GetList()
         try:
             for file1 in file_list:
