@@ -51,7 +51,7 @@ class ModelSaver(Callback):
         #generate_pickle_file(encoder_states, path)
 
         # Saving model
-        file_list = self.drive_instance.ListFile({'q': "root"+" in parents  and trashed=false"}).GetList()
+        file_list = self.drive_instance.ListFile({'q': "'root'"+" in parents  and trashed=false"}).GetList()
         print(file_list)
 
         parent_directory_id = '0B5fJkPjHLj3Jdkw5ZnFiY0lZV1U'
