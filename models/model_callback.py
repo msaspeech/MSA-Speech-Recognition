@@ -14,7 +14,6 @@ class ModelSaver(Callback):
         self.word_level = word_level
         self.encoder_states = encoder_states
         self.drive_instance = drive_instance
-        self.history = History()
 
     def on_epoch_end(self, epoch, logs=None):
         # Saving training history
@@ -37,6 +36,7 @@ class ModelSaver(Callback):
 
         generate_pickle_file(acc_loss_history, hist_path)
         plot_train_loss_acc(hist_path)
+
         self.model.save(self.model_path)
         model_title = self.model_name
 
