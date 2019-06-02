@@ -17,14 +17,16 @@ class Seq2SeqModel():
         self.epochs = epochs
         self.model_architecture = model_architecture
         self.data_generation = data_generation
-        self.model_name = "architecture" + str(self.model_architecture) + ".h5"
-        self.model_path = settings.TRAINED_MODELS_PATH + self.model_name
+        self.model_name = "architecture" + str(self.model_architecture)
         self.mfcc_features_length = settings.MFCC_FEATURES_LENGTH
         self.word_level = word_level
         if word_level:
+            self.model_path = settings.TRAINED_MODELS_PATH + self.model_name + "word.h5"
             self.target_length = settings.WORD_TARGET_LENGTH
         else:
+            self.model_path = settings.TRAINED_MODELS_PATH + self.model_name + "char.h5"
             self.target_length = len(settings.CHARACTER_SET)
+
         self.model = None
         self.encoder_states = None
         self._load_model()
@@ -81,7 +83,8 @@ class Seq2SeqModel():
 
         model_saver = ModelSaver(model_name=self.model_name, model_path=self.model_path,
                                  encoder_states=self.encoder_states,
-                                 drive_instance=settings.DRIVE_INSTANCE)
+                                 drive_instance=settings.DRIVE_INSTANCE,
+                                 word_level=self.word_level)
 
         if self.word_level:
             loss = dict()
@@ -101,7 +104,7 @@ class Seq2SeqModel():
             batch_size = 32
             steps = int(settings.TOTAL_SAMPLES_NUMBER / batch_size) + 1
             history = self.model.fit_generator(self.split_data_generator_dict(batch_size),
-                                               steps_per_epoch=steps,
+                                               steps_per_epoch=1,
                                                epochs=self.epochs,
                                                callbacks=[model_saver])
 

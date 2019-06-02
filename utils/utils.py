@@ -1,5 +1,6 @@
 import os
 import pickle
+import json
 import re
 
 
@@ -94,7 +95,7 @@ def generate_pickle_file(data, file_path):
      Uploads AudioInput data from pickle file
      :return:
      """
-    with open(file_path , 'wb') as f:
+    with open(file_path, 'wb') as f:
         pickle.dump(data, f, pickle.HIGHEST_PROTOCOL)
         f.close()
 
@@ -108,3 +109,13 @@ def load_pickle_data(file_path):
         data = pickle.load(f)
     return data
 
+
+def generate_json_file(data, file_path):
+    with open(file_path, 'w') as f:
+        json.dump(data, f)
+
+
+def load_json_data(file_path):
+    with open(file_path, 'r') as f:
+        data = json.load(f)
+    return data

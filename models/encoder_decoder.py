@@ -12,6 +12,7 @@ def get_encoder_states(mfcc_features, encoder_inputs, latent_dim, return_sequenc
                         kernel_regularizer=None,
                         recurrent_initializer='glorot_uniform',
                         name="encoder_lstm_layer")
+
     # 'encoder_outputs' are ignored and only states are kept.
     encoder_outputs, state_h, state_c = encoder(encoder_inputs)
     encoder_states = [state_h, state_c]
@@ -19,7 +20,6 @@ def get_encoder_states(mfcc_features, encoder_inputs, latent_dim, return_sequenc
         return encoder_outputs, encoder_states
     else:
         return encoder_states
-
 
 def get_encoder_states_GRU(mfcc_features, encoder_inputs, latent_dim, return_sequences=False):
     encoder = CuDNNGRU(latent_dim,

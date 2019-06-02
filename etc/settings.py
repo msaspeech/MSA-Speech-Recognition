@@ -23,7 +23,6 @@ ENCODER_INPUT_MAX_VALUES_PATH = "./normalization/max_values.pkl"
 NORMALIZED_ENCODER_INPUT_PATH = "./normalization/encoder_input.pkl"
 TRAINED_MODELS_PATH = "./trained_models/"
 ENCODER_STATES_PATH= "./trained_models/encoder_states_"
-MODEL_HISTORY_PLOTS = "./trained_models/traninng_history/"
 
 DATASET_SPLIT_PATH = "./dataset_split/"
 DATASET_SPLIT_TRAIN_PATH = "./dataset_split/train/"
@@ -39,6 +38,8 @@ TRANSCRIPTS_ENCODING_SPLIT_TEST_PATH_PARTITION = "./dataset_split/test/transcrip
 AUDIO_SPLIT_TRAIN_PATH_PARTITION = "./dataset_split/train/audio_data/"
 AUDIO_SPLIT_TEST_PATH_PARTITION = "./dataset_split/test/audio_data/"
 
+# Training History
+TRAIN_HISTORY = "./trained_models/training_history/"
 
 global MFCC_FEATURES_LENGTH
 global CHARACTER_SET
