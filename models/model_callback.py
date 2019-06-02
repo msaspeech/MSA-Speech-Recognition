@@ -18,7 +18,6 @@ class ModelSaver(Callback):
     def on_epoch_end(self, epoch, logs=None):
         # Saving training history
 
-        print("LOGS" + str(logs))
         if self.word_level:
             hist_path = settings.TRAIN_HISTORY + self.model_name + "word.pkl"
         else:
@@ -72,7 +71,7 @@ class ModelSaver(Callback):
 
         uploaded = self.drive_instance.CreateFile(
             {model_title: "Train history", "parents": [{"kind": "drive#fileLink", "id": parent_directory_id}]})
-        uploaded.SetContentFile(self.history)
+        uploaded.SetContentFile(hist_path)
         uploaded.Upload()
 
 
