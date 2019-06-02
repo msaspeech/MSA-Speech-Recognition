@@ -19,6 +19,7 @@ class ModelSaver(Callback):
     def on_epoch_end(self, epoch, logs=None):
         # Saving training history
 
+        print("LOGS" + str(logs))
         if self.word_level:
             hist_path = settings.TRAIN_HISTORY + self.model_name + "word.pkl"
         else:
