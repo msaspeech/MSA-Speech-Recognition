@@ -1,5 +1,5 @@
 from tensorflow.python.keras.callbacks import Callback, History
-import matplotlib.pyplot as plt
+from . import plot_train_loss_acc
 from etc import ENCODER_STATES_PATH, settings
 from utils import generate_pickle_file, file_exists, load_pickle_data, generate_json_file, load_json_data
 
@@ -34,9 +34,8 @@ class ModelSaver(Callback):
         acc_loss_history["accuracy"].append(logs["acc"])
         acc_loss_history["loss"].append(logs["loss"])
 
-
         generate_pickle_file(acc_loss_history, hist_path)
-
+        plot_train_loss_acc(hist_path)
         self.model.save(self.model_path)
         model_title = self.model_name
 
@@ -45,6 +44,7 @@ class ModelSaver(Callback):
         #encoder_states = [self.encoder_states]
         #generate_pickle_file(encoder_states, path)
 
+        # Saving model
         parent_directory_id = '0B5fJkPjHLj3Jdkw5ZnFiY0lZV1U'
         file_list = self.drive_instance.ListFile({'q': "\'"+parent_directory_id+"\'"+" in parents  and trashed=false"}).GetList()
         try:
@@ -58,17 +58,20 @@ class ModelSaver(Callback):
         uploaded.SetContentFile(self.model_path)
         uploaded.Upload()
 
+        # Save training loss and accuracy
+        parent_directory_id = '0B5fJkPjHLj3Jdkw5ZnFiY0lZV1U'
+        file_list = self.drive_instance.ListFile(
+            {'q': "\'" + parent_directory_id + "\'" + " in parents  and trashed=false"}).GetList()
+        try:
+            for file1 in file_list:
+                if file1['title'] == hist_path:
+                    file1.Delete()
+        except:
+            print("File not found")
 
+        uploaded = self.drive_instance.CreateFile(
+            {model_title: "Train history", "parents": [{"kind": "drive#fileLink", "id": parent_directory_id}]})
+        uploaded.SetContentFile(self.history)
+        uploaded.Upload()
 
-
-        #Model saving
-
-        #plt.plot(self.history.history['acc'])
-        # plt.plot(history.history['val_acc'])
-        #plt.title('model accuracy')
-        #plt.ylabel('accuracy')
-        #plt.xlabel('epoch')
-        #plt.legend(['train'], loc='upper left')
-        #save_path =  MODEL_HISTORY_PLOTS+self.model_name.split(".h5")[0]+"_train_accuracy.png"
-        #plt.savefig(save_path)
 
