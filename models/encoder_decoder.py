@@ -176,4 +176,6 @@ def decoder_for_bidirectional_encoder_GRU(target_length, encoder_states, decoder
                                    name="decoder_lstm_3layer")
     decoder_outputs, state_h = decoder_lstm3_layer(decoder_outputs, initial_state=state_h)
 
-    return decoder_outputs
+    decoder_states = [state_h]
+
+    return decoder_outputs, decoder_states

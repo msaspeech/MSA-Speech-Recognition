@@ -37,19 +37,17 @@ class Seq2SeqModel():
             print(self.model.summary())
         else:
             if self.model_architecture == 1:
-                #self.model, self.encoder_states = train_baseline_seq2seq_model_bis(mfcc_features=self.mfcc_features_length,
-                #                                                                   target_length=self.target_length,
-                #                                                                   latent_dim=self.latent_dim)
-
                 self.model, self.encoder_states = train_baseline_seq2seq_model(
                     mfcc_features=self.mfcc_features_length,
                     target_length=self.target_length,
-                    latent_dim=self.latent_dim)
+                    latent_dim=self.latent_dim,
+                    word_level=self.word_level)
 
             elif self.model_architecture == 2:
                 self.model, self.encoder_states = train_bidirectional_baseline_seq2seq_model(mfcc_features=self.mfcc_features_length,
                                                                                              target_length=self.target_length,
-                                                                                             latent_dim=self.latent_dim)
+                                                                                             latent_dim=self.latent_dim,
+                                                                                             word_level=self.word_level)
 
             elif self.model_architecture == 3:
                 self.model, self.encoder_states = train_attention_seq2seq_model(mfcc_features=self.mfcc_features_length,
@@ -75,7 +73,8 @@ class Seq2SeqModel():
             else:
                 self.model, self.encoder_states = train_cnn_bidirectional_attention_seq2seq_model(mfcc_features=self.mfcc_features_length,
                                                                                                   target_length=self.target_length,
-                                                                                                  latent_dim=self.latent_dim)
+                                                                                                  latent_dim=self.latent_dim,
+                                                                                                  word_level=self.word_level)
 
     def train_model(self):
         print("ENCODER STATES")
