@@ -83,7 +83,6 @@ class ModelSaver(Callback):
         uploaded.Upload()
 
         # Save training loss and accuracy
-        parent_directory_id = '0B5fJkPjHLj3Jdkw5ZnFiY0lZV1U'
         file_list = self.drive_instance.ListFile(
             {'q': "\'" + parent_directory_id + "\'" + " in parents  and trashed=false"}).GetList()
         try:
