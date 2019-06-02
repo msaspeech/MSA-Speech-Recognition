@@ -15,6 +15,7 @@ class ModelSaver(Callback):
         self.history = History()
 
     def on_epoch_end(self, epoch, logs=None):
+        print("accuracy is : "+ str(logs["acc"]))
         self.model.save(self.model_path)
         model_title = self.model_name.split(".h5")[0]
 
