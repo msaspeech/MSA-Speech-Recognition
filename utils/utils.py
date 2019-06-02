@@ -43,6 +43,10 @@ def empty_directory(directory_path):
     return False
 
 
+def create_dir(dir_path):
+    os.mkdir(dir_path)
+
+
 def get_longest_word_length(words_list):
     max_length = 0
     for word in words_list:

@@ -1,7 +1,7 @@
-from tensorflow.python.keras.callbacks import Callback, History
+from tensorflow.python.keras.callbacks import Callback
 from . import plot_train_loss_acc
 from etc import ENCODER_STATES_PATH, settings
-from utils import generate_pickle_file, file_exists, load_pickle_data, generate_json_file, load_json_data
+from utils import generate_pickle_file, file_exists, create_dir, load_pickle_data
 
 
 class ModelSaver(Callback):
@@ -18,10 +18,15 @@ class ModelSaver(Callback):
     def on_epoch_end(self, epoch, logs=None):
         # Saving training history
 
+        #Check if directory exists
+        directory_path = settings.TRAIN_HISTORY + self.model_name
+        if not file_exists(directory_path):
+            create_dir(directory_path)
+
         if self.word_level:
-            hist_path = settings.TRAIN_HISTORY + self.model_name + "word.pkl"
+            hist_path = settings.TRAIN_HISTORY + self.model_name + "/" + self.model_name + "word.pkl"
         else:
-            hist_path = settings.TRAIN_HISTORY + self.model_name + "char.pkl"
+            hist_path = settings.TRAIN_HISTORY + self.model_name + "/" + self.model_name + "char.pkl"
 
         if file_exists(hist_path):
             acc_loss_history = load_pickle_data(hist_path)
@@ -34,6 +39,7 @@ class ModelSaver(Callback):
         acc_loss_history["loss"].append(logs["loss"])
 
         generate_pickle_file(acc_loss_history, hist_path)
+
         plot_train_loss_acc(hist_path)
 
         self.model.save(self.model_path)
@@ -45,8 +51,12 @@ class ModelSaver(Callback):
         #generate_pickle_file(encoder_states, path)
 
         # Saving model
+        file_list = self.drive_instance.ListFile({'q': "root"+" in parents  and trashed=false"}).GetList()
+        print(file_list)
+
         parent_directory_id = '0B5fJkPjHLj3Jdkw5ZnFiY0lZV1U'
         file_list = self.drive_instance.ListFile({'q': "\'"+parent_directory_id+"\'"+" in parents  and trashed=false"}).GetList()
+
         try:
             for file1 in file_list:
                 if file1['title'] == self.model_path:
