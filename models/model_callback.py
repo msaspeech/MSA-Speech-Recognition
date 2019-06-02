@@ -51,12 +51,24 @@ class ModelSaver(Callback):
         #generate_pickle_file(encoder_states, path)
 
         # Saving model
-        parent_directory_id = "0B5fJkPjHLj3Jdkw5ZnFiY0lZV1U"
-        file_list = self.drive_instance.ListFile({'q': "\'"+parent_directory_id+"\'"+" in parents  and trashed=false"}).GetList()
-        for file1 in file_list:
-            print('title: %s, id: %s' % (file1['title'], file1['id']))
 
-        parent_directory_id = '0B5fJkPjHLj3Jdkw5ZnFiY0lZV1U'
+        folders_dict_id = {}
+        folders_dict_id["architecture1"] = "182V0L64_Ovt4i5VEdxZkzM73woulpC40"
+        folders_dict_id["architecture2"] = "1nAKBM7fJMcg7VEaFHr4A-XDIilQ5w7MP"
+        folders_dict_id["architecture3"] = "1KZdD44LUEaGHoPIHI7TMJ8gx_KUmOueS"
+        folders_dict_id["architecture4"] = "1mPqGG38TGcGUmw0Oz4KqP4M-R5atREaO"
+        folders_dict_id["architecture5"] = "1Hy0hecoGHYjiWkZpj8snZpqTiH4YSdE6"
+        folders_dict_id["architecture6"] = "1YDWIu47oGj2C_C5C2XC9-51UjUTIbelw"
+        folders_dict_id["architecture7"] = "18Xiiq1CEb8bxJhRY_gjUUK-2xNjY3ixw"
+
+
+        #parent_directory_id = "0B5fJkPjHLj3Jdkw5ZnFiY0lZV1U"
+        #file_list = self.drive_instance.ListFile({'q': "\'"+parent_directory_id+"\'"+" in parents  and trashed=false"}).GetList()
+        #for file1 in file_list:
+        #    print('title: %s, id: %s' % (file1['title'], file1['id']))
+
+        #parent_directory_id = '0B5fJkPjHLj3Jdkw5ZnFiY0lZV1U'
+        parent_directory_id = folders_dict_id[self.model_name]
         file_list = self.drive_instance.ListFile({'q': "\'"+parent_directory_id+"\'"+" in parents  and trashed=false"}).GetList()
 
         try:
