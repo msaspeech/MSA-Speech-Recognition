@@ -52,7 +52,8 @@ class ModelSaver(Callback):
 
         # Saving model
         file_list = self.drive_instance.ListFile({'q': "'root'"+" in parents  and trashed=false"}).GetList()
-        print(file_list)
+        for file1 in file_list:
+            print('title: %s, id: %s' % (file1['title'], file1['id']))
 
         parent_directory_id = '0B5fJkPjHLj3Jdkw5ZnFiY0lZV1U'
         file_list = self.drive_instance.ListFile({'q': "\'"+parent_directory_id+"\'"+" in parents  and trashed=false"}).GetList()
