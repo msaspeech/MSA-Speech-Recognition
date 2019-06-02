@@ -32,7 +32,7 @@ def train_baseline_seq2seq_model(mfcc_features, target_length, latent_dim, word_
     # Dense Output Layers
     if word_level:
         target_length = len(settings.CHARACTER_SET) + 1
-        decoder_outputs = get_multi_output_dense(decoder_outputs, decoder_states, target_length, hidden_size=latent_dim)
+        decoder_outputs = get_multi_output_dense(decoder_outputs, target_length)
     else:
         decoder_dense = Dense(target_length, activation='softmax', name="decoder_dense")
         decoder_outputs = decoder_dense(decoder_outputs)
@@ -41,49 +41,6 @@ def train_baseline_seq2seq_model(mfcc_features, target_length, latent_dim, word_
     model = Model([encoder_inputs, decoder_inputs], decoder_outputs)
     # print(model.summary())
     return model, encoder_states
-
-
-def train_baseline_seq2seq_model_bis(mfcc_features, target_length, latent_dim):
-    """
-    trains Encoder/Decoder architecture and prepares encoder_model and decoder_model for prediction part
-    :param mfcc_features: int
-    :param target_length: int
-    :param latent_dim: int
-    :return: Model, Model, Model
-    """
-    # Encoder training
-    encoder_inputs = Input(shape=(None, mfcc_features), name="encoder_input")
-    encoder_states = get_encoder_states_GRU(mfcc_features=mfcc_features,
-                                        encoder_inputs=encoder_inputs,
-                                        latent_dim=latent_dim)
-
-    # Decoder training, using 'encoder_states' as initial state.
-    decoder_inputs = Input(shape=(None, target_length), name="decoder_input")
-    # masked_inputs = Masking(mask_value=0,)(decoder_inputs)
-    decoder_outputs, decoder_states = get_decoder_outputs_GRU(target_length=target_length,
-                                                          encoder_states=encoder_states,
-                                                          decoder_inputs=decoder_inputs,
-                                                          latent_dim=latent_dim)
-
-    # Dense Output Layers
-    # decoder_dense = Dense(target_length, activation='softmax', name="decoder_dense")
-    # decoder_outputs = decoder_dense(decoder_outputs)
-
-    # decoder_reshape = TimeDistributed(Reshape((18, len(settings.CHARACTER_SET))))
-    # decoder_outputs = decoder_reshape(decoder_outputs)
-
-    target_length = len(settings.CHARACTER_SET) + 1
-    print(target_length)
-
-    decoder_outputs = get_multi_output_dense(decoder_outputs, target_length)
-    #decoder_dense = Dense(target_length, activation='softmax', name="decoder_dense")
-    #decoder_outputs = decoder_dense(decoder_outputs)
-
-    # Generating Keras Model
-    model = Model([encoder_inputs, decoder_inputs], decoder_outputs)
-    # print(model.summary())
-    return model, encoder_states
-
 
 
 def train_bidirectional_baseline_seq2seq_model(mfcc_features, target_length, latent_dim, word_level):

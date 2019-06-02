@@ -2,6 +2,7 @@ from scipy.optimize._trustregion_constr.canonical_constraint import initial_cons
 from tensorflow.python.keras.layers import CuDNNLSTM, Bidirectional, Concatenate, LSTM, GRU, CuDNNGRU
 #from keras.layers import CuDNNLSTM, Bidirectional, Concatenate, LSTM
 
+
 def get_encoder_states(mfcc_features, encoder_inputs, latent_dim, return_sequences=False):
     encoder = LSTM(latent_dim,
                         stateful=False,
