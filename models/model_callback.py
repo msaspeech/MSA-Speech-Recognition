@@ -18,8 +18,6 @@ class ModelSaver(Callback):
 
     def on_epoch_end(self, epoch, logs=None):
         # Saving training history
-        print("yes i'm here")
-        print(logs)
         #Check if directory exists
         directory_path = settings.TRAIN_HISTORY + self.model_name
         if not file_exists(directory_path):
