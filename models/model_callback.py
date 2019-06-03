@@ -35,9 +35,11 @@ class ModelSaver(Callback):
                 acc_loss_history["loss"] = []
 
                 # Average accuracy
-                for i in range(0, 6):
-                    accuracy = "decoder_dense"+str(i)+"_acc"
-                    average_accuracy += logs[accuracy]
+            for i in range(0, 6):
+                accuracy = "decoder_dense"+str(i)+"_acc"
+                average_accuracy += logs[accuracy]
+
+            average_accuracy = float(average_accuracy) / float(6)
 
             acc_loss_history["accuracy"].append(average_accuracy)
             acc_loss_history["loss"].append(logs["loss"])
