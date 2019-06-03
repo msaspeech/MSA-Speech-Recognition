@@ -3,7 +3,6 @@ from lang_trans.arabic import buckwalter
 import re
 
 
-
 def arabic_to_buckwalter(arabic_sentence):
     return buckwalter.transliterate(arabic_sentence)
 

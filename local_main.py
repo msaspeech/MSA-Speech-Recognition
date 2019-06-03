@@ -14,7 +14,7 @@ word_level = 0
 latent_dim = 200
 epochs = 500
 
-upload_dataset_partition(word_level=word_level,partitions=2)
+upload_dataset_partition(word_level=word_level,partitions=64)
 model = Seq2SeqModel(latent_dim=latent_dim, epochs=epochs, model_architecture=architecture, word_level=word_level)
 model.train_model()
 
