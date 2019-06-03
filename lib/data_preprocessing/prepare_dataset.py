@@ -270,6 +270,9 @@ def get_dataset_information(word_level):
         general_info.append(settings.CHARACTER_SET)
         general_info.append(settings.WORD_TARGET_LENGTH)
 
+        generate_pickle_file(general_info, settings.DATASET_WORD_INFORMATION_PATH)
+        generate_pickle_file(general_info, settings.DATASET_WORD_INFERENCE_INFORMATION_PATH)
+
     else:
         for dataset_set, dataset_file in enumerate(list_datasets):
             train_data, test_data = _get_train_test_data_partition(dataset_path=dataset_file, train_ratio=0.75)
@@ -291,8 +294,8 @@ def get_dataset_information(word_level):
         general_info.append(settings.TOTAL_SAMPLES_NUMBER)
         general_info.append(settings.CHARACTER_SET)
 
-    generate_pickle_file(general_info, settings.DATASET_INFORMATION_PATH)
-    generate_pickle_file(general_info, settings.DATASET_INFERENCE_INFORMATION_PATH)
+        generate_pickle_file(general_info, settings.DATASET_CHAR_INFORMATION_PATH)
+        generate_pickle_file(general_info, settings.DATASET_CHAR_INFERENCE_INFORMATION_PATH)
 
 
 
@@ -357,15 +360,18 @@ def upload_dataset_partition(train_ratio=0.8, padding=False, word_level=False, p
                                           test=True)
 
     else:
-        general_info = load_pickle_data(settings.DATASET_INFORMATION_PATH)
-        settings.MFCC_FEATURES_LENGTH = general_info[0]
-        settings.TOTAL_SAMPLES_NUMBER = general_info[1]
         if word_level:
+            general_info = load_pickle_data(settings.DATASET_WORD_INFORMATION_PATH)
+            settings.MFCC_FEATURES_LENGTH = general_info[0]
+            settings.TOTAL_SAMPLES_NUMBER = general_info[1]
             settings.WORD_SET = general_info[2]
             settings.LONGEST_WORD_LENGTH = general_info[3]
             settings.CHARACTER_SET = general_info[4]
             settings.WORD_TARGET_LENGTH = general_info[5]
 
         else:
+            general_info = load_pickle_data(settings.DATASET_CHAR_INFORMATION_PATH)
+            settings.MFCC_FEATURES_LENGTH = general_info[0]
+            settings.TOTAL_SAMPLES_NUMBER = general_info[1]
             settings.CHARACTER_SET = general_info[2]
             print(settings.CHARACTER_SET)
