@@ -3,7 +3,7 @@ from .layers import *
 from .seq2seq_baseline import *
 from .seq2seq_cnn_attention import *
 from .seq2seq_inference_char import *
-#from .plot import *
+from .plot import *
 from .seq2seq_with_attention import *
 from .model_callback import *
 from .train_model import Seq2SeqModel
