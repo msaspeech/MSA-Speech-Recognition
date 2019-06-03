@@ -2,7 +2,7 @@ from tensorflow.python.keras import Model
 from tensorflow.python.keras.layers import Dense, Input, Concatenate
 
 from etc import settings
-from .encoder_decoder import get_encoder_states, get_decoder_outputs, encoder_bilstm, decoder_for_bidirectional_encoder
+from .encoder_decoder import get_encoder_states_LSTM, get_decoder_outputs_LSTM, encoder_bi_LSTM, decoder_for_bidirectional_encoder_LSTM
 from .layers import AttentionLayer
 
 
@@ -15,14 +15,14 @@ def train_attention_seq2seq_model(mfcc_features, target_length, latent_dim):
     """
     # Encoder training
     encoder_inputs = Input(shape=(None, mfcc_features), name="encoder_inputs")
-    encoder_outputs, encoder_states = get_encoder_states(mfcc_features=mfcc_features,
+    encoder_outputs, encoder_states = get_encoder_states_LSTM(mfcc_features=mfcc_features,
                                                          encoder_inputs=encoder_inputs,
                                                          latent_dim=latent_dim,
                                                          return_sequences=True)
 
     # Decoder training, using 'encoder_states' as initial state.
     decoder_inputs = Input(shape=(None, target_length), name="decoder_input")
-    decoder_outputs = get_decoder_outputs(target_length=target_length,
+    decoder_outputs = get_decoder_outputs_LSTM(target_length=target_length,
                                           encoder_states=encoder_states,
                                           decoder_inputs=decoder_inputs,
                                           latent_dim=latent_dim)
@@ -52,14 +52,14 @@ def train_bidirectional_attention_seq2seq_model(mfcc_features, target_length, la
     """
     # Encoder training
     encoder_inputs = Input(shape=(settings.ENCODER_INPUT_MAX_LENGTH, mfcc_features), name="encoder_inputs")
-    encoder_outputs, encoder_states = encoder_bilstm(mfcc_features=mfcc_features,
+    encoder_outputs, encoder_states = encoder_bi_LSTM(mfcc_features=mfcc_features,
                                                      encoder_inputs=encoder_inputs,
                                                      latent_dim=latent_dim,
                                                      return_sequences=True)
 
     # Decoder training, using 'encoder_states' as initial state.
     decoder_inputs = Input(shape=(settings.DECODER_INPUT_MAX_LENGTH, target_length), name="decoder_inputs")
-    decoder_outputs = decoder_for_bidirectional_encoder(target_length=target_length,
+    decoder_outputs = decoder_for_bidirectional_encoder_LSTM(target_length=target_length,
                                                         encoder_states=encoder_states,
                                                         decoder_inputs=decoder_inputs,
                                                         latent_dim=latent_dim)

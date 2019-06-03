@@ -7,7 +7,7 @@ from tensorflow.python.keras.layers import Input
 from etc import settings
 #from keras.layers import Input
 import keras.backend as K
-from .encoder_decoder import get_encoder_states
+#from .encoder_decoder import get_encoder_states
 
 
 class Inference():

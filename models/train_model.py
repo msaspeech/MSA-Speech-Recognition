@@ -4,9 +4,10 @@ from etc import settings
 from utils import file_exists, get_files, load_pickle_data, get_files_full_path
 from tensorflow.python.keras import models
 
-from .seq2seq_baseline import train_baseline_seq2seq_model,  train_bidirectional_baseline_seq2seq_model
-from .seq2seq_cnn_attention import train_cnn_seq2seq_model, train_cnn_attention_seq2seq_model, \
-    train_cnn_bidirectional_attention_seq2seq_model
+from .seq2seq_baseline import train_baseline_seq2seq_model_GRU, train_baseline_seq2seq_model_LSTM, \
+    train_bidirectional_baseline_seq2seq_model_GRU, train_bidirectional_baseline_seq2seq_model_LSTM
+from .seq2seq_cnn_attention import train_cnn_seq2seq_model_GRU, train_cnn_attention_seq2seq_model, \
+    train_cnn_bidirectional_seq2seq_model_GRU
 from .seq2seq_with_attention import train_attention_seq2seq_model, train_bidirectional_attention_seq2seq_model
 from .model_callback import ModelSaver
 
@@ -35,21 +36,24 @@ class Seq2SeqModel():
         if file_exists(self.model_path):
             self.model = models.load_model(self.model_path)
 
-            #self.model.evaluate_generator(self.validation_generator(), steps=settings.TOTAL_SAMPLES_NUMBER, verbose=1)
+            # self.model.evaluate_generator(self.validation_generator(), steps=settings.TOTAL_SAMPLES_NUMBER, verbose=1)
             print(self.model.summary())
         else:
             if self.model_architecture == 1:
-                self.model, self.encoder_states = train_baseline_seq2seq_model(
+                print("BASELINE MODEL")
+                self.model, self.encoder_states = train_baseline_seq2seq_model_GRU(
                     mfcc_features=self.mfcc_features_length,
                     target_length=self.target_length,
                     latent_dim=self.latent_dim,
                     word_level=self.word_level)
 
             elif self.model_architecture == 2:
-                self.model, self.encoder_states = train_bidirectional_baseline_seq2seq_model(mfcc_features=self.mfcc_features_length,
-                                                                                             target_length=self.target_length,
-                                                                                             latent_dim=self.latent_dim,
-                                                                                             word_level=self.word_level)
+                print("BI BASELINE MODEL")
+                self.model, self.encoder_states = train_bidirectional_baseline_seq2seq_model_GRU(
+                    mfcc_features=self.mfcc_features_length,
+                    target_length=self.target_length,
+                    latent_dim=self.latent_dim,
+                    word_level=self.word_level)
 
             elif self.model_architecture == 3:
                 self.model, self.encoder_states = train_attention_seq2seq_model(mfcc_features=self.mfcc_features_length,
@@ -62,21 +66,24 @@ class Seq2SeqModel():
                     latent_dim=self.latent_dim)
 
             elif self.model_architecture == 5:
-                print("yes loading this model")
-                self.model, self.encoder_states = train_cnn_seq2seq_model(mfcc_features=self.mfcc_features_length,
-                                                                          target_length=self.target_length,
-                                                                          latent_dim=self.latent_dim,
-                                                                          word_based=self.word_level)
+                print("CNN MODEL")
+                self.model, self.encoder_states = train_cnn_seq2seq_model_GRU(mfcc_features=self.mfcc_features_length,
+                                                                              target_length=self.target_length,
+                                                                              latent_dim=self.latent_dim,
+                                                                              word_based=self.word_level)
             elif self.model_architecture == 6:
-                self.model, self.encoder_states = train_cnn_attention_seq2seq_model(mfcc_features=self.mfcc_features_length,
-                                                                                    target_length=self.target_length,
-                                                                                    latent_dim=self.latent_dim)
+                self.model, self.encoder_states = train_cnn_attention_seq2seq_model(
+                    mfcc_features=self.mfcc_features_length,
+                    target_length=self.target_length,
+                    latent_dim=self.latent_dim)
 
             else:
-                self.model, self.encoder_states = train_cnn_bidirectional_attention_seq2seq_model(mfcc_features=self.mfcc_features_length,
-                                                                                                  target_length=self.target_length,
-                                                                                                  latent_dim=self.latent_dim,
-                                                                                                  word_level=self.word_level)
+                print("BI CNN MODEL")
+                self.model, self.encoder_states = train_cnn_bidirectional_seq2seq_model_GRU(
+                    mfcc_features=self.mfcc_features_length,
+                    target_length=self.target_length,
+                    latent_dim=self.latent_dim,
+                    word_level=self.word_level)
 
     def train_model(self):
         print("ENCODER STATES")
@@ -89,7 +96,7 @@ class Seq2SeqModel():
         if self.word_level:
             loss = dict()
             for i in range(0, settings.LONGEST_WORD_LENGTH):
-                layer_name = "dense"+str(i)
+                layer_name = "decoder_dense" + str(i)
                 loss[layer_name] = 'categorical_crossentropy'
 
             self.model.compile(optimizer='rmsprop', loss=loss, metrics=['accuracy'])
@@ -104,10 +111,9 @@ class Seq2SeqModel():
             batch_size = 32
             steps = int(settings.TOTAL_SAMPLES_NUMBER / batch_size) + 1
             history = self.model.fit_generator(self.split_data_generator_dict(batch_size),
-                                               steps_per_epoch=10,
+                                               steps_per_epoch=steps,
                                                epochs=self.epochs,
                                                callbacks=[model_saver])
-
 
     def validation_generator(self):
         audio_directory = settings.AUDIO_SPLIT_TEST_PATH
@@ -133,7 +139,6 @@ class Seq2SeqModel():
 
             yield [encoder_x, decoder_x], decoder_y
 
-
     def split_data_generator_dict(self, batch_size):
         audio_directory = settings.AUDIO_SPLIT_TRAIN_PATH
         audio_files = get_files_full_path(audio_directory)
@@ -141,7 +146,7 @@ class Seq2SeqModel():
         transcript_files = get_files_full_path(transcripts_directory)
         while True:
             for i, audio_file in enumerate(audio_files):
-                #retrieving data
+                # retrieving data
 
                 data = self.get_data(audio_file, transcript_files[i])
                 for key_pair in data:
@@ -167,12 +172,12 @@ class Seq2SeqModel():
 
         while True:
             for i, audio_file in enumerate(audio_files):
-                #retrieving data
+                # retrieving data
                 data = self.get_data(audio_file, transcript_files[i])
                 size = sum(len(d) for d in data.values())
-                probas = dict((d, len(data[d])/size) for d in data)
+                probas = dict((d, len(data[d]) / size) for d in data)
                 keys = sorted(data.keys())
-                loop_size = int(size/batch_size)+1
+                loop_size = int(size / batch_size) + 1
                 for i in range(loop_size):
                     r = random.random()
                     for key in keys:
@@ -181,7 +186,7 @@ class Seq2SeqModel():
                         r -= probas[key]
                     output = data[key]
                     b_size = min((batch_size, len(output)))
-                    output = random.sample(output,b_size)
+                    output = random.sample(output, b_size)
                     encoder_x = []
                     decoder_x = []
                     decoder_y = []
@@ -208,8 +213,6 @@ class Seq2SeqModel():
                         decoder_targets.append(np.array(decoder_target))
 
                     yield [encoder_x, decoder_x], decoder_targets
-
-
 
     def _data_generator_dict(self, data):
 
