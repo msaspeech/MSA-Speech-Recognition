@@ -46,7 +46,7 @@ class ModelSaver(Callback):
 
         # Character level history
         else:
-            hist_path = settings.TRAIN_HISTORY + self.model_name + "/" + self.model_name + "char.pkl"
+            hist_path = settings.TRAINED_MODELS_PATH + self.model_name + "/" + self.model_name + "char.pkl"
             if file_exists(hist_path):
                 acc_loss_history = load_pickle_data(hist_path)
             else:
