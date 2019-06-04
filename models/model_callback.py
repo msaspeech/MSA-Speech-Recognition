@@ -19,13 +19,13 @@ class ModelSaver(Callback):
     def on_epoch_end(self, epoch, logs=None):
         # Saving training history
         #Check if directory exists
-        directory_path = settings.TRAIN_HISTORY + self.model_name
+        directory_path = settings.TRAINED_MODELS_PATH + self.model_name
         if not file_exists(directory_path):
             create_dir(directory_path)
 
         # Word level history
         if self.word_level:
-            hist_path = settings.TRAIN_HISTORY + self.model_name + "/" + self.model_name + "word.pkl"
+            hist_path = settings.TRAINED_MODELS_PATH + self.model_name + "/" + self.model_name + "word.pkl"
             average_accuracy = 0
             if file_exists(hist_path):
                 acc_loss_history = load_pickle_data(hist_path)
