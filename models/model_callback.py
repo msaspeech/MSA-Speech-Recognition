@@ -70,6 +70,8 @@ class ModelSaver(Callback):
 
         # Saving model
 
+        # Saving training results
+
         folders_dict_id = {}
         folders_dict_id["architecture1"] = "182V0L64_Ovt4i5VEdxZkzM73woulpC40"
         folders_dict_id["architecture2"] = "1nAKBM7fJMcg7VEaFHr4A-XDIilQ5w7MP"

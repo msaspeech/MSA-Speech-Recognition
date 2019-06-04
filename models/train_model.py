@@ -22,10 +22,10 @@ class Seq2SeqModel():
         self.mfcc_features_length = settings.MFCC_FEATURES_LENGTH
         self.word_level = word_level
         if word_level:
-            self.model_path = settings.TRAINED_MODELS_PATH + self.model_name + "word.h5"
+            self.model_path = settings.TRAINED_MODELS_PATH + self.model_name + "/" + self.model_name + "word.h5"
             self.target_length = settings.WORD_TARGET_LENGTH
         else:
-            self.model_path = settings.TRAINED_MODELS_PATH + self.model_name + "char.h5"
+            self.model_path = settings.TRAINED_MODELS_PATH + self.model_name + "/" + self.model_name + "char.h5"
             self.target_length = len(settings.CHARACTER_SET)
 
         self.model = None
