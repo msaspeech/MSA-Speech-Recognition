@@ -12,3 +12,11 @@ def init_directories():
     for path in list_paths:
         if not file_exists(path):
             os.mkdir(path)
+
+    history_models_path = settings.TRAIN_HISTORY + "architecture"
+
+    for i in range(1, 8):
+        directory_path = history_models_path + str(i) + "/"
+        if not file_exists(directory_path):
+            os.mkdir(directory_path)
+

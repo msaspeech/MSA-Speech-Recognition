@@ -76,8 +76,6 @@ def train_cnn_bidirectional_seq2seq_model_GRU(mfcc_features, target_length, late
                                                                             decoder_inputs=decoder_inputs,
                                                                             latent_dim=latent_dim)
 
-    decoder_dropout = Dropout(0.2)
-    decoder_outputs = decoder_dropout(decoder_outputs)
     if word_level:
         target_length = len(settings.CHARACTER_SET) + 1
         decoder_outputs = get_multi_output_dense(decoder_outputs, target_length)
