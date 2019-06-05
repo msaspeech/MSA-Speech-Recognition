@@ -36,7 +36,11 @@ class Seq2SeqModel():
         if file_exists(self.model_path):
             self.model = models.load_model(self.model_path)
 
-            # self.model.evaluate_generator(self.validation_generator(), steps=settings.TOTAL_SAMPLES_NUMBER, verbose=1)
+            if self.word_level:
+                self.model.evaluate_generator(self.split_data_generator_dict_word_level_test(), steps=settings.TOTAL_SAMPLES_NUMBER, verbose=1)
+            else:
+                self.model.evaluate_generator(self.split_data_generator_dict_test(), steps=settings.TOTAL_SAMPLES_NUMBER, verbose=1)
+
             print(self.model.summary())
         else:
             if self.model_architecture == 1:
@@ -139,6 +143,32 @@ class Seq2SeqModel():
 
             yield [encoder_x, decoder_x], decoder_y
 
+    def split_data_generator_dict_test(self):
+        audio_directory = settings.AUDIO_SPLIT_TRAIN_PATH
+        audio_files = get_files_full_path(audio_directory)
+        transcripts_directory = settings.TRANSCRIPTS_ENCODING_SPLIT_TRAIN_PATH
+        transcript_files = get_files_full_path(transcripts_directory)
+        while True:
+            for i, audio_file in enumerate(audio_files):
+                # retrieving data
+
+                data = self.get_data(audio_file, transcript_files[i])
+
+                for key_pair in data:
+                    output = data[key_pair]
+                    encoder_x = []
+                    decoder_x = []
+                    decoder_y = []
+                    for element in output:
+                        encoder_x.append(element[0][0])
+                        decoder_x.append(element[0][1])
+                        decoder_y.append(element[1])
+
+                    encoder_x = np.array(encoder_x)
+                    decoder_x = np.array(decoder_x)
+                    decoder_y = np.array(decoder_y)
+                    yield [encoder_x, decoder_x], decoder_y
+
     def split_data_generator_dict(self, batch_size):
         audio_directory = settings.AUDIO_SPLIT_TRAIN_PATH
         audio_files = get_files_full_path(audio_directory)
@@ -149,8 +179,19 @@ class Seq2SeqModel():
                 # retrieving data
 
                 data = self.get_data(audio_file, transcript_files[i])
-                for key_pair in data:
-                    output = data[key_pair]
+                size = sum(len(d) for d in data.values())
+                probas = dict((d, len(data[d]) / size) for d in data)
+                keys = sorted(data.keys())
+                loop_size = int(size / batch_size) + 1
+                for i in range(loop_size):
+                    r = random.random()
+                    for key in keys:
+                        if r < probas[key]:
+                            break
+                        r -= probas[key]
+                    output = data[key]
+                    b_size = min((batch_size, len(output)))
+                    output = random.sample(output, b_size)
                     encoder_x = []
                     decoder_x = []
                     decoder_y = []
@@ -187,6 +228,45 @@ class Seq2SeqModel():
                     output = data[key]
                     b_size = min((batch_size, len(output)))
                     output = random.sample(output, b_size)
+                    encoder_x = []
+                    decoder_x = []
+                    decoder_y = []
+                    for element in output:
+                        encoder_x.append(element[0][0])
+                        decoder_x.append(element[0][1])
+                        decoder_y.append(element[1])
+
+                    encoder_x = np.array(encoder_x)
+                    decoder_x = np.array(decoder_x)
+
+                    # decoder_target = decoder_y.copy()
+
+                    decoder_target = []
+                    for h in range(0, len(decoder_y)):
+                        decoder_target.append(decoder_y[h].copy())
+
+                    decoder_targets = []
+                    num_words = len(decoder_y[h])
+                    for j in range(0, settings.LONGEST_WORD_LENGTH):
+                        for i in range(0, num_words):
+                            for h in range(0, len(decoder_y)):
+                                decoder_target[h][i] = decoder_y[h][i][j]
+                        decoder_targets.append(np.array(decoder_target))
+
+                    yield [encoder_x, decoder_x], decoder_targets
+
+    def split_data_generator_dict_word_level_test(self):
+        audio_directory = settings.AUDIO_SPLIT_TEST_PATH
+        audio_files = get_files_full_path(audio_directory)
+        transcripts_directory = settings.TRANSCRIPTS_ENCODING_SPLIT_TEST_PATH_PARTITION
+        transcript_files = get_files_full_path(transcripts_directory)
+
+        while True:
+            for i, audio_file in enumerate(audio_files):
+                # retrieving data
+                data = self.get_data(audio_file, transcript_files[i])
+                for key_pair in data:
+                    output = data[key_pair]
                     encoder_x = []
                     decoder_x = []
                     decoder_y = []

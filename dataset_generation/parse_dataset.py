@@ -18,8 +18,12 @@ def get_audio_transcripts_pairs(audio_files_path, transcription_files_path):
 
 
 def generate_dataset():
+
+    # Getting audio_transcriptions pairs
     audio_descriptions_pairs = get_audio_transcripts_pairs(RAW_DATASET_AUDIO_PATH, RAW_DATASET_TRANSCRIPTIONS)
+
     for i, (audio_entry, transcript_desc_path) in enumerate(audio_descriptions_pairs):
+        # Create directory for each audio and transcription
         print(audio_entry+"=====>"+transcript_desc_path)
         transcriptions_directory = GENERATED_DATA_TRANSCRIPTS_PATH
         if not os.path.exists(transcriptions_directory):

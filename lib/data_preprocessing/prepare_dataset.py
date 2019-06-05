@@ -250,7 +250,7 @@ def get_dataset_information(word_level):
         settings.TOTAL_SAMPLES_NUMBER = samples_number
         settings.WORD_SET = get_distinct_words(all_transcripts)
         settings.LONGEST_WORD_LENGTH = get_longest_word_length(settings.WORD_SET)
-        settings.CHARACTER_SET = get_character_set(all_transcripts)
+        settings.CHARACTER_SET = sorted(get_character_set(all_transcripts))
         settings.WORD_TARGET_LENGTH = (len(settings.CHARACTER_SET)+1) * settings.LONGEST_WORD_LENGTH
 
         general_info = []
