@@ -222,12 +222,12 @@ def generate_variable_word_based_encoding_bis(transcripts, num_partition, char_t
                     encoded_word_target[character_index][char_to_int[character]] = 1
 
                 if character_index < longest_word_length - 1:
+
                     for k in range(character_index + 1, longest_word_length):
-                        position = character_set_length * k
+                        position = character_set_length * k + character_set_length - 1
                         encoded_word[position] = 1
 
                         encoded_word_target[k][-1] = 1
-
                 encoded_transcript_input.append(encoded_word)
                 encoded_transcript_target.append([])
                 if index > 0:

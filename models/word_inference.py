@@ -30,11 +30,12 @@ class Word_Inference():
 
         # Getting encoder model
         encoder_inputs = self.model.get_layer("encoder_input").input
-        h = self.model.get_layer("encoder_gru_layer").output[0]
-        self.encoder_states = [h]
+        encoder_gru = self.model.get_layer("encoder_gru_layer")
+        encoder_output, h = encoder_gru(encoder_inputs)
+        self.encoder_states = h
 
         self.encoder_model = Model(encoder_inputs, self.encoder_states)
-
+        self.encoder_model.summary()
         # Getting decoder model
 
         decoder_inputs = self.model.get_layer("decoder_input").input
@@ -62,7 +63,7 @@ class Word_Inference():
 
         self.decoder_model = Model(
             [decoder_inputs] + decoder_states_inputs,
-            [decoder_outputs] + decoder_states)
+            decoder_outputs + decoder_states)
 
     def decode_audio_sequence(self, audio_sequence):
 
@@ -76,18 +77,20 @@ class Word_Inference():
         # creating first input_sequence for decoder
 
         target_sequence = np.zeros((1, 1, settings.WORD_TARGET_LENGTH))
-
+        print(settings.WORD_TARGET_LENGTH)
         sos_characters = ["S", "O", "S", "_"]
         target_length = len(settings.CHARACTER_SET) + 1
         for i in range(0, 4):
             position = char_to_int[sos_characters[i]] + i*target_length
-            target_sequence[0, 0, position] = 1
 
+            target_sequence[0, 0, position] = 1
+            print(position)
         for i in range(4, settings.LONGEST_WORD_LENGTH):
             position = i * target_length
             target_sequence[0, 0, position] = 1
+            print(position)
 
-        print(target_sequence)
+        #print(target_sequence)
         stop_condition = False
 
         decoded_sentence = ""
@@ -122,8 +125,8 @@ class Word_Inference():
                     target_sequence[0, 0, position] = 1
 
                 if i < settings.LONGEST_WORD_LENGTH - 1:
-                    for i in range(i, settings.LONGEST_WORD_LENGTH):
-                        position = i * target_length
+                    for j in range(i+1, settings.LONGEST_WORD_LENGTH):
+                        position = j * target_length
                         target_sequence[0, 0, position] = 1
 
 

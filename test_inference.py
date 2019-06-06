@@ -21,7 +21,7 @@ else:
 
 sample = AudioInput("test.wav", "")
 audio = [sample.mfcc.transpose()]
-audio_sequence = np.array(audio)
+audio_sequence = np.array(audio, dtype=np.float32)
 print(audio_sequence.shape)
 
 word_inference = Word_Inference(model_path=model_path, latent_dim=latent_dim)
