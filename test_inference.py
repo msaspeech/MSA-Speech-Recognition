@@ -8,7 +8,7 @@ import numpy as np
 
 #settings.DRIVE_INSTANCE = load_pickle_data(DRIVE_INSTANCE_PATH)
 
-word_level = 0
+word_level = 1
 architecture = 1
 latent_dim = 400
 
