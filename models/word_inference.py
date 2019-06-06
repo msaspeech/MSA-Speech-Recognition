@@ -30,7 +30,7 @@ class Word_Inference():
 
         # Getting encoder model
         encoder_inputs = self.model.get_layer("encoder_input").input
-        [h] = self.model.get_layer("encoder_gru_layer").output[0]
+        h = self.model.get_layer("encoder_gru_layer").output[0]
         self.encoder_states = [h]
 
         self.encoder_model = Model(encoder_inputs, self.encoder_states)
