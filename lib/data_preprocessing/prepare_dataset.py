@@ -262,7 +262,6 @@ def get_dataset_information(word_level):
         print("CHARACTER SET : "+str(settings.CHARACTER_SET))
         print("CHARATER SET LENGTH "+str(len(settings.CHARACTER_SET)))
 
-
         general_info.append(settings.MFCC_FEATURES_LENGTH)
         general_info.append(settings.TOTAL_SAMPLES_NUMBER)
         general_info.append(settings.WORD_SET)
