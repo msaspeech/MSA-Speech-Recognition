@@ -1,8 +1,7 @@
 import sys
 from lib import upload_dataset
-from models import train_model, measure_test_accuracy, Seq2SeqModel, Inference
-from utils import load_pickle_data
-from etc import DRIVE_INSTANCE_PATH, ENCODER_STATES_PATH, TRAINED_MODELS_PATH
+from models import train_model, measure_test_accuracy, Seq2SeqModel, Word_Inference
+
 from etc import settings
 from lib import AudioInput
 import numpy as np
@@ -11,22 +10,23 @@ import numpy as np
 
 word_level = 0
 architecture = 1
-latent_dim = 350
-epochs = 100
+latent_dim = 400
 
-#(train_decoder_input, train_decoder_target), \
-#(test_encoder_input, test_decoder_input, test_decoder_target) = upload_dataset(word_level=False)
 
-#print(train_encoder_input.shape, train_decoder_input.shape, train_decoder_target.shape)
-
-architecture_path = TRAINED_MODELS_PATH+"architecture"+str(architecture)+".h5"
-inference = Inference(model_path=architecture_path, latent_dim=350)
+model_name = "architecture" + str(architecture)
+if word_level:
+    model_path = settings.TRAINED_MODELS_PATH + model_name + "/" + model_name + "word.h5"
+else:
+    model_path = settings.TRAINED_MODELS_PATH + model_name + "/" + model_name + "char.h5"
 
 sample = AudioInput("test.wav", "")
 audio = [sample.mfcc.transpose()]
 audio_sequence = np.array(audio)
 print(audio_sequence.shape)
-transcript = inference.decode_audio_sequence_character_based(audio_sequence)
+
+word_inference = Word_Inference(model_path=model_path, latent_dim=latent_dim)
+
+transcript = word_inference.decode_audio_sequence(audio_sequence)
 print(transcript)
 
 # accuracy = measure_test_accuracy(test_decoder_input, model, encoder_states, latent_dim=512)

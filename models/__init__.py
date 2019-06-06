@@ -8,3 +8,4 @@ from .seq2seq_with_attention import *
 from .model_callback import *
 from .train_model import Seq2SeqModel
 from .sample_inference import Inference
+from .word_inference import Word_Inference

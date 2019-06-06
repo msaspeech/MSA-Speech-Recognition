@@ -3,6 +3,8 @@ from utils import load_pickle_data
 from tensorflow.python.keras import models
 from tensorflow.python.keras import Model
 from tensorflow.python.keras.layers import Input
+from utils import convert_to_int, convert_int_to_char
+import numpy as np
 
 class Word_Inference():
 
@@ -22,6 +24,7 @@ class Word_Inference():
 
         self.encoder_model = None
         self.decoder_model = None
+        self.get_encoder_decoder_baseline()
 
     def get_encoder_decoder_baseline(self):
 
@@ -30,7 +33,7 @@ class Word_Inference():
         [h] = self.model.get_layer("encoder_gru_layer").output[0]
         self.encoder_states = [h]
 
-        encoder_model = Model(encoder_inputs, self.encoder_states)
+        self.encoder_model = Model(encoder_inputs, self.encoder_states)
 
         # Getting decoder model
 
@@ -45,7 +48,92 @@ class Word_Inference():
             decoder_dense_layers.append(self.model.get_layer(layer_name))
 
         decoder_state_input_h = Input(shape=(self.latent_dim,))
+        decoder_states_inputs = [decoder_state_input_h]
 
+        decoder_gru1, state_h = decoder_gru1_layer(decoder_inputs, initial_state=decoder_states_inputs)
+        decoder_gru2, state_h = decoder_gru2_layer(decoder_gru1, initial_state=[state_h])
+        decoder_output, state_h = decoder_gru3_layer(decoder_gru2, initial_state=[state_h])
+        decoder_states = [state_h]
+        # getting dense layers as outputs
+        decoder_outputs = []
+        for i in range(0, settings.LONGEST_WORD_LENGTH):
+            output = decoder_dense_layers[i](decoder_output)
+            decoder_outputs.append(output)
+
+        self.decoder_model = Model(
+            [decoder_inputs] + decoder_states_inputs,
+            [decoder_outputs] + decoder_states)
+
+    def decode_audio_sequence(self, audio_sequence):
+
+        # Getting converters
+        char_to_int = convert_to_int(sorted(settings.CHARACTER_SET))
+        int_to_char = convert_int_to_char(char_to_int)
+
+        states_value = self.encoder_model(audio_sequence)
+        print("ENCODER PREDICTION DONE")
+
+        # creating first input_sequence for decoder
+
+        target_sequence = np.zeros((1, 1, settings.WORD_TARGET_LENGTH))
+
+        sos_characters = ["S", "O", "S", "_"]
+        target_length = len(settings.CHARACTER_SET) + 1
+        for i in range(0, 4):
+            position = char_to_int[sos_characters[i]] + i*target_length
+            target_sequence[0, 0, position] = 1
+
+        for i in range(4, settings.LONGEST_WORD_LENGTH):
+            position = i * target_length
+            target_sequence[0, 0, position] = 1
+
+        print(target_sequence)
+        stop_condition = False
+
+        decoded_sentence = ""
+        while not stop_condition:
+
+            dense_outputs, h = self.decoder_model.predict(
+                [target_sequence] + states_value)
+            states_value = [h]
+
+            print("DECODER PREDICTION DONE")
+
+            # decoding values of each dense output
+            decoded_word = ""
+            for i in range(0, settings.LONGEST_WORD_LENGTH):
+                sampled_token_index = np.argmax(dense_outputs[i][0, -1, :])
+                if sampled_token_index == target_length:
+                    sampled_char = ""
+                else:
+                    sampled_char = int_to_char[sampled_token_index]
+                print(sampled_char)
+                decoded_word += sampled_char
+
+            decoded_sentence += decoded_word + " "
+
+            if decoded_word == "EOS_":
+                stop_condition = True
+            else:
+                target_sequence = np.zeros((1, 1, settings.WORD_TARGET_LENGTH))
+                i = 0
+                for i, character in enumerate(decoded_word):
+                    position = char_to_int[character] + i * target_length
+                    target_sequence[0, 0, position] = 1
+
+                if i < settings.LONGEST_WORD_LENGTH - 1:
+                    for i in range(i, settings.LONGEST_WORD_LENGTH):
+                        position = i * target_length
+                        target_sequence[0, 0, position] = 1
+
+
+                for i in range(0, 4):
+                    position = char_to_int[sos_characters[i]] + i * target_length
+                    target_sequence[0, 0, position] = 1
+
+                for i in range(4, settings.LONGEST_WORD_LENGTH):
+                    position = i * target_length
+                    target_sequence[0, 0, position] = 1
 
     def get_encoder_decoder_cnn(self):
         pass

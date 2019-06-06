@@ -77,7 +77,60 @@ def get_encoder_states_GRU(encoder_inputs, latent_dim, return_sequences=False):
 
 def get_decoder_outputs_GRU(encoder_states, decoder_inputs, latent_dim):
     # First Layer
-    decoder_lstm1_layer = CuDNNGRU(latent_dim,
+    decoder_gru1_layer = CuDNNGRU(latent_dim,
+                              return_sequences=True,
+                              return_state=True,
+                              kernel_constraint=None,
+                              kernel_regularizer=None,
+                              name="decoder_gru1_layer")
+    decoder_outputs, state_h = decoder_gru1_layer(decoder_inputs, initial_state=encoder_states)
+
+    decoder_gru2_layer = CuDNNGRU(latent_dim,
+                              return_sequences=True,
+                              return_state=True,
+                              kernel_constraint=None,
+                              kernel_regularizer=None,
+                              name="decoder_gru2_layer")
+    decoder_outputs, state_h = decoder_gru2_layer(decoder_outputs, initial_state=state_h)
+
+    decoder_gru3_layer = CuDNNGRU(latent_dim,
+                              return_sequences=True,
+                              return_state=True,
+                              kernel_constraint=None,
+                              kernel_regularizer=None,
+                              name="decoder_gru3_layer")
+    decoder_outputs, state_h = decoder_gru3_layer(decoder_outputs, initial_state=state_h)
+
+    decoder_states = [state_h]
+
+    return decoder_outputs, decoder_states
+
+
+
+
+def get_encoder_states_GRU_attention(mfcc_features, encoder_inputs, latent_dim, return_sequences=False):
+    encoder = GRU(latent_dim,
+                  input_shape=(None, mfcc_features),
+                  stateful=False,
+                  return_sequences=return_sequences,
+                  return_state=True,
+                  kernel_constraint=None,
+                  kernel_regularizer=None,
+                  name="encoder_gru_layer")
+    # 'encoder_outputs' are ignored and only states are kept.
+    encoder_outputs, state_h = encoder(encoder_inputs)
+
+    encoder_states = [state_h]
+    if return_sequences:
+        return encoder_outputs, encoder_states
+    else:
+        return encoder_states
+
+
+def get_decoder_outputs_GRU_attention(target_length, encoder_states, decoder_inputs, latent_dim):
+    # First Layer
+    decoder_lstm1_layer = GRU(latent_dim,
+                              input_shape=(None, target_length),
                               return_sequences=True,
                               return_state=True,
                               kernel_constraint=None,
@@ -85,7 +138,7 @@ def get_decoder_outputs_GRU(encoder_states, decoder_inputs, latent_dim):
                               name="decoder_gru1_layer")
     decoder_outputs, state_h = decoder_lstm1_layer(decoder_inputs, initial_state=encoder_states)
 
-    decoder_lstm2_layer = CuDNNGRU(latent_dim,
+    decoder_lstm2_layer = GRU(latent_dim,
                               return_sequences=True,
                               return_state=True,
                               kernel_constraint=None,
@@ -93,7 +146,7 @@ def get_decoder_outputs_GRU(encoder_states, decoder_inputs, latent_dim):
                               name="decoder_gru2_layer")
     decoder_outputs, state_h = decoder_lstm2_layer(decoder_outputs, initial_state=state_h)
 
-    decoder_lstm3_layer = CuDNNGRU(latent_dim,
+    decoder_lstm3_layer = GRU(latent_dim,
                               return_sequences=True,
                               return_state=True,
                               kernel_constraint=None,
@@ -104,6 +157,7 @@ def get_decoder_outputs_GRU(encoder_states, decoder_inputs, latent_dim):
     decoder_states = [state_h]
 
     return decoder_outputs, decoder_states
+
 
 
 # ENCODER DECODER BI-DIRECTIONAL LSTM AND GRU
