@@ -79,8 +79,9 @@ def _get_audio_transcripts_word_level(data):
     for sample in data:
         if 130 <= sample.mfcc.shape[1] <= 1000:
             transcript = "SOS_ " + sample.audio_transcript + " _EOS"
-            audio_samples.append(sample.mfcc.transpose())
-            transcripts.append(transcript)
+            if _clean_characters_only(transcript):
+                audio_samples.append(sample.mfcc.transpose())
+                transcripts.append(transcript)
 
 
     return audio_samples, transcripts
