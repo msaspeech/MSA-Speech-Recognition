@@ -252,7 +252,7 @@ def get_dataset_information(word_level):
 
     #list_datasets = get_files(settings.PICKLE_PARTITIONS_PATH)
     list_datasets = get_files(settings.PICKLE_PARTITIONS_PATH_DRIVE)
-    print("FILES ARE : " +list_datasets)
+    print("FILES ARE : " +str(list_datasets))
     all_transcripts = []
     samples_number = 0
     if word_level:
