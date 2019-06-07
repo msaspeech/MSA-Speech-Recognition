@@ -2,6 +2,7 @@
 DATA_PATH = "./data/"
 PICKLE_FILE_PATH = "./data/QCRI_data_objects.pkl"
 PICKLE_PARTITIONS_PATH = "./data/partitions/"
+PICKLE_PARTITIONS_PATH_DRIVE = "../drive/'My Drive'/'speech_datasets'/"
 PICKLE_PAD_FILE_PATH = "./data/QCRI_data_objects_pad.pkl"
 QCRI_CORPUS_PATH = './data/corpus/audio/'
 QCRI_TRANSCRIPTS_PATH = "./data/corpus/transcriptions.txt"

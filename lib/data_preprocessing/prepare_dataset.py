@@ -250,7 +250,8 @@ def upload_dataset(train_ratio=0.8, padding=False, word_level=False, partitions=
 def get_dataset_information(word_level):
     print("GENERATING DATASET INFORMATION")
 
-    list_datasets = get_files(settings.PICKLE_PARTITIONS_PATH)
+    #list_datasets = get_files(settings.PICKLE_PARTITIONS_PATH)
+    list_datasets = get_files(settings.PICKLE_PARTITIONS_PATH_DRIVE)
     all_transcripts = []
     samples_number = 0
     if word_level:
