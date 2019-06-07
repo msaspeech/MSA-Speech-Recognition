@@ -65,7 +65,7 @@ def _get_audio_transcripts(data):
     for sample in data:
         if 130 <= sample.mfcc.shape[1] <= 1000:
             transcript = "\t" + sample.audio_transcript + "\n"
-            if _clean_characters_only(transcript):
+            if _clean_characters_only(transcript, word_based=False):
                 audio_samples.append(sample.mfcc.transpose())
                 transcripts.append(transcript)
 
@@ -79,17 +79,22 @@ def _get_audio_transcripts_word_level(data):
     for sample in data:
         if 130 <= sample.mfcc.shape[1] <= 1000:
             transcript = "SOS_ " + sample.audio_transcript + " _EOS"
-            if _clean_characters_only(transcript):
-                audio_samples.append(sample.mfcc.transpose())
-                transcripts.append(transcript)
+            audio_samples.append(sample.mfcc.transpose())
+            transcripts.append(transcript)
+
 
     return audio_samples, transcripts
 
 
-def _clean_characters_only(transcript):
-    accepted_characters = [' ', '$', '&', "'", '*', '<', '>', '?', 'A', 'D', 'E', 'F', 'H', 'K', 'N', 'O',
-                           'S', 'T', 'Y', 'Z', '\\', '_', 'b', 'c', 'd', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
-                           'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'y', 'z', '{', '|', '}', '–']
+def _clean_characters_only(transcript, word_based=True):
+    if word_based:
+        accepted_characters = [' ', '$', '&', "'", '*', '<', '>', '?', 'A', 'D', 'E', 'F', 'H', 'K', 'N', 'O',
+                               'S', 'T', 'Y', 'Z', '\\', '_', 'b', 'c', 'd', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
+                               'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'y', 'z', '{', '|', '}', '–']
+    else:
+        accepted_characters = [' ', '$', '&', "'", '*', '<', '>', '?', 'A', 'D', 'E', 'F', 'H', 'K', 'N', 'O',
+                               'S', 'T', 'Y', 'Z', '\\', '_', 'b', 'c', 'd', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
+                               'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'y', 'z', '{', '|', '}', '–', '\n', '\t']
 
     for character in transcript:
         if character not in accepted_characters:
