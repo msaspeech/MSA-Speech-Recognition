@@ -64,9 +64,10 @@ def _get_audio_transcripts(data):
 
     for sample in data:
         if 130 <= sample.mfcc.shape[1] <= 1000:
-            audio_samples.append(sample.mfcc.transpose())
             transcript = "\t" + sample.audio_transcript + "\n"
-            transcripts.append(transcript)
+            if _clean_characters_only(transcript):
+                audio_samples.append(sample.mfcc.transpose())
+                transcripts.append(transcript)
 
     return audio_samples, transcripts
 
@@ -77,11 +78,24 @@ def _get_audio_transcripts_word_level(data):
 
     for sample in data:
         if 130 <= sample.mfcc.shape[1] <= 1000:
-            audio_samples.append(sample.mfcc.transpose())
             transcript = "SOS_ " + sample.audio_transcript + " _EOS"
-            transcripts.append(transcript)
+            if _clean_characters_only(transcript):
+                audio_samples.append(sample.mfcc.transpose())
+                transcripts.append(transcript)
 
     return audio_samples, transcripts
+
+
+def _clean_characters_only(transcript):
+    accepted_characters = [' ', '$', '&', "'", '*', '<', '>', '?', 'A', 'D', 'E', 'F', 'H', 'K', 'N', 'O',
+                           'S', 'T', 'Y', 'Z', '\\', '_', 'b', 'c', 'd', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
+                           'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'y', 'z', '{', '|', '}', '–']
+
+    for character in transcript:
+        if character not in accepted_characters:
+            return False
+
+    return True
 
 
 def _generate_spllited_encoder_input_data(audio_data, partitions=8, test=False):
@@ -374,3 +388,8 @@ def upload_dataset_partition(train_ratio=0.8, padding=False, word_level=False, p
             settings.TOTAL_SAMPLES_NUMBER = general_info[1]
             settings.CHARACTER_SET = general_info[2]
             print(settings.CHARACTER_SET)
+
+
+# [' ', '$', '&', "'", '*', '<', '>', '?', 'A', 'D', 'E', 'F', 'H', 'K', 'N', 'O', 'S', 'T', 'Y', 'Z',
+
+# '\\', '_', 'b', 'c', 'd', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'y', 'z', '{', '|', '}', '–']

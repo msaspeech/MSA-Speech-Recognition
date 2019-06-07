@@ -48,7 +48,7 @@ class Word_Inference():
             layer_name = "decoder_dense"+str(i)
             decoder_dense_layers.append(self.model.get_layer(layer_name))
 
-        decoder_state_input_h = Input(shape=(self.latent_dim,))
+        decoder_state_input_h = Input(shape=(self.latent_dim, ))
         decoder_states_inputs = [decoder_state_input_h]
 
         decoder_gru1, state_h = decoder_gru1_layer(decoder_inputs, initial_state=decoder_states_inputs)
@@ -76,19 +76,18 @@ class Word_Inference():
 
         # creating first input_sequence for decoder
 
-        target_sequence = np.zeros((1, 1, settings.WORD_TARGET_LENGTH))
-        print(settings.WORD_TARGET_LENGTH)
+        target_sequence = np.zeros((1, 1, settings.WORD_TARGET_LENGTH), dtype=np.float32)
+        print(self.decoder_model.summary())
         sos_characters = ["S", "O", "S", "_"]
         target_length = len(settings.CHARACTER_SET) + 1
         for i in range(0, 4):
             position = char_to_int[sos_characters[i]] + i*target_length
+            target_sequence[0, 0, position] = 1
 
-            target_sequence[0, 0, position] = 1
-            print(position)
         for i in range(4, settings.LONGEST_WORD_LENGTH):
-            position = i * target_length
+            position = i * target_length + target_length - 1
             target_sequence[0, 0, position] = 1
-            print(position)
+
 
         #print(target_sequence)
         stop_condition = False
@@ -96,17 +95,21 @@ class Word_Inference():
         decoded_sentence = ""
         while not stop_condition:
 
-            dense_outputs, h = self.decoder_model.predict(
-                [target_sequence] + states_value)
-            states_value = [h]
+            result = self.decoder_model.predict([target_sequence] + [states_value], steps=1)
 
+            dense_outputs = []
+            for i in range(0, settings.LONGEST_WORD_LENGTH):
+                dense_outputs.append(result[i])
+
+            h = result[-1]
+            states_value = h
             print("DECODER PREDICTION DONE")
 
             # decoding values of each dense output
             decoded_word = ""
             for i in range(0, settings.LONGEST_WORD_LENGTH):
                 sampled_token_index = np.argmax(dense_outputs[i][0, -1, :])
-                if sampled_token_index == target_length:
+                if sampled_token_index == target_length - 1:
                     sampled_char = ""
                 else:
                     sampled_char = int_to_char[sampled_token_index]
@@ -126,17 +129,9 @@ class Word_Inference():
 
                 if i < settings.LONGEST_WORD_LENGTH - 1:
                     for j in range(i+1, settings.LONGEST_WORD_LENGTH):
-                        position = j * target_length
+                        position = i * target_length + target_length - 1
                         target_sequence[0, 0, position] = 1
 
-
-                for i in range(0, 4):
-                    position = char_to_int[sos_characters[i]] + i * target_length
-                    target_sequence[0, 0, position] = 1
-
-                for i in range(4, settings.LONGEST_WORD_LENGTH):
-                    position = i * target_length
-                    target_sequence[0, 0, position] = 1
 
     def get_encoder_decoder_cnn(self):
         pass

@@ -21,6 +21,7 @@ else:
 
 sample = AudioInput("test.wav", "")
 audio = [sample.mfcc.transpose()]
+
 audio_sequence = np.array(audio, dtype=np.float32)
 print(audio_sequence.shape)
 
