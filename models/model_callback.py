@@ -63,11 +63,6 @@ class ModelSaver(Callback):
         self.model.save(self.model_path)
         model_title = self.model_name
 
-        # Saving encoder states
-        #path = ENCODER_STATES_PATH + model_title + ".pkl"
-        #encoder_states = [self.encoder_states]
-        #generate_pickle_file(encoder_states, path)
-
         # Saving model
 
         # Saving training results
