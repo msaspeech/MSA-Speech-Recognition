@@ -257,7 +257,7 @@ def get_dataset_information(word_level):
     if word_level:
         for dataset_set, dataset_file in enumerate(list_datasets):
             train_data, test_data = _get_train_test_data_partition(dataset_path=dataset_file, train_ratio=0.75)
-            samples_number += len(train_data)
+            samples_number += len(train_data) 
 
             train_audio, train_transcripts = _get_audio_transcripts_word_level(train_data)
             test_audio, test_transcripts = _get_audio_transcripts_word_level(test_data)
@@ -369,13 +369,11 @@ def upload_dataset_partition(train_ratio=0.8, padding=False, word_level=False, p
             generate_decoder_input_target(transcripts=train_transcripts,
                                           word_level=word_level,
                                           partitions=partitions,
-                                          dataset_number=dataset_number,
-                                          fixed_size=False)
+                                          dataset_number=dataset_number)
 
             generate_decoder_input_target(transcripts=test_transcripts,
                                           word_level=word_level,
                                           partitions=partitions,
-                                          fixed_size=False,
                                           dataset_number=dataset_number,
                                           test=True)
 

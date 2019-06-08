@@ -111,7 +111,8 @@ def _generate_variable_size_character_input_target_data(transcripts, char_to_int
     return decoder_input_data, decoder_target_data
 
 
-def generate_variable_size_character_input_target_data(transcripts, num_partition, char_to_int, partitions=8, test=False):
+def generate_variable_size_character_input_target_data(transcripts, num_partition, char_to_int, partitions=8,
+                                                       test=False):
     """
         Generates two 3D arrays for the decoder input data and target data.
         Fills the 3D arrays for each sample of our dataset
@@ -163,16 +164,18 @@ def generate_variable_size_character_input_target_data(transcripts, num_partitio
             encoded_transcript_target.pop()
             decoder_target_data[i] = encoded_transcript_target
         if not test:
-            path = settings.TRANSCRIPTS_ENCODING_SPLIT_TRAIN_PATH + "dataset" + str(num_partition) + "/encoded_transcripts" + str(num_dataset) + ".pkl"
+            path = settings.TRANSCRIPTS_ENCODING_SPLIT_TRAIN_PATH + "dataset" + str(
+                num_partition) + "/encoded_transcripts" + str(num_dataset) + ".pkl"
         else:
-            path = settings.TRANSCRIPTS_ENCODING_SPLIT_TEST_PATH + "dataset" + str(num_partition) + "/encoded_transcripts" + str(num_dataset) + ".pkl"
+            path = settings.TRANSCRIPTS_ENCODING_SPLIT_TEST_PATH + "dataset" + str(
+                num_partition) + "/encoded_transcripts" + str(num_dataset) + ".pkl"
 
         generate_pickle_file((decoder_input_data, decoder_target_data), file_path=path)
 
     # return decoder_input_data, decoder_target_data
 
 
-def generate_variable_word_based_encoding_bis(transcripts, num_partition, char_to_int, partitions=8, test=False):
+def generate_variable_word_based_encoding_final(transcripts, num_partition, char_to_int, partitions=8, test=False):
     longest_word_length = get_longest_word_length(settings.WORD_SET)
     transcript_sets = []
     limits = []
@@ -239,15 +242,16 @@ def generate_variable_word_based_encoding_bis(transcripts, num_partition, char_t
             decoder_target_data[i] = encoded_transcript_target
 
         if not test:
-            path = settings.TRANSCRIPTS_ENCODING_SPLIT_TRAIN_PATH + "dataset" + str(num_partition) + "/encoded_transcripts" + str(num_dataset) + ".pkl"
+            path = settings.TRANSCRIPTS_ENCODING_SPLIT_TRAIN_PATH + "dataset" + str(
+                num_partition) + "/encoded_transcripts" + str(num_dataset) + ".pkl"
         else:
-            path = settings.TRANSCRIPTS_ENCODING_SPLIT_TEST_PATH + "dataset" + str(num_partition) + "/encoded_transcripts" + str(num_dataset) + ".pkl"
+            path = settings.TRANSCRIPTS_ENCODING_SPLIT_TEST_PATH + "dataset" + str(
+                num_partition) + "/encoded_transcripts" + str(num_dataset) + ".pkl"
 
         generate_pickle_file((decoder_input_data, decoder_target_data), file_path=path)
 
 
-
-def generate_variable_word_based_encoding(transcripts, num_partition,  char_to_int, partitions=8, test=False):
+def generate_variable_word_based_encoding(transcripts, num_partition, char_to_int, partitions=8, test=False):
     print(char_to_int)
     print(settings.WORD_TARGET_LENGTH)
     transcript_sets = []
@@ -394,65 +398,23 @@ def generate_variable_word_input_target_data(transcripts, words_to_int, partitio
         generate_pickle_file((decoder_input_data, decoder_target_data), file_path=path)
 
 
-def _generate_fixed_size_character_input_target_data(transcripts, char_to_int, num_transcripts, max_length,
-                                                     num_distinct_chars):
-    """
-    Generates two 3D arrays for the decoder input data and target data.
-    Fills the 3D arrays for each sample of our dataset
-    Return OneHotEncoded Decoder Input data
-    Return OneHotEncoded Target data
-    :param transcripts: List of Strings
-    :param char_to_int: Dict
-    :param num_transcripts: int
-    :param max_length: int
-    :param num_distinct_chars: int
-    :return: 3D numpy Array, 3D numpy Array
-    """
-
-    # Initializing empty 3D array for decoder input
-    decoder_input_data = np.zeros((num_transcripts,
-                                   max_length,
-                                   num_distinct_chars), dtype='float32')
-
-    # Initializing empty 3D array for enc/dec target
-    decoder_target_data = np.zeros((num_transcripts,
-                                    max_length,
-                                    num_distinct_chars), dtype='float32')
-
-    # Parsing through transcripts to fill the 3D array
-    for i, transcript in enumerate(transcripts):
-        for index, character in enumerate(transcript):
-            decoder_input_data[i, index, char_to_int[character]] = 1
-            if index > 0:
-                decoder_target_data[i, index - 1, char_to_int[character]] = 1
-    print(decoder_input_data.shape)
-    print(decoder_target_data.shape)
-
-    print("Returning data")
-    return decoder_input_data, decoder_target_data
 
 
-def generate_decoder_input_target(transcripts, dataset_number, word_level=False, fixed_size=True, test=False, partitions=8):
+def generate_decoder_input_target(transcripts, dataset_number, word_level=False, test=False,
+                                  partitions=32):
     """
     Wrapper for the _generate_input_target_data method.
     :return: 3D numpy Array, 3D numpy Array
     """
 
     if word_level:
-        if not fixed_size:
-            # Word level recognition
-            # distinct_words = settings.WORD_SET
-            # word_to_int, _ = convert_words_to_int(distinct_words=sorted(distinct_words))
-            # print(word_to_int)
-            # decoder_input, decoder_target = _generate_variable_size_word_input_target_data(transcripts=transcripts,
-            #                                                                               words_to_int=word_to_int)
-            character_set = settings.CHARACTER_SET
-            char_to_int = convert_to_int(sorted(character_set))
-            generate_variable_word_based_encoding_bis(transcripts=transcripts,
-                                                      num_partition=dataset_number,
-                                                      char_to_int=char_to_int,
-                                                      partitions=partitions,
-                                                      test=test)
+        character_set = settings.CHARACTER_SET
+        char_to_int = convert_to_int(sorted(character_set))
+        generate_variable_word_based_encoding_final(transcripts=transcripts,
+                                                  num_partition=dataset_number,
+                                                  char_to_int=char_to_int,
+                                                  partitions=partitions,
+                                                  test=test)
 
         # generate_variable_word_input_target_binary(transcripts=transcripts,
         #                                           words_to_int=word_to_int,
@@ -462,23 +424,9 @@ def generate_decoder_input_target(transcripts, dataset_number, word_level=False,
     else:
         # Character level recognition
         character_set = settings.CHARACTER_SET
-        if not fixed_size:
-            char_to_int = convert_to_int(sorted(character_set))
-            generate_variable_size_character_input_target_data(transcripts=transcripts,
-                                                               num_partition=dataset_number,
-                                                               char_to_int=char_to_int,
-                                                               partitions=partitions,
-                                                               test=test)
-
-        else:
-            max_transcript_length = get_longest_sample_size(transcripts)
-            num_transcripts = len(transcripts)
-            num_distinct_chars = len(character_set)
-            char_to_int = convert_to_int(character_set)
-            decoder_input, decoder_target = _generate_fixed_size_character_input_target_data(transcripts=transcripts,
-                                                                                             char_to_int=char_to_int,
-                                                                                             num_transcripts=num_transcripts,
-                                                                                             max_length=max_transcript_length,
-                                                                                             num_distinct_chars=num_distinct_chars)
-
-    # return decoder_input, decoder_target
+        char_to_int = convert_to_int(sorted(character_set))
+        generate_variable_size_character_input_target_data(transcripts=transcripts,
+                                                           num_partition=dataset_number,
+                                                           char_to_int=char_to_int,
+                                                           partitions=partitions,
+                                                           test=test)
