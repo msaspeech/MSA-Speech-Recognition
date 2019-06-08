@@ -350,7 +350,7 @@ def upload_dataset_partition(train_ratio=0.8, padding=False, word_level=False, p
 
 
             # Upload train and test data, the train ration is 0.8 and can be modified through ration param
-            train_data, test_data = _get_train_test_data_partition(dataset_path=dataset_file, train_ratio=0.75)
+            train_data, test_data = _get_train_test_data_partition(dataset_path=dataset_file, train_ratio=0.92)
 
             if word_level:
                 train_audio, train_transcripts = _get_audio_transcripts_word_level(train_data)
@@ -393,8 +393,3 @@ def upload_dataset_partition(train_ratio=0.8, padding=False, word_level=False, p
             settings.TOTAL_SAMPLES_NUMBER = general_info[1]
             settings.CHARACTER_SET = general_info[2]
             print(settings.CHARACTER_SET)
-
-
-# [' ', '$', '&', "'", '*', '<', '>', '?', 'A', 'D', 'E', 'F', 'H', 'K', 'N', 'O', 'S', 'T', 'Y', 'Z',
-
-# '\\', '_', 'b', 'c', 'd', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'y', 'z', '{', '|', '}', '–']

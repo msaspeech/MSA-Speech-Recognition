@@ -111,7 +111,7 @@ def _generate_variable_size_character_input_target_data(transcripts, char_to_int
     return decoder_input_data, decoder_target_data
 
 
-def generate_variable_size_character_input_target_data(transcripts, num_partition, char_to_int, partitions=8,
+def generate_variable_size_character_input_target_data(transcripts, num_partition, char_to_int, partitions=32,
                                                        test=False):
     """
         Generates two 3D arrays for the decoder input data and target data.
