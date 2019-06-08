@@ -247,7 +247,7 @@ def upload_dataset(train_ratio=0.8, padding=False, word_level=False, partitions=
             print(settings.CHARACTER_SET)
 
 
-def get_dataset_information(word_level):
+def get_dataset_information(word_level, train_ratio):
     print("GENERATING DATASET INFORMATION")
 
     list_datasets = get_files(settings.PICKLE_PARTITIONS_PATH)
@@ -256,7 +256,7 @@ def get_dataset_information(word_level):
     samples_number = 0
     if word_level:
         for dataset_set, dataset_file in enumerate(list_datasets):
-            train_data, test_data = _get_train_test_data_partition(dataset_path=dataset_file, train_ratio=0.75)
+            train_data, test_data = _get_train_test_data_partition(dataset_path=dataset_file, train_ratio=train_ratio)
             samples_number += len(train_data) 
 
             train_audio, train_transcripts = _get_audio_transcripts_word_level(train_data)
@@ -295,7 +295,7 @@ def get_dataset_information(word_level):
 
     else:
         for dataset_set, dataset_file in enumerate(list_datasets):
-            train_data, test_data = _get_train_test_data_partition(dataset_path=dataset_file, train_ratio=0.75)
+            train_data, test_data = _get_train_test_data_partition(dataset_path=dataset_file, train_ratio=train_ratio)
             samples_number += len(train_data)
 
             train_audio, train_transcripts = _get_audio_transcripts(train_data)
@@ -329,7 +329,7 @@ def upload_dataset_partition(train_ratio=0.8, padding=False, word_level=False, p
     print("PREPARING PARTITIONED DATASET")
     if empty_directory(settings.AUDIO_SPLIT_TRAIN_PATH):
 
-        get_dataset_information(word_level)
+        get_dataset_information(word_level, train_ratio=0.92)
         list_datasets = get_files(settings.PICKLE_PARTITIONS_PATH)
 
         for dataset_number, dataset_file in enumerate(list_datasets):
