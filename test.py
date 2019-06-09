@@ -16,7 +16,7 @@ settings.WORD_TARGET_LENGTH = general_info[5]
 word_set_length = len(settings.WORD_SET)
 cpt = 0
 for word in settings.WORD_SET:
-    if len(word) <= 6:
+    if len(word) <= 7:
         cpt +=1
 
 print(cpt)
