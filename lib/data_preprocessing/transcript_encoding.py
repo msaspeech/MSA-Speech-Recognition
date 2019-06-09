@@ -220,7 +220,6 @@ def generate_variable_word_based_encoding_final(transcripts, num_partition, char
                     # Encoding words for decoder inputs
                     position = char_to_int[character] + character_set_length * character_index
                     encoded_word[position] = 1
-
                     # Encoding word for decoder targets
                     encoded_word_target[character_index][char_to_int[character]] = 1
 

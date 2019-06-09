@@ -80,7 +80,7 @@ class ModelSaver(Callback):
         #parent_directory_id = "0B5fJkPjHLj3Jdkw5ZnFiY0lZV1U"
         #file_list = self.drive_instance.ListFile({'q': "\'"+parent_directory_id+"\'"+" in parents  and trashed=false"}).GetList()
         #for file1 in file_list:
-        #    print('title: %s, id: %s' % (file1['title'], file1['id']))
+        #    print('title: %s, id: %s   ' % (file1['title'], file1['id']))
 
         #parent_directory_id = '0B5fJkPjHLj3Jdkw5ZnFiY0lZV1U'
         parent_directory_id = folders_dict_id[self.model_name]
