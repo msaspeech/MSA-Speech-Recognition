@@ -3,6 +3,7 @@ from tensorflow.python.keras import models
 from lib import AudioInput
 import numpy as np
 from etc import settings
+import sys 
 
 general_info = load_pickle_data(settings.DATASET_WORD_INFORMATION_PATH)
 settings.MFCC_FEATURES_LENGTH = general_info[0]
