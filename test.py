@@ -12,11 +12,12 @@ settings.LONGEST_WORD_LENGTH = general_info[3]
 settings.CHARACTER_SET = general_info[4]
 settings.WORD_TARGET_LENGTH = general_info[5]
 
+length = int(sys.argv[1])
 
 word_set_length = len(settings.WORD_SET)
 cpt = 0
 for word in settings.WORD_SET:
-    if len(word) <= 7:
+    if len(word) <= length:
         cpt +=1
 
 print(cpt)
