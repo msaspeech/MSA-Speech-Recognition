@@ -36,10 +36,10 @@ class Seq2SeqModel():
         if file_exists(self.model_path):
             self.model = models.load_model(self.model_path)
 
-            if self.word_level:
-                self.model.evaluate_generator(self.split_data_generator_dict_word_level_test(), steps=settings.TOTAL_SAMPLES_NUMBER, verbose=1)
-            else:
-                self.model.evaluate_generator(self.split_data_generator_dict_test(), steps=settings.TOTAL_SAMPLES_NUMBER, verbose=1)
+            #if self.word_level:
+            #    self.model.evaluate_generator(self.split_data_generator_dict_word_level_test(), steps=settings.TOTAL_SAMPLES_NUMBER, verbose=1)
+            #else:
+            #    self.model.evaluate_generator(self.split_data_generator_dict_test(), steps=settings.TOTAL_SAMPLES_NUMBER, verbose=1)
 
             print(self.model.summary())
         else:
