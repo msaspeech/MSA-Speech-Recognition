@@ -37,7 +37,7 @@ class Seq2SeqModel():
         if file_exists(self.model_path):
             self.model = models.load_model(self.model_path)
 
-            test_samples = settings.TOTAL_SAMPLES_NUMBER * 95/100
+            test_samples = int(settings.TOTAL_SAMPLES_NUMBER * 95/100)
             if self.word_level:
                 self.model.evaluate_generator(self.split_data_generator_dict_word_level_test(), steps=test_samples, verbose=1)
             else:
