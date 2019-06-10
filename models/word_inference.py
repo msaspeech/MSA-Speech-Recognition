@@ -6,7 +6,7 @@ from tensorflow.python.keras.layers import Input
 from utils import convert_to_int, convert_int_to_char
 from . import correct_word
 import numpy as np
-
+from utils import arabic_to_buckwalter
 
 class Word_Inference():
 
@@ -123,6 +123,7 @@ class Word_Inference():
             print("decoded_word is : "+decoded_word)
             corrected_word = correct_word(decoded_word)
             print("corrected_word is : "+corrected_word)
+            print("corrected word in arabic is :"+arabic_to_buckwalter(corrected_word))
             decoded_sentence += decoded_word + " "
 
             if decoded_word == "EOS_":
