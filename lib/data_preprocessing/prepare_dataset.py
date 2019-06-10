@@ -364,7 +364,7 @@ def upload_dataset_partition(train_ratio=0.8, padding=False, word_level=False, p
 
             _generate_spllited_encoder_input_data_partition(train_audio, dataset_number=dataset_number, partitions=partitions)
             # train_encoder_input = _get_encoder_input_data(audio_data=train_audio)
-            _generate_spllited_encoder_input_data_partition(test_audio, dataset_number=dataset_number, test=True,partitions=partitions)
+            _generate_spllited_encoder_input_data_partition(test_audio, dataset_number=dataset_number, test=True, partitions=partitions)
 
             generate_decoder_input_target(transcripts=train_transcripts,
                                           word_level=word_level,

@@ -8,7 +8,6 @@ from .seq2seq_baseline import train_baseline_seq2seq_model_GRU, train_baseline_s
     train_bidirectional_baseline_seq2seq_model_GRU, train_bidirectional_baseline_seq2seq_model_LSTM
 from .seq2seq_cnn_attention import train_cnn_seq2seq_model_GRU, train_cnn_attention_seq2seq_model, \
     train_cnn_bidirectional_seq2seq_model_GRU
-#from .seq2seq_with_attention import train_attention_seq2seq_model_GRU, train_bidirectional_attention_seq2seq_model
 from .model_callback import ModelSaver
 
 
@@ -39,7 +38,8 @@ class Seq2SeqModel():
 
             test_samples = int(settings.TOTAL_SAMPLES_NUMBER * 95/100)
             if self.word_level:
-                self.model.evaluate_generator(self.split_data_generator_dict_word_level_test(), steps=test_samples, verbose=1)
+                self.model.predict_generator(self.split_data_generator_dict_word_level_test(), steps=test_samples, verbose=1)
+                #self.model.evaluate_generator(self.split_data_generator_dict_word_level_test(), steps=test_samples, verbose=1)
             else:
                 self.model.evaluate_generator(self.split_data_generator_dict_test(), test_samples, verbose=1)
 
