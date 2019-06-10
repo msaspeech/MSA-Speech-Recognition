@@ -9,3 +9,4 @@ from .train_model import Seq2SeqModel
 from .sample_inference import Inference
 from .word_correction import *
 from .word_inference import Word_Inference
+from .test_inference import Word_Inference_TEST
