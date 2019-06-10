@@ -8,7 +8,7 @@ from .seq2seq_baseline import train_baseline_seq2seq_model_GRU, train_baseline_s
     train_bidirectional_baseline_seq2seq_model_GRU, train_bidirectional_baseline_seq2seq_model_LSTM
 from .seq2seq_cnn_attention import train_cnn_seq2seq_model_GRU, train_cnn_attention_seq2seq_model, \
     train_cnn_bidirectional_seq2seq_model_GRU
-from .seq2seq_with_attention import train_attention_seq2seq_model_GRU, train_bidirectional_attention_seq2seq_model
+#from .seq2seq_with_attention import train_attention_seq2seq_model_GRU, train_bidirectional_attention_seq2seq_model
 from .model_callback import ModelSaver
 
 
@@ -59,15 +59,15 @@ class Seq2SeqModel():
                     latent_dim=self.latent_dim,
                     word_level=self.word_level)
 
-            elif self.model_architecture == 3:
-                self.model, self.encoder_states = train_attention_seq2seq_model_GRU(mfcc_features=self.mfcc_features_length,
-                                                                                target_length=self.target_length,
-                                                                                latent_dim=self.latent_dim)
-            elif self.model_architecture == 4:
-                self.model, self.encoder_states = train_bidirectional_attention_seq2seq_model(
-                    mfcc_features=self.mfcc_features_length,
-                    target_length=self.target_length,
-                    latent_dim=self.latent_dim)
+            #elif self.model_architecture == 3:
+            #    self.model, self.encoder_states = train_attention_seq2seq_model_GRU(mfcc_features=self.mfcc_features_length,
+            #                                                                    target_length=self.target_length,
+            #                                                                    latent_dim=self.latent_dim)
+            #elif self.model_architecture == 4:
+            #    self.model, self.encoder_states = train_bidirectional_attention_seq2seq_model(
+            #        mfcc_features=self.mfcc_features_length,
+            #        target_length=self.target_length,
+            #        latent_dim=self.latent_dim)
 
             elif self.model_architecture == 5:
                 print("CNN MODEL")
