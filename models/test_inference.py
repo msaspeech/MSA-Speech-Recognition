@@ -30,6 +30,7 @@ class Word_Inference_TEST():
 
     def predict_sequence_test(self, audio_input):
         char_to_int = convert_to_int(sorted(settings.CHARACTER_SET))
+        int_to_char = convert_int_to_char(char_to_int)
 
         t_force = "SOS_ >hlA bkm yjtmE wzrA' xArjyp dwl Alxlyj wlbnAn wAl>rdn wmSr wtrkyA wwzyr AlxArjyp Al>myrky jwn kyry ywm Alxmys fy jdp _EOS"
         words = t_force.split()
@@ -57,9 +58,18 @@ class Word_Inference_TEST():
 
 
         result = self.model.predict([audio_input, transcript])
-        print(len(result))
-        print(len(result[0]))
-        print(result)
+        list_words = [""] * len(words)
+        for i, characters in enumerate(result):
+            encoded_characters= characters[0]
+            for i, encoded_character in enumerate(encoded_characters):
+                index = np.argmax(np.array(encoded_character))
+                if index == character_set_length - 1:
+                    character = ""
+                else:
+                    character = int_to_char[index]
+                list_words[i] += character
+
+        print(list_words)
 
     def get_encoder_decoder_baseline(self):
 
