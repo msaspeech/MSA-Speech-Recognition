@@ -329,7 +329,7 @@ def upload_dataset_partition(train_ratio=0.8, padding=False, word_level=False, p
     print("PREPARING PARTITIONED DATASET")
     if empty_directory(settings.AUDIO_SPLIT_TRAIN_PATH):
 
-        get_dataset_information(word_level, train_ratio=0.92)
+        get_dataset_information(word_level, train_ratio=0.95)
         list_datasets = get_files(settings.PICKLE_PARTITIONS_PATH)
 
         for dataset_number, dataset_file in enumerate(list_datasets):
