@@ -33,3 +33,4 @@ def plot_train_loss_acc(model_hist_path, word_level):
     plt.savefig(loss_plot_path)
     #plt.show()
     plt.clf()
+

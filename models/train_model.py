@@ -32,15 +32,20 @@ class Seq2SeqModel():
         self.encoder_states = None
         self._load_model()
 
-    def _load_model(self):
+    def test_model(self):
+
         if file_exists(self.model_path):
             self.model = models.load_model(self.model_path)
 
-            #if self.word_level:
-            #    self.model.evaluate_generator(self.split_data_generator_dict_word_level_test(), steps=settings.TOTAL_SAMPLES_NUMBER, verbose=1)
-            #else:
-            #    self.model.evaluate_generator(self.split_data_generator_dict_test(), steps=settings.TOTAL_SAMPLES_NUMBER, verbose=1)
+            test_samples = settings.TOTAL_SAMPLES_NUMBER * 95/100
+            if self.word_level:
+                self.model.evaluate_generator(self.split_data_generator_dict_word_level_test(), steps=test_samples, verbose=1)
+            else:
+                self.model.evaluate_generator(self.split_data_generator_dict_test(), test_samples, verbose=1)
 
+    def _load_model(self):
+        if file_exists(self.model_path):
+            self.model = models.load_model(self.model_path)
             print(self.model.summary())
         else:
             if self.model_architecture == 1:
