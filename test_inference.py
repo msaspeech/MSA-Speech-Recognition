@@ -10,7 +10,7 @@ import numpy as np
 
 word_level = 1
 architecture = 1
-latent_dim = 400
+latent_dim = 250
 
 
 model_name = "architecture" + str(architecture)

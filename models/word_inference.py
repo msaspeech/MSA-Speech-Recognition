@@ -4,7 +4,9 @@ from tensorflow.python.keras import models
 from tensorflow.python.keras import Model
 from tensorflow.python.keras.layers import Input
 from utils import convert_to_int, convert_int_to_char
+from . import correct_word
 import numpy as np
+
 
 class Word_Inference():
 
@@ -42,7 +44,8 @@ class Word_Inference():
 
         decoder_gru1_layer = self.model.get_layer("decoder_gru1_layer")
         decoder_gru2_layer = self.model.get_layer("decoder_gru2_layer")
-        decoder_gru3_layer = self.model.get_layer("decoder_gru2_layer")
+        decoder_gru3_layer = self.model.get_layer("decoder_gru3_layer")
+        decoder_gru4_layer = self.model.get_layer("decoder_gru4_layer")
         decoder_dense_layers = []
         for i in range(0, settings.LONGEST_WORD_LENGTH):
             layer_name = "decoder_dense"+str(i)
@@ -53,7 +56,9 @@ class Word_Inference():
 
         decoder_gru1, state_h = decoder_gru1_layer(decoder_inputs, initial_state=decoder_states_inputs)
         decoder_gru2, state_h = decoder_gru2_layer(decoder_gru1, initial_state=[state_h])
-        decoder_output, state_h = decoder_gru3_layer(decoder_gru2, initial_state=[state_h])
+        decoder_gru3, state_h = decoder_gru3_layer(decoder_gru2, initial_state=[state_h])
+        decoder_output, state_h = decoder_gru4_layer(decoder_gru3, initial_state=[state_h])
+
         decoder_states = [state_h]
         # getting dense layers as outputs
         decoder_outputs = []
@@ -113,9 +118,11 @@ class Word_Inference():
                     sampled_char = ""
                 else:
                     sampled_char = int_to_char[sampled_token_index]
-                print(sampled_char)
                 decoded_word += sampled_char
 
+            print("decoded_word is : "+decoded_word)
+            corrected_word = correct_word(decoded_word)
+            print("corrected_word is : "+corrected_word)
             decoded_sentence += decoded_word + " "
 
             if decoded_word == "EOS_":

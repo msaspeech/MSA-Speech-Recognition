@@ -11,7 +11,7 @@ settings.DRIVE_INSTANCE = load_pickle_data(DRIVE_INSTANCE_PATH)
 
 architecture = 1
 word_level = 1
-latent_dim = 400
+latent_dim = 250
 epochs = 500
 
 upload_dataset_partition(word_level=word_level, partitions=2)

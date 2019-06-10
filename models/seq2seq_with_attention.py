@@ -9,6 +9,7 @@ from .encoder_decoder import get_encoder_states_GRU_attention, get_decoder_outpu
 from .layers import AttentionLayer
 
 
+
 def train_attention_seq2seq_model_GRU(mfcc_features, target_length, latent_dim):
     """
     :param mfcc_features:
@@ -25,13 +26,15 @@ def train_attention_seq2seq_model_GRU(mfcc_features, target_length, latent_dim):
 
     # Decoder training, using 'encoder_states' as initial state.
     decoder_inputs = Input(shape=(None, target_length), name="decoder_input")
-    decoder_outputs = get_decoder_outputs_GRU_attention(target_length=target_length,
+    decoder_outputs, decoder_states = get_decoder_outputs_GRU_attention(target_length=target_length,
                                                         encoder_states=encoder_states,
                                                         decoder_inputs=decoder_inputs,
                                                         latent_dim=latent_dim)
 
     # Attention layer
     attn_layer = AttentionLayer(name='attention_layer')
+    print(encoder_outputs)
+    print(decoder_outputs)
     attn_out, attn_states = attn_layer([encoder_outputs, decoder_outputs])
     decoder_concat_input = Concatenate(axis=-1, name='concat_layer')([decoder_outputs, attn_out])
 

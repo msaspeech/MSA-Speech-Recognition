@@ -3,7 +3,8 @@ from tensorflow.python.keras import models
 from lib import AudioInput
 import numpy as np
 from etc import settings
-import sys 
+import sys
+from utils import load_pickle_data
 
 general_info = load_pickle_data(settings.DATASET_WORD_INFORMATION_PATH)
 settings.MFCC_FEATURES_LENGTH = general_info[0]
@@ -13,16 +14,7 @@ settings.LONGEST_WORD_LENGTH = general_info[3]
 settings.CHARACTER_SET = general_info[4]
 settings.WORD_TARGET_LENGTH = general_info[5]
 
-length = int(sys.argv[1])
 
-word_set_length = len(settings.WORD_SET)
-cpt = 0
-for word in settings.WORD_SET:
-    if len(word) <= length:
-        cpt +=1
+data = load_pickle_data("architecture1word.pkl")
 
-print(cpt)
-
-per = int(cpt * 100 / word_set_length)
-print(per)
-
+print(len(data["accuracy"]))
