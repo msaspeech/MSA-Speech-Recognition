@@ -32,7 +32,7 @@ class Word_Inference_TEST():
         char_to_int = convert_to_int(sorted(settings.CHARACTER_SET))
         int_to_char = convert_int_to_char(char_to_int)
 
-        t_force = "SOS_ ATlAEhm ElY HSylp mfAwDAt Al>yAm AlsAbqp _EOS"
+        t_force = "SOS_ mA*A bEd lqA' bArys Alywm bsm Allh AlrHmn AlrHym fy AlbdAyp yEny kl EAm wAl>mp Al<slAmyp w>ntm bxyr <n $A' Allh _EOS"
         words = t_force.split()
         character_set_length = len(settings.CHARACTER_SET) + 1
         dec_input_len = character_set_length * settings.LONGEST_WORD_LENGTH
