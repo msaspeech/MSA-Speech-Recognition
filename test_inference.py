@@ -28,8 +28,8 @@ print(audio_sequence.shape)
 
 #word_inference = Word_Inference(model_path=model_path, latent_dim=latent_dim)
 word_inference = Word_Inference_TEST(model_path=model_path, latent_dim=latent_dim)
-word_inference.predict_sequence_test(audio_input=audio_sequence)
-#transcript = word_inference.decode_audio_sequence(audio_sequence)
+#word_inference.predict_sequence_test(audio_input=audio_sequence)
+transcript = word_inference.decode_audio_sequence(audio_sequence)
 #print(transcript)
 
 # accuracy = measure_test_accuracy(test_decoder_input, model, encoder_states, latent_dim=512)

@@ -26,7 +26,7 @@ class Word_Inference_TEST():
 
         self.encoder_model = None
         self.decoder_model = None
-        #self.get_encoder_decoder_baseline()
+        self.get_encoder_decoder_baseline()
 
     def predict_sequence_test(self, audio_input):
         char_to_int = convert_to_int(sorted(settings.CHARACTER_SET))
@@ -148,24 +148,27 @@ class Word_Inference_TEST():
             for i in range(0, settings.LONGEST_WORD_LENGTH):
                 dense_outputs.append(result[i])
 
+            word = ""
+
+            print(word)
             h = result[-1]
             states_value = h
             print("DECODER PREDICTION DONE")
 
             # decoding values of each dense output
             decoded_word = ""
-            for i in range(0, settings.LONGEST_WORD_LENGTH):
-                sampled_token_index = np.argmax(dense_outputs[i][0, -1, :])
-                if sampled_token_index == target_length - 1:
-                    sampled_char = ""
+
+            for dense in dense_outputs:
+                index = np.argmax(dense[0])
+                if index == len(char_to_int):
+                    decoded_word+=""
                 else:
-                    sampled_char = int_to_char[sampled_token_index]
-                decoded_word += sampled_char
+                    decoded_word+= int_to_char[index]
 
             print("decoded_word is : "+decoded_word)
-            corrected_word = correct_word(decoded_word)
-            print("corrected_word is : "+corrected_word)
-            print("corrected word in arabic is :"+buckwalter_to_arabic(corrected_word))
+            #corrected_word = correct_word(decoded_word)
+            #print("corrected_word is : "+corrected_word)
+            #print("corrected word in arabic is :"+buckwalter_to_arabic(corrected_word))
             decoded_sentence += decoded_word + " "
 
             if decoded_word == "EOS_":
