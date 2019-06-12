@@ -26,7 +26,7 @@ def plot_train_loss_acc(model_hist_path, word_level):
 
     # Plot and save loss
     plt.plot(train_hist["loss"], "r")
-    plt.title("Évolution de la fonction de perte pour la reconnaissance basée "+title)
+    plt.title("Évolution de la fonction d'erreur pour la reconnaissance basée "+title)
     plt.xlabel("Epochs")
     plt.ylabel("Loss")
     plt.legend(['train loss'], loc='upper left')

@@ -99,7 +99,8 @@ class Word_Inference():
 
         decoded_sentence = ""
         while not stop_condition:
-
+            print("target sequence:")
+            print(target_sequence)
             result = self.decoder_model.predict([target_sequence] + [states_value], steps=1)
 
             dense_outputs = []

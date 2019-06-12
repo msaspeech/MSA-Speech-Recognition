@@ -28,12 +28,28 @@ class Word_Inference_TEST():
         self.decoder_model = None
         self.get_encoder_decoder_baseline()
 
+    def test_encoder_decoder(self, audio_input):
+        char_to_int = convert_to_int(sorted(settings.CHARACTER_SET))
+        int_to_char = convert_int_to_char(char_to_int)
+
+        encoder_inputs = Input(shape=(None, settings.MFCC_FEATURES_LENGTH))
+        encoder_gru = self.model.get_layer("encoder_gru_layer")
+        encoder_output, h = encoder_gru(encoder_inputs)
+        self.encoder_states = h
+
+        encoder_model = Model(encoder_inputs, self.encoder_states)
+
+        state_h = encoder_model.predict(audio_input)
+        print(state_h)
+
+
     def predict_sequence_test(self, audio_input):
         char_to_int = convert_to_int(sorted(settings.CHARACTER_SET))
         int_to_char = convert_int_to_char(char_to_int)
 
-        t_force = "SOS_ mA*A bEd lqA' bArys Alywm bsm Allh AlrHmn AlrHym fy AlbdAyp yEny kl EAm wAl>mp Al<slAmyp w>ntm bxyr <n $A' Allh _EOS"
+        t_force = "SOS_ msA' Alxyr >wlA hw Almwqf tm tSHyHh _EOS"
         words = t_force.split()
+        print(words)
         character_set_length = len(settings.CHARACTER_SET) + 1
         dec_input_len = character_set_length * settings.LONGEST_WORD_LENGTH
         encoded_transcript = []
@@ -43,6 +59,7 @@ class Word_Inference_TEST():
             for i, character in enumerate(word):
                 position = character_set_length* i + char_to_int[character]
                 encoded_word[position] = 1
+                print(position)
 
             if i < settings.LONGEST_WORD_LENGTH - 1:
                 for k in range(i + 1, settings.LONGEST_WORD_LENGTH):
@@ -55,9 +72,10 @@ class Word_Inference_TEST():
         transcript[0] = encoded_transcript
 
         print(transcript.shape)
-
-
+        print(transcript[0][0])
+        print([np.argmax(transcript[0][0][i:i+41]) for i in range(0, 574, 41)])
         result = self.model.predict([audio_input, transcript])
+
         list_words = [""] * len(words)
         for i, characters in enumerate(result):
             encoded_characters= characters[0]
@@ -115,11 +133,13 @@ class Word_Inference_TEST():
 
     def decode_audio_sequence(self, audio_sequence):
 
+        # get layer (encoder ===> good model)
+
         # Getting converters
         char_to_int = convert_to_int(sorted(settings.CHARACTER_SET))
         int_to_char = convert_int_to_char(char_to_int)
 
-        states_value = self.encoder_model(audio_sequence)
+        states_value = self.encoder_model.predict(audio_sequence)
         print("ENCODER PREDICTION DONE")
 
         # creating first input_sequence for decoder
@@ -130,6 +150,7 @@ class Word_Inference_TEST():
         target_length = len(settings.CHARACTER_SET) + 1
         for i in range(0, 4):
             position = char_to_int[sos_characters[i]] + i*target_length
+
             target_sequence[0, 0, position] = 1
 
         for i in range(4, settings.LONGEST_WORD_LENGTH):
@@ -140,15 +161,21 @@ class Word_Inference_TEST():
         stop_condition = False
 
         decoded_sentence = ""
+        limit = 0
         while not stop_condition:
-
-            result = self.decoder_model.predict([target_sequence] + [states_value], steps=1)
+            print("STATES VALUE IS ")
+            print(states_value)
+            print("TARGET SEQUENCE IS ")
+            print([np.argmax(target_sequence[0][0][i:i + 41]) for i in range(0, 574, 41)])
+            #print(target_sequence)
+            limit += 1
+            result = self.decoder_model.predict([target_sequence, states_value], steps=1)
 
             dense_outputs = []
             for i in range(0, settings.LONGEST_WORD_LENGTH):
                 dense_outputs.append(result[i])
 
-            word = ""
+            word = ""   
 
             print(word)
             h = result[-1]
@@ -170,6 +197,8 @@ class Word_Inference_TEST():
             #print("corrected_word is : "+corrected_word)
             #print("corrected word in arabic is :"+buckwalter_to_arabic(corrected_word))
             decoded_sentence += decoded_word + " "
+            if limit > 4:
+                stop_condition = True
 
             if decoded_word == "EOS_":
                 stop_condition = True
