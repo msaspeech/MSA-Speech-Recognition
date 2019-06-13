@@ -116,7 +116,7 @@ class Word_Inference_TEST():
         decoder_states_inputs = [decoder_state_input_h]
 
         decoder_gru1, state_h = decoder_gru1_layer(decoder_inputs, initial_state=decoder_states_inputs)
-        decoder_output = decoder_gru2_layer(decoder_gru1, initial_state=decoder_states_inputs)
+        decoder_output = decoder_gru2_layer(decoder_gru1, initial_state=state_h)
 
         print(decoder_gru1_layer.output)
 

@@ -89,7 +89,7 @@ def get_decoder_outputs_GRU_test(encoder_states, decoder_inputs, latent_dim):
                                   kernel_constraint=None,
                                   kernel_regularizer=None,
                                   name="decoder_gru2_layer")
-    decoder_outputs = decoder_gru2_layer(decoder_outputs, initial_state=state_h)
+    decoder_outputs = decoder_gru2_layer(decoder_outputs)
 
     decoder_states = [state_h]
 
