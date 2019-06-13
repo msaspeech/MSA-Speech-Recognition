@@ -63,15 +63,21 @@ class Seq2SeqModel():
                     latent_dim=self.latent_dim,
                     word_level=self.word_level)
 
-            #elif self.model_architecture == 3:
-            #    self.model, self.encoder_states = train_attention_seq2seq_model_GRU(mfcc_features=self.mfcc_features_length,
-            #                                                                    target_length=self.target_length,
-            #                                                                    latent_dim=self.latent_dim)
-            #elif self.model_architecture == 4:
-            #    self.model, self.encoder_states = train_bidirectional_attention_seq2seq_model(
-            #        mfcc_features=self.mfcc_features_length,
-            #        target_length=self.target_length,
-            #        latent_dim=self.latent_dim)
+            elif self.model_architecture == 3:
+                print("BASELINE MODEL")
+                self.model, self.encoder_states = train_baseline_seq2seq_model_GRU(
+                    mfcc_features=self.mfcc_features_length,
+                    target_length=self.target_length,
+                    latent_dim=self.latent_dim,
+                    word_level=self.word_level)
+
+
+            elif self.model_architecture == 4:
+                print("CNN MODEL")
+                self.model, self.encoder_states = train_cnn_seq2seq_model_GRU(mfcc_features=self.mfcc_features_length,
+                                                                              target_length=self.target_length,
+                                                                              latent_dim=self.latent_dim,
+                                                                              word_based=self.word_level)
 
             elif self.model_architecture == 5:
                 print("CNN MODEL")
@@ -80,10 +86,12 @@ class Seq2SeqModel():
                                                                               latent_dim=self.latent_dim,
                                                                               word_based=self.word_level)
             elif self.model_architecture == 6:
-                self.model, self.encoder_states = train_cnn_attention_seq2seq_model(
+                print("BASELINE MODEL")
+                self.model, self.encoder_states = train_baseline_seq2seq_model_GRU(
                     mfcc_features=self.mfcc_features_length,
                     target_length=self.target_length,
-                    latent_dim=self.latent_dim)
+                    latent_dim=self.latent_dim,
+                    word_level=self.word_level)
 
             else:
                 print("BI CNN MODEL")
