@@ -3,7 +3,7 @@ from tensorflow.python.keras.layers import Dense, Input, Dropout, Concatenate
 from .encoder_decoder import get_encoder_states_LSTM, get_decoder_outputs_LSTM, encoder_bi_LSTM, \
     decoder_for_bidirectional_encoder_LSTM, \
     get_encoder_states_GRU, get_decoder_outputs_GRU, encoder_bi_GRU, decoder_for_bidirectional_encoder_GRU
-from .encoder_decoder import get_encoder_states_GRU, get_decoder_outputs_GRU
+from .encoder_decoder import get_encoder_states_GRU, get_decoder_outputs_GRU, get_decoder_outputs_GRU_test
 from .layers import get_cnn_model
 from .layers import AttentionLayer
 from etc import settings
@@ -33,9 +33,9 @@ def train_cnn_seq2seq_model_GRU(mfcc_features, target_length, latent_dim, word_b
 
     # Decoder training, using 'encoder_states' as initial state.
     decoder_inputs = Input(shape=(None, target_length), name="decoder_input")
-    decoder_outputs, states = get_decoder_outputs_GRU(encoder_states=encoder_states,
-                                                      decoder_inputs=decoder_inputs,
-                                                      latent_dim=latent_dim)
+    decoder_outputs, states = get_decoder_outputs_GRU_test(encoder_states=encoder_states,
+                                                           decoder_inputs=decoder_inputs,
+                                                           latent_dim=latent_dim)
 
     if word_based:
         target_length = len(settings.CHARACTER_SET) + 1
