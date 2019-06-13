@@ -12,6 +12,7 @@ class Word_Inference_TEST():
 
     def __init__(self, model_path, latent_dim):
         self.model = models.load_model(model_path)
+        self.model.summary()
         self.encoder_states = None
         self.latent_dim = latent_dim
 
@@ -26,7 +27,7 @@ class Word_Inference_TEST():
 
         self.encoder_model = None
         self.decoder_model = None
-        self.get_encoder_decoder_baseline()
+        self.get_encoder_decoder_baseline_test()
 
     def test_encoder_decoder(self, audio_input):
         char_to_int = convert_to_int(sorted(settings.CHARACTER_SET))
@@ -49,7 +50,7 @@ class Word_Inference_TEST():
 
         t_force = "SOS_ msA' Alxyr >wlA hw Almwqf tm tSHyHh _EOS"
         words = t_force.split()
-        print(words)
+        #print(words)
         character_set_length = len(settings.CHARACTER_SET) + 1
         dec_input_len = character_set_length * settings.LONGEST_WORD_LENGTH
         encoded_transcript = []
@@ -59,7 +60,7 @@ class Word_Inference_TEST():
             for i, character in enumerate(word):
                 position = character_set_length* i + char_to_int[character]
                 encoded_word[position] = 1
-                print(position)
+                #print(position)
 
             if i < settings.LONGEST_WORD_LENGTH - 1:
                 for k in range(i + 1, settings.LONGEST_WORD_LENGTH):
@@ -71,9 +72,9 @@ class Word_Inference_TEST():
         transcript = np.zeros((1,len(words),dec_input_len))
         transcript[0] = encoded_transcript
 
-        print(transcript.shape)
-        print(transcript[0][0])
-        print([np.argmax(transcript[0][0][i:i+41]) for i in range(0, 574, 41)])
+        #print(transcript.shape)
+        #print(transcript[0][0])
+        #print([np.argmax(transcript[0][0][i:i+41]) for i in range(0, 574, 41)])
         result = self.model.predict([audio_input, transcript])
 
         list_words = [""] * len(words)
@@ -89,7 +90,7 @@ class Word_Inference_TEST():
 
         print(list_words)
 
-    def get_encoder_decoder_baseline(self):
+    def get_encoder_decoder_baseline_test(self):
 
         # Getting encoder model
         encoder_inputs = self.model.get_layer("encoder_input").input
@@ -107,6 +108,7 @@ class Word_Inference_TEST():
         decoder_gru2_layer = self.model.get_layer("decoder_gru2_layer")
         decoder_gru3_layer = self.model.get_layer("decoder_gru3_layer")
         decoder_gru4_layer = self.model.get_layer("decoder_gru4_layer")
+
         decoder_dense_layers = []
         for i in range(0, settings.LONGEST_WORD_LENGTH):
             layer_name = "decoder_dense"+str(i)
@@ -116,11 +118,58 @@ class Word_Inference_TEST():
         decoder_states_inputs = [decoder_state_input_h]
 
         decoder_gru1, state_h = decoder_gru1_layer(decoder_inputs, initial_state=decoder_states_inputs)
-        decoder_gru2, state_h = decoder_gru2_layer(decoder_gru1, initial_state=[state_h])
-        decoder_gru3, state_h = decoder_gru3_layer(decoder_gru2, initial_state=[state_h])
-        decoder_output, state_h = decoder_gru4_layer(decoder_gru3, initial_state=[state_h])
+        decoder_gru2 = decoder_gru2_layer(decoder_gru1)
+        decoder_gru3 = decoder_gru3_layer(decoder_gru2)
+        decoder_output = decoder_gru4_layer(decoder_gru3)
+
+        print(decoder_gru1_layer.output)
 
         decoder_states = [state_h]
+        # getting dense layers as outputs
+        decoder_outputs = []
+        for i in range(0, settings.LONGEST_WORD_LENGTH):
+            output = decoder_dense_layers[i](decoder_output)
+            decoder_outputs.append(output)
+
+        self.decoder_model = Model(
+            [decoder_inputs] + decoder_states_inputs,
+            decoder_outputs + decoder_states)
+
+    def get_encoder_decoder_baseline(self):
+
+        # Getting encoder model
+        encoder_inputs = self.model.get_layer("encoder_input").input
+        encoder_gru = self.model.get_layer("encoder_gru_layer")
+        encoder_output, h = encoder_gru(encoder_inputs)
+        self.encoder_states = h
+
+        self.encoder_model = Model(encoder_inputs, self.encoder_states)
+        self.encoder_model.summary()
+        # Getting decoder model
+
+        decoder_inputs = self.model.get_layer("decoder_input").input
+
+        decoder_gru1_layer = self.model.get_layer("decoder_gru1_layer")
+        print(decoder_gru1_layer.output)
+        decoder_gru2_layer = self.model.get_layer("decoder_gru2_layer")
+        decoder_gru3_layer = self.model.get_layer("decoder_gru3_layer")
+        decoder_gru4_layer = self.model.get_layer("decoder_gru4_layer")
+        decoder_dense_layers = []
+        for i in range(0, settings.LONGEST_WORD_LENGTH):
+            layer_name = "decoder_dense"+str(i)
+            decoder_dense_layers.append(self.model.get_layer(layer_name))
+
+        decoder_state_input_h = Input(shape=(self.latent_dim, ))
+        decoder_states_inputs = [decoder_state_input_h]
+
+        decoder_gru1, state_h = decoder_gru1_layer(decoder_inputs, initial_state=decoder_states_inputs)
+        decoder_gru2, state_h2 = decoder_gru2_layer(decoder_gru1, initial_state=state_h)
+        decoder_gru3, state_h3 = decoder_gru3_layer(decoder_gru2, initial_state=state_h2)
+        decoder_output, state_h4 = decoder_gru4_layer(decoder_gru3, initial_state=state_h3)
+
+        print(decoder_gru1_layer.output)
+
+        decoder_states = [state_h, state_h2, state_h3, state_h4]
         # getting dense layers as outputs
         decoder_outputs = []
         for i in range(0, settings.LONGEST_WORD_LENGTH):
@@ -163,8 +212,8 @@ class Word_Inference_TEST():
         decoded_sentence = ""
         limit = 0
         while not stop_condition:
-            print("STATES VALUE IS ")
-            print(states_value)
+            #print("STATES VALUE IS ")
+            #print(states_value)
             print("TARGET SEQUENCE IS ")
             print([np.argmax(target_sequence[0][0][i:i + 41]) for i in range(0, 574, 41)])
             #print(target_sequence)
