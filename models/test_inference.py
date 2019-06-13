@@ -106,8 +106,6 @@ class Word_Inference_TEST():
 
         decoder_gru1_layer = self.model.get_layer("decoder_gru1_layer")
         decoder_gru2_layer = self.model.get_layer("decoder_gru2_layer")
-        decoder_gru3_layer = self.model.get_layer("decoder_gru3_layer")
-        decoder_gru4_layer = self.model.get_layer("decoder_gru4_layer")
 
         decoder_dense_layers = []
         for i in range(0, settings.LONGEST_WORD_LENGTH):
@@ -118,9 +116,7 @@ class Word_Inference_TEST():
         decoder_states_inputs = [decoder_state_input_h]
 
         decoder_gru1, state_h = decoder_gru1_layer(decoder_inputs, initial_state=decoder_states_inputs)
-        decoder_gru2 = decoder_gru2_layer(decoder_gru1)
-        decoder_gru3 = decoder_gru3_layer(decoder_gru2)
-        decoder_output = decoder_gru4_layer(decoder_gru3)
+        decoder_output = decoder_gru2_layer(decoder_gru1, initial_state=decoder_states_inputs)
 
         print(decoder_gru1_layer.output)
 
