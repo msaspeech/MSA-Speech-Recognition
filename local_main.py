@@ -9,8 +9,8 @@ from init_directories import init_directories
 init_directories()
 settings.DRIVE_INSTANCE = load_pickle_data(DRIVE_INSTANCE_PATH)
 
-architecture = 1
-word_level = 1
+architecture = 2
+word_level = 0
 latent_dim = 250
 epochs = 500
 
