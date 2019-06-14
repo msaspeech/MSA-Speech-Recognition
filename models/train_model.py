@@ -25,7 +25,9 @@ class Seq2SeqModel():
             self.target_length = settings.WORD_TARGET_LENGTH
         else:
             self.model_path = settings.TRAINED_MODELS_PATH + self.model_name + "/" + self.model_name + "char.h5"
+            print("TRAINING")
             self.target_length = len(settings.CHARACTER_SET)
+            print(self.target_length)
 
         self.model = None
         self.encoder_states = None
