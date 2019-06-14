@@ -151,9 +151,7 @@ class Seq2SeqModel():
         path_transcript = "./dataset_split/train/transcripts/dataset0/encoded_transcripts0.pkl"
 
         audio_data = load_pickle_data(path_audio)
-        print(type(audio_data))
         transcripts_data = load_pickle_data(path_transcript)
-        print(type(transcripts_data[0]))
 
         encoder_input = audio_data
         decoder_input = transcripts_data[0]
@@ -166,9 +164,7 @@ class Seq2SeqModel():
                 path_transcript = transcript_files[index]
 
                 audio_data = load_pickle_data(path_audio)
-                print(type(audio_data))
                 transcripts_data = load_pickle_data(path_transcript)
-                print(type(transcripts_data[0]))
 
                 encoder_input = audio_data
                 decoder_input = transcripts_data[0]
@@ -188,7 +184,7 @@ class Seq2SeqModel():
                 encoder_x = np.array(encoder_x)
                 decoder_x = np.array(decoder_x)
                 decoder_y = np.array(decoder_y)
-    
+
                 yield [encoder_x, decoder_x], decoder_y
 
     def validation_generator(self):
