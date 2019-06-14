@@ -54,7 +54,7 @@ def get_decoder_outputs(target_length, encoder_states, decoder_inputs, latent_di
                                   return_state=False,
                                   kernel_constraint=None,
                                   kernel_regularizer=None,
-                                  name="decoder_gru2_layer")
+                                  name="decoder_gru3_layer")
     decoder_outputs = decoder_gru3_layer(decoder_gru2)
     return decoder_outputs
 
