@@ -1,5 +1,5 @@
-from utils import  get_character_set, get_distinct_words, empty_directory, get_longest_word_length
-from . import generate_decoder_input_target, normalize_encoder_input, get_empty_binary_vector
+from utils import get_character_set, get_distinct_words, empty_directory, get_longest_word_length
+from . import generate_decoder_input_target, normalize_encoder_input, get_empty_binary_vector, generate_decoder_input_target_2
 import numpy as np
 from etc import settings
 from utils import load_pickle_data, file_exists, generate_pickle_file, get_files
@@ -16,7 +16,10 @@ def _get_train_test_data(train_ratio=0.8, padding=False):
     :return: List of InputAudio, List of InputAudio
     """
     if padding is False:
-        data = load_pickle_data(PICKLE_FILE_PATH)
+        path = "./data/partitions/dataset0.pkl"
+        #data = load_pickle_data(PICKLE_FILE_PATH)
+        data = load_pickle_data(path)
+
     else:
         data = load_pickle_data(PICKLE_PAD_FILE_PATH)
 
@@ -393,3 +396,60 @@ def upload_dataset_partition(train_ratio=0.8, padding=False, word_level=False, p
             settings.TOTAL_SAMPLES_NUMBER = general_info[1]
             settings.CHARACTER_SET = general_info[2]
             print(settings.CHARACTER_SET)
+
+
+def upload_dataset_2(train_ratio=0.8, padding=False):
+    """
+    Generate :
+    train ==> encoder inputs, decoder inputs, decoder target
+    test ==>  encoder inputs, decoder inputs, decoder target
+    :return: Tuple, Tuple
+    """
+
+    # Upload train and test data, the train ration is 0.8 and can be modified through ration param
+    train_data, test_data = _get_train_test_data(train_ratio=0.75, padding=padding)
+    # get mfcc and text transcripts for train and test
+    train_audio, train_transcripts = _get_audio_transcripts(train_data)
+    #train_audio, train_transcripts = print_suspicious_characters(train_data)
+    test_audio, test_transcripts = _get_audio_transcripts(test_data)
+
+    # Saving mfcc features and length for global use
+    settings.MFCC_FEATURES_LENGTH = train_audio[0].shape[1]
+    settings.ENCODER_INPUT_MAX_LENGTH = train_audio[0].shape[0]
+
+    # get max transcript size and character_set
+    all_transcripts = train_transcripts + test_transcripts
+    # transcript_max_length = get_longest_sample_size(all_transcripts)
+    character_set = get_character_set(all_transcripts)
+    print(len(character_set))
+    print(sorted(character_set))
+    # Saving character set for global use
+    settings.CHARACTER_SET = character_set
+
+    # Checking if data is already normalized
+    #if file_exists(NORMALIZED_ENCODER_INPUT_PATH):
+    #    train_encoder_input = load_pickle_data(NORMALIZED_ENCODER_INPUT_PATH)
+    #else:
+    #    # generate and normalize 3D numpy arrays for train encoder inputs and test encoder inputs
+    #    train_encoder_input = _get_encoder_input_data(audio_data=train_audio)
+    #    train_encoder_input = normalize_encoder_input(dataset=train_encoder_input)
+
+    train_encoder_input = _get_encoder_input_data(audio_data=train_audio)
+    test_encoder_input = _get_encoder_input_data(audio_data=test_audio)
+    # TODO : Normalize test using existing min-max
+    # test_encoder_input = normalize_encoder_input(dataset=test_encoder_input)
+
+
+    # generate 3D numpy arrays for train and test decoder input and decoder target
+    train_decoder_input, train_decoder_target = generate_decoder_input_target_2(character_set=character_set,
+                                                                              transcripts=train_transcripts,
+                                                                              word_level=False,
+                                                                              fixed_size=False)
+
+    test_decoder_input, test_decoder_target = generate_decoder_input_target_2(character_set=character_set,
+                                                                            transcripts=test_transcripts,
+                                                                            word_level=False,
+                                                                            fixed_size=False)
+
+    return (train_encoder_input, train_decoder_input, train_decoder_target), \
+           (test_encoder_input, test_decoder_input, test_decoder_target)

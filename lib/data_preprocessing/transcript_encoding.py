@@ -171,7 +171,6 @@ def generate_variable_size_character_input_target_data(transcripts, num_partitio
             path = settings.TRANSCRIPTS_ENCODING_SPLIT_TEST_PATH + "dataset" + str(
                 num_partition) + "/encoded_transcripts" + str(num_dataset) + ".pkl"
 
-
         generate_pickle_file((decoder_input_data, decoder_target_data), file_path=path)
 
     # return decoder_input_data, decoder_target_data
@@ -380,7 +379,7 @@ def generate_variable_word_input_target_data(transcripts, words_to_int, partitio
                 # Encode each character
                 encoded_word = bitarray(len(list_words))
 
-                #encoded_word = bytearray([0] * len(words_to_int))
+                # encoded_word = bytearray([0] * len(words_to_int))
                 encoded_word[words_to_int[word]] = 1
 
                 encoded_transcript_input.append(encoded_word)
@@ -400,11 +399,68 @@ def generate_variable_word_input_target_data(transcripts, words_to_int, partitio
             path = settings.TRANSCRIPTS_ENCODING_SPLIT_TEST_PATH + "encoded_transcripts" + str(num_dataset) + ".pkl"
         generate_pickle_file((decoder_input_data, decoder_target_data), file_path=path)
 
+    def _generate_variable_size_character_input_target_data(transcripts, char_to_int):
+        """
+            Generates two 3D arrays for the decoder input data and target data.
+            Fills the 3D arrays for each sample of our dataset
+            Return OneHotEncoded Decoder Input data
+            Return OneHotEncoded Target data
+            :param transcripts: List of Strings
+            :param char_to_int: Dict
+            :return: 3D numpy Array, 3D numpy Array
+            """
 
+        # Init numpy array
+        num_transcripts = len(transcripts)
+        decoder_input_data = np.array([None] * num_transcripts)
+        decoder_target_data = np.array([None] * num_transcripts)
+
+        for i, transcript in enumerate(transcripts):
+            # Encode each transcript
+            encoded_transcript_input = []
+            encoded_transcript_target = []
+
+            for index, character in enumerate(transcript):
+                # Encode each character
+                encoded_character = [0] * len(char_to_int)
+                encoded_character[char_to_int[character]] = 1
+                # encoded_character = []
+                # for c in char_to_int:
+                #    if character == c:
+                #        encoded_character.append(1)
+                #    else:
+                #        encoded_character.append(0)
+
+                encoded_transcript_input.append(encoded_character)
+                encoded_transcript_target.append([])
+
+                if index > 0:
+                    encoded_transcript_target[index - 1] = encoded_character
+
+            del encoded_transcript_input[-1]
+            decoder_input_data[i] = encoded_transcript_input
+
+            encoded_transcript_target.pop()
+            decoder_target_data[i] = encoded_transcript_target
+
+        return decoder_input_data, decoder_target_data
+
+
+def generate_decoder_input_target_2(character_set, transcripts, word_level=False, fixed_size=True):
+    """
+    Wrapper for the _generate_input_target_data method.
+    :return: 3D numpy Array, 3D numpy Array
+    """
+
+    char_to_int = convert_to_int(sorted(character_set))
+    decoder_input, decoder_target = _generate_variable_size_character_input_target_data(transcripts=transcripts,
+                                                                                        char_to_int=char_to_int)
+
+    return decoder_input, decoder_target
 
 
 def generate_decoder_input_target(transcripts, dataset_number, word_level=False, test=False,
-                                  partitions=32):
+                                   partitions=32):
     """
     Wrapper for the _generate_input_target_data method.
     :return: 3D numpy Array, 3D numpy Array
@@ -414,10 +470,10 @@ def generate_decoder_input_target(transcripts, dataset_number, word_level=False,
         character_set = settings.CHARACTER_SET
         char_to_int = convert_to_int(sorted(character_set))
         generate_variable_word_based_encoding_final(transcripts=transcripts,
-                                                  num_partition=dataset_number,
-                                                  char_to_int=char_to_int,
-                                                  partitions=partitions,
-                                                  test=test)
+                                                    num_partition=dataset_number,
+                                                    char_to_int=char_to_int,
+                                                    partitions=partitions,
+                                                    test=test)
 
         # generate_variable_word_input_target_binary(transcripts=transcripts,
         #                                           words_to_int=word_to_int,
