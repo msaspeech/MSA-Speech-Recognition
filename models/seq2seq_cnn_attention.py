@@ -25,6 +25,8 @@ def train_cnn_seq2seq_model_GRU(mfcc_features, target_length, latent_dim, word_b
     cnn_inputs = Input(shape=cnn_input_shape, name="encoder_input")
     cnn_model = get_cnn_model(cnn_input_shape)
     cnn_model_output_shape = cnn_model.layers[-1].output_shape[2]
+
+
     # Preparing Input shape for LSTM layer from CNN model
 
     cnn_output = cnn_model(cnn_inputs)
@@ -41,6 +43,10 @@ def train_cnn_seq2seq_model_GRU(mfcc_features, target_length, latent_dim, word_b
         target_length = len(settings.CHARACTER_SET) + 1
         decoder_outputs = get_multi_output_dense(decoder_outputs, target_length=target_length)
     else:
+        decoder_dense1_layer = Dense(latent_dim, activation="tanh")
+        decoder_outputs = decoder_dense1_layer(decoder_outputs)
+        decoder_dense2_layer = Dense(latent_dim, activation="tanh")
+        decoder_outputs = decoder_dense2_layer(decoder_outputs)
         decoder_dense = Dense(target_length, activation='softmax', name="decoder_dense")
         decoder_outputs = decoder_dense(decoder_outputs)
 

@@ -171,6 +171,9 @@ def generate_variable_size_character_input_target_data(transcripts, num_partitio
             path = settings.TRANSCRIPTS_ENCODING_SPLIT_TEST_PATH + "dataset" + str(
                 num_partition) + "/encoded_transcripts" + str(num_dataset) + ".pkl"
 
+        print([np.argmax(x) for x in decoder_input_data[0]])
+        print([np.argmax(x) for x in decoder_target_data[0]])
+
         generate_pickle_file((decoder_input_data, decoder_target_data), file_path=path)
 
     # return decoder_input_data, decoder_target_data
