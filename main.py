@@ -17,7 +17,14 @@ epochs = int(sys.argv[4])
 
 upload_dataset_partition(word_level=word_level, partitions=64)
 model = Seq2SeqModel(latent_dim=latent_dim, epochs=epochs, model_architecture=architecture, word_level=word_level)
-model.train_model()
+#model.train_model()
+
+(train_encoder_input, train_decoder_input, train_decoder_target), \
+(test_encoder_input, test_decoder_input, test_decoder_target) = upload_dataset_2()
+
+print(train_encoder_input.shape, train_decoder_input.shape, train_decoder_target.shape)
+
+model.train_model(train_encoder_input, train_decoder_input, train_decoder_target)
 
 
 # accuracy = measure_test_accuracy(test_decoder_input, model, encoder_states, latent_dim=512)
