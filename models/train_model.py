@@ -126,9 +126,9 @@ class Seq2SeqModel():
             print("training here" )
             self.model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
             batch_size = 32
-            #steps = int(settings.TOTAL_SAMPLES_NUMBER / batch_size) + 1
-            history = self.model.fit_generator(self.split_data_generator_dict_train(),
-                                               steps_per_epoch=30000,
+            steps = int(settings.TOTAL_SAMPLES_NUMBER / batch_size) + 1
+            history = self.model.fit_generator(self.split_data_generator_dict(batch_size),
+                                               steps_per_epoch=steps,
                                                epochs=self.epochs,
                                                callbacks=[model_saver])
 
@@ -208,6 +208,8 @@ class Seq2SeqModel():
                     decoder_y = np.array(decoder_y)
                     yield [encoder_x, decoder_x], decoder_y
 
+
+
     def split_data_generator_dict(self, batch_size):
         audio_directory = settings.AUDIO_SPLIT_TRAIN_PATH
         audio_files = get_files_full_path(audio_directory)
@@ -243,6 +245,8 @@ class Seq2SeqModel():
                     decoder_x = np.array(decoder_x)
                     decoder_y = np.array(decoder_y)
                     yield [encoder_x, decoder_x], decoder_y
+
+
 
     def split_data_generator_dict_word_level(self, batch_size):
         audio_directory = settings.AUDIO_SPLIT_TRAIN_PATH
@@ -334,7 +338,7 @@ class Seq2SeqModel():
                     yield [encoder_x, decoder_x], decoder_targets
 
 
-    def get_test_data(self, audio_file, transcripts_file):
+    def get_testranscript_filest_data(self, audio_file, transcripts_file):
         encoder_input_data = load_pickle_data(audio_file)
         (decoder_input_data, decoder_target_data) = load_pickle_data(transcripts_file)
         return encoder_input_data, decoder_input_data, decoder_target_data
