@@ -103,7 +103,7 @@ class Seq2SeqModel():
                     latent_dim=self.latent_dim,
                     word_level=self.word_level)
 
-    def train_model(self,encoder_inputs, decoder_inputs, decoder_targets):
+    def train_model(self):
         print("ENCODER STATES")
 
         model_saver = ModelSaver(model_name=self.model_name, model_path=self.model_path,
@@ -127,11 +127,10 @@ class Seq2SeqModel():
         else:
             print("training here" )
 
-            generated_data = self._generate_timestep_dict(encoder_inputs, decoder_inputs, decoder_targets)
 
             self.model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
-            history = self.model.fit_generator(self.data_generator_dict(generated_data),
-                                          steps_per_epoch=len(encoder_inputs),
+            history = self.model.fit_generator(self.data_generator_dict(),
+                                          steps_per_epoch=len(settings.TOTAL_SAMPLES_NUMBER),
                                           epochs=self.epochs,
                                           callbacks=[model_saver])
             #batch_size = 32
@@ -141,7 +140,7 @@ class Seq2SeqModel():
             #                                   epochs=self.epochs,
             #                                   callbacks=[model_saver])
 
-    def data_generator_dict(self, data):
+    def data_generator_dict(self):
         audio_directory = settings.AUDIO_SPLIT_TEST_PATH
         audio_files = get_files_full_path(audio_directory)
         transcripts_directory = settings.TRANSCRIPTS_ENCODING_SPLIT_TRAIN_PATH
@@ -160,10 +159,6 @@ class Seq2SeqModel():
                 decoder_input = transcripts_data[0]
                 decoder_target = transcripts_data[1]
                 data = self._generate_timestep_dict(encoder_input, decoder_input, decoder_target)
-
-                #encoder_input_data = load_pickle_data(audio)
-                #(decoder_input_data, decoder_target_data) = load_pickle_data(transcript_files[index])
-                #data = self._generate_timestep_dict(encoder_input_data, decoder_input_data, decoder_target_data)
 
                 pair_key = random.choice(list(data.keys()))
 

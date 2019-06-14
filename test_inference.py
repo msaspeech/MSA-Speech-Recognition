@@ -1,8 +1,8 @@
 import sys
 from lib import upload_dataset
-from models import train_model, measure_test_accuracy, Seq2SeqModel, Word_Inference, Word_Inference_TEST
+from models import train_model, measure_test_accuracy, Seq2SeqModel, Word_Inference, Word_Inference_TEST, Char_Inference
 
-word_level = 1
+word_level = 0
 architecture = 1
 latent_dim = 350
 
@@ -27,10 +27,15 @@ audio_sequence = np.array(audio, dtype=np.float32)
 print(audio_sequence.shape)
 
 
-word_inference = Word_Inference_TEST(model_path=model_path, latent_dim=latent_dim)
-word_inference.predict_sequence_test(audio_input=audio_sequence)
+char_inference = Char_Inference(model_path=model_path, latent_dim=latent_dim)
+
+char_inference.decode_audio_sequence_character_based(audio_sequence)
+char_inference.predict_sequence_test(audio_sequence)
+
+#word_inference = Word_Inference_TEST(model_path=model_path, latent_dim=latent_dim)
+#word_inference.predict_sequence_test(audio_input=audio_sequence)
 #9word_inference.test_encoder_decoder(audio_sequence)
-word_inference.decode_audio_sequence(audio_sequence)
+#word_inference.decode_audio_sequence(audio_sequence)
 
 
 #word_inference2 = Word_Inference(model_path=model_path, latent_dim=latent_dim)
