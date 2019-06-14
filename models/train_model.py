@@ -161,21 +161,35 @@ class Seq2SeqModel():
         data = self._generate_timestep_dict(encoder_input, decoder_input, decoder_target)
 
         while True:
-            pair_key = random.choice(list(data.keys()))
-            output = data[pair_key]
-            encoder_x = []
-            decoder_x = []
-            decoder_y = []
-            for element in output:
-                encoder_x.append(element[0][0])
-                decoder_x.append(element[0][1])
-                decoder_y.append(element[1])
+            for index, audio in enumerate(audio_files):
+                path_audio = audio
+                path_transcript = transcript_files[index]
 
-            encoder_x = np.array(encoder_x)
-            decoder_x = np.array(decoder_x)
-            decoder_y = np.array(decoder_y)
+                audio_data = load_pickle_data(path_audio)
+                print(type(audio_data))
+                transcripts_data = load_pickle_data(path_transcript)
+                print(type(transcripts_data[0]))
 
-            yield [encoder_x, decoder_x], decoder_y
+                encoder_input = audio_data
+                decoder_input = transcripts_data[0]
+                decoder_target = transcripts_data[1]
+                data = self._generate_timestep_dict(encoder_input, decoder_input, decoder_target)
+
+                pair_key = random.choice(list(data.keys()))
+                output = data[pair_key]
+                encoder_x = []
+                decoder_x = []
+                decoder_y = []
+                for element in output:
+                    encoder_x.append(element[0][0])
+                    decoder_x.append(element[0][1])
+                    decoder_y.append(element[1])
+
+                encoder_x = np.array(encoder_x)
+                decoder_x = np.array(decoder_x)
+                decoder_y = np.array(decoder_y)
+    
+                yield [encoder_x, decoder_x], decoder_y
 
     def validation_generator(self):
         audio_directory = settings.AUDIO_SPLIT_TEST_PATH
