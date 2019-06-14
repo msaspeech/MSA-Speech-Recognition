@@ -5,16 +5,8 @@ import numpy as np
 from etc import settings
 import sys
 from utils import load_pickle_data
+from bitarray import bitarray
 
-general_info = load_pickle_data(settings.DATASET_WORD_INFORMATION_PATH)
-settings.MFCC_FEATURES_LENGTH = general_info[0]
-settings.TOTAL_SAMPLES_NUMBER = general_info[1]
-settings.WORD_SET = general_info[2]
-settings.LONGEST_WORD_LENGTH = general_info[3]
-settings.CHARACTER_SET = general_info[4]
-settings.WORD_TARGET_LENGTH = general_info[5]
+x = bitarray(100)
+print(x)
 
-
-data = load_pickle_data("architecture1word.pkl")
-
-print(len(data["accuracy"]))
