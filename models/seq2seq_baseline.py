@@ -5,6 +5,7 @@ from .encoder_decoder import get_encoder_states_GRU, get_decoder_outputs_GRU, en
     decoder_for_bidirectional_encoder_GRU, get_decoder_outputs_GRU_test
 from .encoder_decoder import get_encoder_states_LSTM, get_decoder_outputs_LSTM, encoder_bi_LSTM, \
     decoder_for_bidirectional_encoder_LSTM
+from .encoder_decoder import get_encoder_states, get_decoder_outputs
 from etc import settings
 
 
@@ -18,9 +19,11 @@ def train_baseline_seq2seq_model_GRU(mfcc_features, target_length, latent_dim, w
     """
     # Encoder training
     encoder_inputs = Input(shape=(None, mfcc_features), name="encoder_input")
-    encoder_states = get_encoder_states_GRU(encoder_inputs=encoder_inputs,
-                                            latent_dim=latent_dim)
+    #encoder_states = get_encoder_states_GRU(encoder_inputs=encoder_inputs,
+    #                                        latent_dim=latent_dim)
 
+    encoder_states = get_encoder_states(mfcc_features=mfcc_features, encoder_inputs=encoder_inputs,
+                                        latent_dim=latent_dim)
     # Decoder training, using 'encoder_states' as initial state.
     decoder_inputs = Input(shape=(None, target_length), name="decoder_input")
     # masked_inputs = Masking(mask_value=0,)(decoder_inputs)
@@ -29,9 +32,14 @@ def train_baseline_seq2seq_model_GRU(mfcc_features, target_length, latent_dim, w
     #                                                          decoder_inputs=decoder_inputs,
     #                                                          latent_dim=latent_dim)
 
-    decoder_outputs, decoder_states = get_decoder_outputs_GRU_test(encoder_states=encoder_states,
-                                                                   decoder_inputs=decoder_inputs,
-                                                                   latent_dim=latent_dim)
+    #decoder_outputs, decoder_states = get_decoder_outputs_GRU_test(encoder_states=encoder_states,
+    #                                                               decoder_inputs=decoder_inputs,
+    #                                                               latent_dim=latent_dim)
+
+    decoder_outputs = get_decoder_outputs(target_length=target_length,
+                                          encoder_states=encoder_states,
+                                               decoder_inputs=decoder_inputs,
+                                               latent_dim=latent_dim)
 
     # Dense Output Layers
     if word_level:
