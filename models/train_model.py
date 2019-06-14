@@ -127,8 +127,8 @@ class Seq2SeqModel():
             self.model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
             batch_size = 32
             steps = int(settings.TOTAL_SAMPLES_NUMBER / batch_size) + 1
-            history = self.model.fit_generator(self.split_data_generator_dict(batch_size),
-                                               steps_per_epoch=steps,
+            history = self.model.fit_generator(self.split_data_generator_dict_train(),
+                                               steps_per_epoch=100,
                                                epochs=self.epochs,
                                                callbacks=[model_saver])
 
@@ -185,8 +185,10 @@ class Seq2SeqModel():
     def split_data_generator_dict_train(self):
         audio_directory = settings.AUDIO_SPLIT_TRAIN_PATH
         audio_files = get_files_full_path(audio_directory)
+        print(audio_files)
         transcripts_directory = settings.TRANSCRIPTS_ENCODING_SPLIT_TRAIN_PATH
         transcript_files = get_files_full_path(transcripts_directory)
+        print(transcript_files)
         while True:
             for i, audio_file in enumerate(audio_files):
                 # retrieving data
