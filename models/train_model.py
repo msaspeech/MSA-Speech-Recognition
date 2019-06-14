@@ -126,7 +126,7 @@ class Seq2SeqModel():
             #                                   callbacks=[model_saver])
 
             history = self.model.fit_generator(self.data_generator_dict_word(),
-                                               steps_per_epoch=20000,
+                                               steps_per_epoch=10000,
                                                epochs=self.epochs,
                                                callbacks=[model_saver])
 
@@ -136,7 +136,7 @@ class Seq2SeqModel():
 
             self.model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
             history = self.model.fit_generator(self.data_generator_dict(),
-                                          steps_per_epoch=20000,
+                                          steps_per_epoch=10000,
                                           epochs=self.epochs,
                                           callbacks=[model_saver])
             #batch_size = 32
