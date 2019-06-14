@@ -118,12 +118,18 @@ class Seq2SeqModel():
                 loss[layer_name] = 'categorical_crossentropy'
 
             self.model.compile(optimizer='rmsprop', loss=loss, metrics=['accuracy'])
-            batch_size = 32
-            steps = int(settings.TOTAL_SAMPLES_NUMBER / batch_size) + 1
-            history = self.model.fit_generator(self.split_data_generator_dict_word_level(batch_size),
-                                               steps_per_epoch=steps,
+            #batch_size = 32
+            #steps = int(settings.TOTAL_SAMPLES_NUMBER / batch_size) + 1
+            #history = self.model.fit_generator(self.split_data_generator_dict_word_level(batch_size),
+            #                                   steps_per_epoch=steps,
+            #                                   epochs=self.epochs,
+            #                                   callbacks=[model_saver])
+
+            history = self.model.fit_generator(self.data_generator_dict_word(),
+                                               steps_per_epoch=20000,
                                                epochs=self.epochs,
                                                callbacks=[model_saver])
+
         else:
             print("training here" )
 
@@ -139,6 +145,56 @@ class Seq2SeqModel():
             #                                   steps_per_epoch=steps,
             #                                   epochs=self.epochs,
             #                                   callbacks=[model_saver])
+
+    def data_generator_dict_word(self):
+        audio_directory = settings.AUDIO_SPLIT_TEST_PATH
+        audio_files = get_files_full_path(audio_directory)
+        transcripts_directory = settings.TRANSCRIPTS_ENCODING_SPLIT_TRAIN_PATH
+        transcript_files = get_files_full_path(transcripts_directory)
+        print(audio_files)
+        print(transcript_files)
+        while True:
+            for index, audio in enumerate(audio_files):
+                path_audio = audio
+                path_transcript = transcript_files[index]
+
+                audio_data = load_pickle_data(path_audio)
+                transcripts_data = load_pickle_data(path_transcript)
+
+                encoder_input = audio_data
+                decoder_input = transcripts_data[0]
+                decoder_target = transcripts_data[1]
+                data = self._generate_timestep_dict(encoder_input, decoder_input, decoder_target)
+
+                pair_key = random.choice(list(data.keys()))
+
+                output = data[pair_key]
+                encoder_x = []
+                decoder_x = []
+                decoder_y = []
+                for element in output:
+                    encoder_x.append(element[0][0])
+                    decoder_x.append(element[0][1])
+                    decoder_y.append(element[1])
+
+                encoder_x = np.array(encoder_x)
+                decoder_x = np.array(decoder_x)
+
+                # decoder_target = decoder_y.copy()
+
+                decoder_target = []
+                for h in range(0, len(decoder_y)):
+                    decoder_target.append(decoder_y[h].copy())
+
+                decoder_targets = []
+                num_words = len(decoder_y[h])
+                for j in range(0, settings.LONGEST_WORD_LENGTH):
+                    for i in range(0, num_words):
+                        for h in range(0, len(decoder_y)):
+                            decoder_target[h][i] = decoder_y[h][i][j]
+                    decoder_targets.append(np.array(decoder_target))
+
+                yield [encoder_x, decoder_x], decoder_targets
 
     def data_generator_dict(self):
         audio_directory = settings.AUDIO_SPLIT_TEST_PATH
