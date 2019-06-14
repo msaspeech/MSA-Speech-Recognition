@@ -131,7 +131,7 @@ class Seq2SeqModel():
 
             self.model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
             history = self.model.fit_generator(self.data_generator_dict(generated_data),
-                                          steps_per_epoch=300,
+                                          steps_per_epoch=len(encoder_inputs),
                                           epochs=self.epochs,
                                           callbacks=[model_saver])
             #batch_size = 32
@@ -142,7 +142,24 @@ class Seq2SeqModel():
             #                                   callbacks=[model_saver])
 
     def data_generator_dict(self, data):
+        audio_directory = settings.AUDIO_SPLIT_TEST_PATH
+        audio_files = get_files_full_path(audio_directory)
+        transcripts_directory = settings.TRANSCRIPTS_ENCODING_SPLIT_TRAIN_PATH
+        transcript_files = get_files_full_path(transcripts_directory)
 
+        path_audio = "./dataset_split/train/audio_data/dataset0/audio_set0.pkl"
+        path_transcript = "./dataset_split/train/transcripts/dataset0/encoded_transcripts0.pkl"
+
+        audio_data = load_pickle_data(path_audio)
+        print(type(audio_data))
+        transcripts_data = load_pickle_data(path_transcript)
+        print(type(transcripts_data[0]))
+
+        encoder_input = audio_data
+        decoder_input = transcripts_data[0]
+        decoder_target = transcripts_data[1]
+        data = self._generate_timestep_dict(encoder_input, decoder_input, decoder_target)
+        
         while True:
             pair_key = random.choice(list(data.keys()))
             output = data[pair_key]

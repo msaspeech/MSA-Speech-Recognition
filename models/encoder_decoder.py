@@ -8,7 +8,7 @@ from tensorflow.python.keras.layers import CuDNNLSTM, Bidirectional, Concatenate
 # ENCODER DECODER GRU AND LSTM
 
 def get_encoder_states(mfcc_features, encoder_inputs, latent_dim, return_sequences=False):
-    encoder = CuDNNLSTM(latent_dim,
+    encoder = LSTM(latent_dim,
                         input_shape=(None, mfcc_features),
                         stateful=False,
                         return_sequences=return_sequences,
@@ -26,7 +26,7 @@ def get_encoder_states(mfcc_features, encoder_inputs, latent_dim, return_sequenc
 
 def get_decoder_outputs(target_length, encoder_states, decoder_inputs, latent_dim):
     # First Layer
-    decoder_lstm1_layer = CuDNNLSTM(latent_dim,
+    decoder_lstm1_layer = LSTM(latent_dim,
                                     input_shape=(None, target_length),
                                     return_sequences=True,
                                     return_state=False,
@@ -36,7 +36,7 @@ def get_decoder_outputs(target_length, encoder_states, decoder_inputs, latent_di
     decoder_lstm1 = decoder_lstm1_layer(decoder_inputs, initial_state=encoder_states)
 
     # Second LSTM Layer
-    decoder_lstm2_layer = CuDNNLSTM(latent_dim,
+    decoder_lstm2_layer = LSTM(latent_dim,
                                     stateful=False,
                                     return_sequences=True,
                                     return_state=True,
