@@ -148,18 +148,6 @@ class Seq2SeqModel():
         transcript_files = get_files_full_path(transcripts_directory)
         print(audio_files)
         print(transcript_files)
-
-        path_audio = "./dataset_split/train/audio_data/dataset0/audio_set0.pkl"
-        path_transcript = "./dataset_split/train/transcripts/dataset0/encoded_transcripts0.pkl"
-
-        audio_data = load_pickle_data(path_audio)
-        transcripts_data = load_pickle_data(path_transcript)
-
-        encoder_input = audio_data
-        decoder_input = transcripts_data[0]
-        decoder_target = transcripts_data[1]
-        data = self._generate_timestep_dict(encoder_input, decoder_input, decoder_target)
-
         while True:
             for index, audio in enumerate(audio_files):
                 path_audio = audio
@@ -173,7 +161,12 @@ class Seq2SeqModel():
                 decoder_target = transcripts_data[1]
                 data = self._generate_timestep_dict(encoder_input, decoder_input, decoder_target)
 
+                #encoder_input_data = load_pickle_data(audio)
+                #(decoder_input_data, decoder_target_data) = load_pickle_data(transcript_files[index])
+                #data = self._generate_timestep_dict(encoder_input_data, decoder_input_data, decoder_target_data)
+
                 pair_key = random.choice(list(data.keys()))
+
                 output = data[pair_key]
                 encoder_x = []
                 decoder_x = []
