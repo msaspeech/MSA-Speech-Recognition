@@ -159,7 +159,7 @@ class Seq2SeqModel():
         decoder_input = transcripts_data[0]
         decoder_target = transcripts_data[1]
         data = self._generate_timestep_dict(encoder_input, decoder_input, decoder_target)
-        
+
         while True:
             pair_key = random.choice(list(data.keys()))
             output = data[pair_key]
