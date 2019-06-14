@@ -5,8 +5,3 @@ import numpy as np
 from etc import settings
 import sys
 from utils import load_pickle_data
-from bitarray import bitarray
-
-x = bitarray(100)
-print(x)
-

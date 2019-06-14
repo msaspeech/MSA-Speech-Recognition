@@ -6,7 +6,6 @@ from utils import get_empty_binary_vector, convert_word_to_binary
 from etc import settings
 from utils import get_longest_sample_size
 import numpy as np
-from bitarray import bitarray
 import gc
 
 
@@ -377,9 +376,8 @@ def generate_variable_word_input_target_data(transcripts, words_to_int, partitio
             list_words = transcript.split()
             for index, word in enumerate(list_words):
                 # Encode each character
-                encoded_word = bitarray(len(list_words))
 
-                # encoded_word = bytearray([0] * len(words_to_int))
+                encoded_word = [0] * len(words_to_int)
                 encoded_word[words_to_int[word]] = 1
 
                 encoded_transcript_input.append(encoded_word)
