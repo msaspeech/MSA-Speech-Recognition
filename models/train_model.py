@@ -146,6 +146,8 @@ class Seq2SeqModel():
         audio_files = get_files_full_path(audio_directory)
         transcripts_directory = settings.TRANSCRIPTS_ENCODING_SPLIT_TRAIN_PATH
         transcript_files = get_files_full_path(transcripts_directory)
+        print(audio_files)
+        print(transcript_files)
 
         path_audio = "./dataset_split/train/audio_data/dataset0/audio_set0.pkl"
         path_transcript = "./dataset_split/train/transcripts/dataset0/encoded_transcripts0.pkl"
