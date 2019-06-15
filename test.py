@@ -4,4 +4,11 @@ from lib import AudioInput
 import numpy as np
 from etc import settings
 import sys
-from utils import load_pickle_data
+from utils import load_pickle_data, generate_pickle_file
+
+dataset1 = load_pickle_data("./data/partitions/dataset0.pkl")
+dataset2 = load_pickle_data("./data/partitions/dataset1.pkl")
+
+dataset = dataset1 + dataset2
+
+generate_pickle_file(dataset, "./data/partitions/dataset2.pkl")
