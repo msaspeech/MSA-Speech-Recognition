@@ -217,7 +217,6 @@ class Seq2SeqModel():
                 data = self._generate_timestep_dict(encoder_input, decoder_input, decoder_target)
 
                 pair_key = random.choice(list(data.keys()))
-                print(len(data[pair_key]))
                 output = data[pair_key]
                 encoder_x = []
                 decoder_x = []
