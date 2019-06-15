@@ -216,21 +216,22 @@ class Seq2SeqModel():
                 decoder_target = transcripts_data[1]
                 data = self._generate_timestep_dict(encoder_input, decoder_input, decoder_target)
 
-                pair_key = random.choice(list(data.keys()))
-                output = data[pair_key]
-                encoder_x = []
-                decoder_x = []
-                decoder_y = []
-                for element in output:
-                    encoder_x.append(element[0][0])
-                    decoder_x.append(element[0][1])
-                    decoder_y.append(element[1])
+                for key in data:
+                    pair_key = random.choice(list(data.keys()))
+                    output = data[pair_key]
+                    encoder_x = []
+                    decoder_x = []
+                    decoder_y = []
+                    for element in output:
+                        encoder_x.append(element[0][0])
+                        decoder_x.append(element[0][1])
+                        decoder_y.append(element[1])
 
-                encoder_x = np.array(encoder_x)
-                decoder_x = np.array(decoder_x)
-                decoder_y = np.array(decoder_y)
+                    encoder_x = np.array(encoder_x)
+                    decoder_x = np.array(decoder_x)
+                    decoder_y = np.array(decoder_y)
 
-                yield [encoder_x, decoder_x], decoder_y
+                    yield [encoder_x, decoder_x], decoder_y
 
     def validation_generator(self):
         audio_directory = settings.AUDIO_SPLIT_TEST_PATH
