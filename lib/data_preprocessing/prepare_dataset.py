@@ -322,7 +322,7 @@ def get_dataset_information(word_level, train_ratio):
 
 
 
-def upload_dataset_partition(train_ratio=0.8, padding=False, word_level=False, partitions=8):
+def upload_dataset_partition(train_ratio=0.8, padding=False, word_level=False, partitions=16):
     """
     Generate :
     train ==> encoder inputs, decoder inputs, decoder target
