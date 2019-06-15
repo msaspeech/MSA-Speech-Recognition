@@ -8,7 +8,9 @@ from utils import load_pickle_data, generate_pickle_file
 
 dataset1 = load_pickle_data("./data/partitions/dataset0.pkl")
 dataset2 = load_pickle_data("./data/partitions/dataset1.pkl")
+dataset3 = load_pickle_data("./data/partitions/dataset2.pkl")
 
-dataset = dataset1 + dataset2
+
+dataset = dataset1 + dataset2 + dataset3
 
 generate_pickle_file(dataset, "./data/partitions/dataset2.pkl")
