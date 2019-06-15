@@ -126,7 +126,7 @@ class Seq2SeqModel():
             #                                   callbacks=[model_saver])
 
             history = self.model.fit_generator(self.data_generator_dict_word(),
-                                               steps_per_epoch=5000,
+                                               steps_per_epoch=2000,
                                                epochs=self.epochs,
                                                callbacks=[model_saver])
 
@@ -166,35 +166,36 @@ class Seq2SeqModel():
                 decoder_target = transcripts_data[1]
                 data = self._generate_timestep_dict(encoder_input, decoder_input, decoder_target)
 
-                pair_key = random.choice(list(data.keys()))
+                for key in data:
+                    pair_key = random.choice(list(data.keys()))
 
-                output = data[pair_key]
-                encoder_x = []
-                decoder_x = []
-                decoder_y = []
-                for element in output:
-                    encoder_x.append(element[0][0])
-                    decoder_x.append(element[0][1])
-                    decoder_y.append(element[1])
+                    output = data[pair_key]
+                    encoder_x = []
+                    decoder_x = []
+                    decoder_y = []
+                    for element in output:
+                        encoder_x.append(element[0][0])
+                        decoder_x.append(element[0][1])
+                        decoder_y.append(element[1])
 
-                encoder_x = np.array(encoder_x)
-                decoder_x = np.array(decoder_x)
+                    encoder_x = np.array(encoder_x)
+                    decoder_x = np.array(decoder_x)
 
-                # decoder_target = decoder_y.copy()
+                    # decoder_target = decoder_y.copy()
 
-                decoder_target = []
-                for h in range(0, len(decoder_y)):
-                    decoder_target.append(decoder_y[h].copy())
+                    decoder_target = []
+                    for h in range(0, len(decoder_y)):
+                        decoder_target.append(decoder_y[h].copy())
 
-                decoder_targets = []
-                num_words = len(decoder_y[h])
-                for j in range(0, settings.LONGEST_WORD_LENGTH):
-                    for i in range(0, num_words):
-                        for h in range(0, len(decoder_y)):
-                            decoder_target[h][i] = decoder_y[h][i][j]
-                    decoder_targets.append(np.array(decoder_target))
+                    decoder_targets = []
+                    num_words = len(decoder_y[h])
+                    for j in range(0, settings.LONGEST_WORD_LENGTH):
+                        for i in range(0, num_words):
+                            for h in range(0, len(decoder_y)):
+                                decoder_target[h][i] = decoder_y[h][i][j]
+                        decoder_targets.append(np.array(decoder_target))
 
-                yield [encoder_x, decoder_x], decoder_targets
+                    yield [encoder_x, decoder_x], decoder_targets
 
     def data_generator_dict(self):
         audio_directory = settings.AUDIO_SPLIT_TEST_PATH
@@ -217,8 +218,7 @@ class Seq2SeqModel():
                 data = self._generate_timestep_dict(encoder_input, decoder_input, decoder_target)
 
                 for key in data:
-                    #pair_key = random.choice(list(data.keys()))
-                    pair_key = key
+                    pair_key = random.choice(list(data.keys()))
                     output = data[pair_key]
                     encoder_x = []
                     decoder_x = []
