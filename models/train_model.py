@@ -103,7 +103,7 @@ class Seq2SeqModel():
                     latent_dim=self.latent_dim,
                     word_level=self.word_level)
 
-    def train_model(self):
+    def train_model(self, encoder_input, decoder_input, decoder_target):
         print("ENCODER STATES")
 
         model_saver = ModelSaver(model_name=self.model_name, model_path=self.model_path,
@@ -196,6 +196,25 @@ class Seq2SeqModel():
                         decoder_targets.append(np.array(decoder_target))
 
                     yield [encoder_x, decoder_x], decoder_targets
+
+    def data_generator_dict_temp(self, data):
+        while True:
+                pair_key = random.choice(list(data.keys()))
+                output = data[pair_key]
+                encoder_x = []
+                decoder_x = []
+                decoder_y = []
+                for element in output:
+                    encoder_x.append(element[0][0])
+                    decoder_x.append(element[0][1])
+                    decoder_y.append(element[1])
+
+                encoder_x = np.array(encoder_x)
+                decoder_x = np.array(decoder_x)
+                decoder_y = np.array(decoder_y)
+
+                yield [encoder_x, decoder_x], decoder_y
+
 
     def data_generator_dict(self):
         audio_directory = settings.AUDIO_SPLIT_TEST_PATH
