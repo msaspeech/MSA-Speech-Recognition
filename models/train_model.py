@@ -133,9 +133,9 @@ class Seq2SeqModel():
         else:
             print("training here" )
 
-
+            data = self._generate_timestep_dict(encoder_input, decoder_input, decoder_target)
             self.model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
-            history = self.model.fit_generator(self.data_generator_dict(),
+            history = self.model.fit_generator(self.data_generator_dict_temp(data),
                                           steps_per_epoch=settings.TOTAL_SAMPLES_NUMBER,
                                           epochs=self.epochs,
                                           callbacks=[model_saver])
