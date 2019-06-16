@@ -34,6 +34,7 @@ def get_decoder_outputs(target_length, encoder_states, decoder_inputs, latent_di
                                     return_state=True,
                                     kernel_constraint=None,
                                     kernel_regularizer=None,
+                                    recurrent_dropout=0.4,
                                     name="decoder_gru1_layer")
     decoder_gru1, state_h = decoder_gru1_layer(decoder_inputs, initial_state=encoder_states)
 
@@ -44,8 +45,29 @@ def get_decoder_outputs(target_length, encoder_states, decoder_inputs, latent_di
                                     return_state=False,
                                     kernel_constraint=None,
                                     kernel_regularizer=None,
+                                    recurrent_dropout=0.4,
                                     name="decoder_gru2_layer")
-    decoder_outputs = decoder_gru2_layer(decoder_gru1)
+    decoder_gru2 = decoder_gru2_layer(decoder_gru1)
+
+    decoder_gru3_layer = CuDNNGRU(latent_dim,
+                                  stateful=False,
+                                  return_sequences=True,
+                                  return_state=False,
+                                  kernel_constraint=None,
+                                  kernel_regularizer=None,
+                                  recurrent_dropout=0.4,
+                                  name="decoder_gru3_layer")
+    decoder_gru3 = decoder_gru3_layer(decoder_gru2)
+
+    decoder_gru4_layer = CuDNNGRU(latent_dim,
+                                  stateful=False,
+                                  return_sequences=True,
+                                  return_state=False,
+                                  kernel_constraint=None,
+                                  kernel_regularizer=None,
+                                  recurrent_dropout=0.4 ,
+                                  name="decoder_gru4_layer")
+    decoder_outputs = decoder_gru4_layer(decoder_gru3)
 
     return decoder_outputs
 

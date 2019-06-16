@@ -3,7 +3,7 @@ import numpy as np
 from etc import settings
 from utils import file_exists, get_files, load_pickle_data, get_files_full_path
 from tensorflow.python.keras import models
-
+from tensorflow.python.keras.optimizers import RMSprop
 from .seq2seq_baseline import train_baseline_seq2seq_model_GRU, train_baseline_seq2seq_model_LSTM, \
     train_bidirectional_baseline_seq2seq_model_GRU, train_bidirectional_baseline_seq2seq_model_LSTM
 from .seq2seq_cnn_attention import train_cnn_seq2seq_model_GRU, train_cnn_attention_seq2seq_model, \
@@ -132,8 +132,8 @@ class Seq2SeqModel():
 
         else:
             print("training here" )
-
-            self.model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
+            optimizer = RMSprop(lr=0.001, rho=0.9, epsilon=None, decay=0.0)
+            self.model.compile(optimizer=optimizer, loss='categorical_crossentropy', metrics=['accuracy'])
             history = self.model.fit_generator(self.data_generator_dict(),
                                           steps_per_epoch=3000,
                                           epochs=self.epochs,
