@@ -1,5 +1,5 @@
 from tensorflow.python.keras import Model
-from tensorflow.python.keras.layers import Dense, Input, Reshape, TimeDistributed, LSTM, Dropout 
+from tensorflow.python.keras.layers import Dense, Input, Reshape, TimeDistributed, LSTM, Dropout
 from .encoder_decoder import get_encoder_states_GRU, get_decoder_outputs_GRU, encoder_bi_GRU, \
     decoder_for_bidirectional_encoder_GRU, get_decoder_outputs_GRU_test
 from .encoder_decoder import get_encoder_states_LSTM, get_decoder_outputs_LSTM, encoder_bi_LSTM, \
@@ -40,7 +40,7 @@ def train_baseline_seq2seq_model_GRU(mfcc_features, target_length, latent_dim, w
                                                decoder_inputs=decoder_inputs,
                                                latent_dim=latent_dim)
 
-    dropout_layer = Dropout(0.3)
+    dropout_layer = Dropout(0.5)
     decoder_outputs = dropout_layer(decoder_outputs)
     # Dense Output Layers
     if word_level:
