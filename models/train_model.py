@@ -132,8 +132,8 @@ class Seq2SeqModel():
 
         else:
             print("training here" )
-            optimizer = RMSprop(lr=0.001, rho=0.9, epsilon=None, decay=0.0)
-            self.model.compile(optimizer=optimizer, loss='categorical_crossentropy', metrics=['accuracy'])
+            #optimizer = RMSprop(lr=0.001, rho=0.9, epsilon=None, decay=0.0)
+            self.model.compile(optimizer="sgd", loss='categorical_crossentropy', metrics=['accuracy'])
             history = self.model.fit_generator(self.data_generator_dict(),
                                           steps_per_epoch=3000,
                                           epochs=self.epochs,
