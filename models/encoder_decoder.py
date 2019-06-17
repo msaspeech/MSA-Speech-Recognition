@@ -7,9 +7,9 @@ from tensorflow.python.keras.layers import CuDNNLSTM, Bidirectional, Concatenate
 
 # ENCODER DECODER GRU AND LSTM
 
-def get_encoder_states(mfcc_features, encoder_inputs, latent_dim, return_sequences=False):
-    encoder = CuDNNGRU(latent_dim,
-                        input_shape=(None, mfcc_features),
+def get_encoder_states(input_shape, encoder_inputs, latent_dim, return_sequences=False):
+    encoder = GRU(latent_dim,
+                        input_shape=(None, input_shape),
                         stateful=False,
                         return_sequences=return_sequences,
                         return_state=True,
@@ -28,7 +28,7 @@ def get_encoder_states(mfcc_features, encoder_inputs, latent_dim, return_sequenc
 
 def get_decoder_outputs(target_length, encoder_states, decoder_inputs, latent_dim):
     # First Layer
-    decoder_gru1_layer = CuDNNGRU(latent_dim,
+    decoder_gru1_layer = GRU(latent_dim,
                                     input_shape=(None, target_length),
                                     return_sequences=True,
                                     return_state=True,
@@ -38,7 +38,7 @@ def get_decoder_outputs(target_length, encoder_states, decoder_inputs, latent_di
     decoder_gru1, state_h = decoder_gru1_layer(decoder_inputs, initial_state=encoder_states)
 
     # Second LSTM Layer
-    decoder_gru2_layer = CuDNNGRU(latent_dim,
+    decoder_gru2_layer = GRU(latent_dim,
                                     stateful=False,
                                     return_sequences=True,
                                     return_state=False,
@@ -47,7 +47,7 @@ def get_decoder_outputs(target_length, encoder_states, decoder_inputs, latent_di
                                     name="decoder_gru2_layer")
     decoder_gru2 = decoder_gru2_layer(decoder_gru1)
 
-    decoder_gru3_layer = CuDNNGRU(latent_dim,
+    decoder_gru3_layer = GRU(latent_dim,
                                   stateful=False,
                                   return_sequences=True,
                                   return_state=False,

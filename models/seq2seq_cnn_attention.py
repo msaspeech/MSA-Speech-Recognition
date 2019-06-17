@@ -4,6 +4,7 @@ from .encoder_decoder import get_encoder_states_LSTM, get_decoder_outputs_LSTM, 
     decoder_for_bidirectional_encoder_LSTM, \
     get_encoder_states_GRU, get_decoder_outputs_GRU, encoder_bi_GRU, decoder_for_bidirectional_encoder_GRU
 from .encoder_decoder import get_encoder_states_GRU, get_decoder_outputs_GRU, get_decoder_outputs_GRU_test
+from .encoder_decoder import get_encoder_states, get_decoder_outputs
 from .layers import get_cnn_model
 from .layers import AttentionLayer
 from etc import settings
@@ -26,27 +27,28 @@ def train_cnn_seq2seq_model_GRU(mfcc_features, target_length, latent_dim, word_b
     cnn_model = get_cnn_model(cnn_input_shape)
     cnn_model_output_shape = cnn_model.layers[-1].output_shape[2]
 
-
     # Preparing Input shape for LSTM layer from CNN model
 
     cnn_output = cnn_model(cnn_inputs)
-    encoder_states = get_encoder_states_GRU(encoder_inputs=cnn_output,
-                                            latent_dim=latent_dim)
+    encoder_states = get_encoder_states(input_shape=cnn_model_output_shape,
+                                        encoder_inputs=cnn_output,
+                                        latent_dim=latent_dim)
 
     # Decoder training, using 'encoder_states' as initial state.
     decoder_inputs = Input(shape=(None, target_length), name="decoder_input")
-    decoder_outputs, states = get_decoder_outputs_GRU_test(encoder_states=encoder_states,
-                                                           decoder_inputs=decoder_inputs,
-                                                           latent_dim=latent_dim)
+    decoder_outputs = get_decoder_outputs(target_length=target_length,
+                                          encoder_states=encoder_states,
+                                          decoder_inputs=decoder_inputs,
+                                          latent_dim=latent_dim)
+
+    # Dropout layer
+    dropout_layer = Dropout(0.5, name="decoder_dropout")
+    decoder_outputs = dropout_layer(decoder_outputs)
 
     if word_based:
         target_length = len(settings.CHARACTER_SET) + 1
         decoder_outputs = get_multi_output_dense(decoder_outputs, target_length=target_length)
     else:
-        decoder_dense1_layer = Dense(latent_dim, activation="tanh")
-        decoder_outputs = decoder_dense1_layer(decoder_outputs)
-        decoder_dense2_layer = Dense(latent_dim, activation="tanh")
-        decoder_outputs = decoder_dense2_layer(decoder_outputs)
         decoder_dense = Dense(target_length, activation='softmax', name="decoder_dense")
         decoder_outputs = decoder_dense(decoder_outputs)
 

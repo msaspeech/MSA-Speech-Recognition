@@ -117,7 +117,7 @@ class Seq2SeqModel():
                 layer_name = "decoder_dense" + str(i)
                 loss[layer_name] = 'categorical_crossentropy'
 
-            self.model.compile(optimizer='rmsprop', loss=loss, metrics=['accuracy'])
+            self.model.compile(optimizer='sgd', loss=loss, metrics=['accuracy'])
             #batch_size = 32
             #steps = int(settings.TOTAL_SAMPLES_NUMBER / batch_size) + 1
             #history = self.model.fit_generator(self.split_data_generator_dict_word_level(batch_size),
@@ -126,13 +126,12 @@ class Seq2SeqModel():
             #                                   callbacks=[model_saver])
 
             history = self.model.fit_generator(self.data_generator_dict_word(),
-                                               steps_per_epoch=2000,
+                                               steps_per_epoch=3000,
                                                epochs=self.epochs,
                                                callbacks=[model_saver])
 
         else:
             print("training here" )
-            #optimizer = RMSprop(lr=0.001, rho=0.9, epsilon=None, decay=0.0)
             self.model.compile(optimizer="sgd", loss='categorical_crossentropy', metrics=['accuracy'])
             history = self.model.fit_generator(self.data_generator_dict(),
                                           steps_per_epoch=3000,
@@ -150,8 +149,6 @@ class Seq2SeqModel():
         audio_files = get_files_full_path(audio_directory)
         transcripts_directory = settings.TRANSCRIPTS_ENCODING_SPLIT_TRAIN_PATH
         transcript_files = get_files_full_path(transcripts_directory)
-        print(audio_files)
-        print(transcript_files)
         while True:
             for index, audio in enumerate(audio_files):
                 path_audio = audio

@@ -16,32 +16,24 @@ def train_baseline_seq2seq_model_GRU(mfcc_features, target_length, latent_dim, w
     :param latent_dim: int
     :return: Model, Model, Model
     """
-    # Encoder training
     encoder_inputs = Input(shape=(None, mfcc_features), name="encoder_input")
-    #encoder_states = get_encoder_states_GRU(encoder_inputs=encoder_inputs,
-    #                                        latent_dim=latent_dim)
 
-    encoder_states = get_encoder_states(mfcc_features=mfcc_features, encoder_inputs=encoder_inputs,
+    # Encoder model
+    encoder_states = get_encoder_states(input_shape=mfcc_features,
+                                        encoder_inputs=encoder_inputs,
                                         latent_dim=latent_dim)
+
     # Decoder training, using 'encoder_states' as initial state.
     decoder_inputs = Input(shape=(None, target_length), name="decoder_input")
-    # masked_inputs = Masking(mask_value=0,)(decoder_inputs)
-
-    # decoder_outputs, decoder_states = get_decoder_outputs_GRU(encoder_states=encoder_states,
-    #                                                          decoder_inputs=decoder_inputs,
-    #                                                          latent_dim=latent_dim)
-
-    #decoder_outputs, decoder_states = get_decoder_outputs_GRU_test(encoder_states=encoder_states,
-    #                                                               decoder_inputs=decoder_inputs,
-    #                                                               latent_dim=latent_dim)
 
     decoder_outputs = get_decoder_outputs(target_length=target_length,
                                           encoder_states=encoder_states,
-                                               decoder_inputs=decoder_inputs,
-                                               latent_dim=latent_dim)
+                                          decoder_inputs=decoder_inputs,
+                                          latent_dim=latent_dim)
 
-    dropout_layer = Dropout(0.5)
+    dropout_layer = Dropout(0.5, name="decoder_dropout")
     decoder_outputs = dropout_layer(decoder_outputs)
+
     # Dense Output Layers
     if word_level:
         target_length = len(settings.CHARACTER_SET) + 1
