@@ -95,13 +95,20 @@ class Seq2SeqModel():
                     latent_dim=self.latent_dim,
                     word_level=self.word_level)
 
-            else:
+            elif self.model_architecture == 7:
                 print("BI CNN MODEL")
                 self.model, self.encoder_states = train_cnn_bidirectional_seq2seq_model_GRU(
                     mfcc_features=self.mfcc_features_length,
                     target_length=self.target_length,
                     latent_dim=self.latent_dim,
                     word_level=self.word_level)
+
+            else:
+                print("CNN MODEL")
+                self.model, self.encoder_states = train_cnn_seq2seq_model_GRU(mfcc_features=self.mfcc_features_length,
+                                                                              target_length=self.target_length,
+                                                                              latent_dim=self.latent_dim,
+                                                                              word_based=self.word_level)
 
     def train_model(self):
         print("ENCODER STATES")

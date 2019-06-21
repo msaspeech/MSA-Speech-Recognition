@@ -75,6 +75,7 @@ class ModelSaver(Callback):
         folders_dict_id["architecture5"] = "1Hy0hecoGHYjiWkZpj8snZpqTiH4YSdE6"
         folders_dict_id["architecture6"] = "1YDWIu47oGj2C_C5C2XC9-51UjUTIbelw"
         folders_dict_id["architecture7"] = "18Xiiq1CEb8bxJhRY_gjUUK-2xNjY3ixw"
+        folders_dict_id["architecture8"] = "1x4OVVxzYqhJKMwDwPqRM8YemIM4pB8E-"
 
 
         #parent_directory_id = "0B5fJkPjHLj3Jdkw5ZnFiY0lZV1U"
