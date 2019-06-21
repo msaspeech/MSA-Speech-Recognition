@@ -125,17 +125,17 @@ class Seq2SeqModel():
                 loss[layer_name] = 'categorical_crossentropy'
 
             self.model.compile(optimizer='sgd', loss=loss, metrics=['accuracy'])
-            #batch_size = 32
-            #steps = int(settings.TOTAL_SAMPLES_NUMBER / batch_size) + 1
-            #history = self.model.fit_generator(self.split_data_generator_dict_word_level(batch_size),
-            #                                   steps_per_epoch=steps,
-            #                                   epochs=self.epochs,
-            #                                   callbacks=[model_saver])
-
-            history = self.model.fit_generator(self.data_generator_dict_word(),
-                                               steps_per_epoch=3000,
+            batch_size = 32
+            steps = int(settings.TOTAL_SAMPLES_NUMBER / batch_size) + 1
+            history = self.model.fit_generator(self.split_data_generator_dict_word_level(batch_size),
+                                               steps_per_epoch=steps,
                                                epochs=self.epochs,
                                                callbacks=[model_saver])
+
+            #history = self.model.fit_generator(self.data_generator_dict_word(),
+            #                                   steps_per_epoch=3000,
+            #                                   epochs=self.epochs,
+            #                                   callbacks=[model_saver])
 
         else:
             print("training here" )
