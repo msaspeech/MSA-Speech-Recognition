@@ -4,7 +4,7 @@ from models import train_model, measure_test_accuracy, Seq2SeqModel, Word_Infere
 
 word_level = 0
 architecture = 1
-latent_dim = 350
+latent_dim = 550
 
 from etc import settings
 from lib import AudioInput

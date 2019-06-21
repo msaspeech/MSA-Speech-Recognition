@@ -132,7 +132,7 @@ class Seq2SeqModel():
 
         else:
             print("training here" )
-            #self.model.compile(optimizer="sgd", loss='categorical_crossentropy', metrics=['accuracy'])
+            self.model.compile(optimizer="sgd", loss='categorical_crossentropy', metrics=['accuracy'])
             #history = self.model.fit_generator(self.data_generator_dict(),
             #                              steps_per_epoch=3000,
             #                              epochs=self.epochs,
@@ -141,7 +141,7 @@ class Seq2SeqModel():
             batch_size = 32
             steps = int(settings.TOTAL_SAMPLES_NUMBER / batch_size) + 1
             history = self.model.fit_generator(self.split_data_generator_dict(batch_size),
-                                               steps_per_epoch=steps,
+                                               steps_per_epoch=10,
                                                epochs=self.epochs,
                                                callbacks=[model_saver])
 

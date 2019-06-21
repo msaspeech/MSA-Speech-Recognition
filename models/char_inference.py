@@ -62,6 +62,8 @@ class Char_Inference():
 
         decoder_gru1_layer = self.model.get_layer("decoder_gru1_layer")
         decoder_gru2_layer = self.model.get_layer("decoder_gru2_layer")
+        decoder_gru3_layer = self.model.get_layer("decoder_gru3_layer")
+
 
         decoder_dense_layer = self.model.get_layer("decoder_dense")
 
@@ -69,7 +71,8 @@ class Char_Inference():
         decoder_states_inputs = [decoder_state_input_h]
 
         decoder_gru1, state_h = decoder_gru1_layer(decoder_inputs, initial_state=decoder_states_inputs)
-        decoder_output = decoder_gru2_layer(decoder_gru1)
+        decoder_gru2 = decoder_gru2_layer(decoder_gru1)
+        decoder_output = decoder_gru3_layer(decoder_gru2)
         decoder_states = [state_h]
 
         # getting dense layers as outputs
@@ -115,10 +118,10 @@ class Char_Inference():
             output_tokens, h = self.decoder_model.predict(
                 [target_sequence] + states_value)
             states_value = [h]
-            print("DECODER PREDICTION DONE khobz")
+            #print("DECODER PREDICTION DONE khobz")
             sampled_token_index = np.argmax(output_tokens[0, -1, :])
             sampled_char = int_to_char[sampled_token_index]
-            print(sampled_char)
+            #print(sampled_char)
             decoded_sentence += sampled_char
 
             if sampled_char == "\n" or len(decoded_sentence) > max_length :
