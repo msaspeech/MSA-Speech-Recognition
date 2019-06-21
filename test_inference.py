@@ -20,6 +20,8 @@ if word_level:
 else:
     model_path = settings.TRAINED_MODELS_PATH + model_name + "/" + model_name + "char.h5"
 
+print(model_path)
+
 sample = AudioInput("audio.wav", "")
 audio = [sample.mfcc.transpose()]
 
@@ -31,15 +33,3 @@ char_inference = Char_Inference(model_path=model_path, latent_dim=latent_dim)
 
 char_inference.decode_audio_sequence_character_based(audio_sequence)
 char_inference.predict_sequence_test(audio_sequence)
-
-#word_inference = Word_Inference_TEST(model_path=model_path, latent_dim=latent_dim)
-#word_inference.predict_sequence_test(audio_input=audio_sequence)
-#9word_inference.test_encoder_decoder(audio_sequence)
-#word_inference.decode_audio_sequence(audio_sequence)
-
-
-#word_inference2 = Word_Inference(model_path=model_path, latent_dim=latent_dim)
-#transcript = word_inference.decode_audio_sequence(audio_sequence)
-#print(transcript)
-
-# accuracy = measure_test_accuracy(test_decoder_input, model, encoder_states, latent_dim=512)
