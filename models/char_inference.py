@@ -19,8 +19,8 @@ class Char_Inference():
         self.encoder_model = None
         self.decoder_model = None
 
-        self._get_encoder_decoder_model_baseline()
-        #self._get_encoder_decoder_model_cnn()
+        #self._get_encoder_decoder_model_baseline()
+        self._get_encoder_decoder_model_cnn()
 
     def predict_sequence_test(self, audio_input):
         char_to_int = convert_to_int(sorted(settings.CHARACTER_SET))
