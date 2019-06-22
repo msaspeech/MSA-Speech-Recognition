@@ -3,6 +3,7 @@ from utils import load_pickle_data
 from tensorflow.python.keras import models
 from tensorflow.python.keras import Model
 from tensorflow.python.keras.layers import Input
+from.layers.conv_layers import get_cnn_model
 from utils import convert_to_int, convert_int_to_char
 import numpy as np
 
@@ -18,7 +19,8 @@ class Char_Inference():
         self.encoder_model = None
         self.decoder_model = None
 
-        self._get_encoder_decoder_model_baseline()
+        #self._get_encoder_decoder_model_baseline()
+        self._get_encoder_decoder_model_cnn()
 
     def predict_sequence_test(self, audio_input):
         char_to_int = convert_to_int(sorted(settings.CHARACTER_SET))
@@ -45,6 +47,49 @@ class Char_Inference():
             sentence+=character
 
         print(sentence)
+
+    def _get_encoder_decoder_model_cnn(self):
+        # Getting encoder model
+        encoder_inputs = self.model.get_layer("encoder_input").input
+
+        cnn_model = get_cnn_model(input_shape=(None, settings.MFCC_FEATURES_LENGTH))
+        encoder_inputs_cnn = cnn_model(encoder_inputs)
+
+        encoder_gru = self.model.get_layer("encoder_gru_layer")
+        encoder_output, h = encoder_gru(encoder_inputs_cnn)
+        self.encoder_states = h
+
+        self.encoder_model = Model(encoder_inputs, self.encoder_states)
+        self.encoder_model.summary()
+        # Getting decoder model
+
+        decoder_inputs = self.model.get_layer("decoder_input").input
+
+        decoder_gru1_layer = self.model.get_layer("decoder_gru1_layer")
+        decoder_gru2_layer = self.model.get_layer("decoder_gru2_layer")
+        decoder_gru3_layer = self.model.get_layer("decoder_gru3_layer")
+        decoder_gru4_layer = self.model.get_layer("decoder_gru4_layer")
+
+
+        decoder_dense_layer = self.model.get_layer("decoder_dense")
+
+        decoder_state_input_h = Input(shape=(self.latent_dim,))
+        decoder_states_inputs = [decoder_state_input_h]
+
+        decoder_gru1, state_h = decoder_gru1_layer(decoder_inputs, initial_state=decoder_states_inputs)
+        decoder_gru2 = decoder_gru2_layer(decoder_gru1)
+        decoder_gru3 = decoder_gru3_layer(decoder_gru2)
+        decoder_output = decoder_gru4_layer(decoder_gru3)
+
+        decoder_states = [state_h]
+
+        # getting dense layers as outputs
+
+        decoder_output = decoder_dense_layer(decoder_output)
+
+        self.decoder_model = Model(
+            [decoder_inputs] + decoder_states_inputs,
+            [decoder_output] + decoder_states)
 
     def _get_encoder_decoder_model_baseline(self):
 

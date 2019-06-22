@@ -3,7 +3,7 @@ from lib import upload_dataset
 from models import train_model, measure_test_accuracy, Seq2SeqModel, Word_Inference, Word_Inference_TEST, Char_Inference
 
 word_level = 0
-architecture = 1
+architecture = 8
 latent_dim = 500
 
 from etc import settings
