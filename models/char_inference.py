@@ -68,9 +68,8 @@ class Char_Inference():
         decoder_gru1_layer = self.model.get_layer("decoder_gru1_layer")
         decoder_gru2_layer = self.model.get_layer("decoder_gru2_layer")
         decoder_gru3_layer = self.model.get_layer("decoder_gru3_layer")
-        decoder_gru4_layer = self.model.get_layer("decoder_gru4_layer")
 
-
+        decoder_dropout = self.model.get_layer("decoder_dropout")
         decoder_dense_layer = self.model.get_layer("decoder_dense")
 
         decoder_state_input_h = Input(shape=(self.latent_dim,))
@@ -78,13 +77,12 @@ class Char_Inference():
 
         decoder_gru1, state_h = decoder_gru1_layer(decoder_inputs, initial_state=decoder_states_inputs)
         decoder_gru2 = decoder_gru2_layer(decoder_gru1)
-        decoder_gru3 = decoder_gru3_layer(decoder_gru2)
-        decoder_output = decoder_gru4_layer(decoder_gru3)
+        decoder_output = decoder_gru3_layer(decoder_gru2)
 
         decoder_states = [state_h]
 
         # getting dense layers as outputs
-
+        decoder_output  = decoder_dropout(decoder_output)
         decoder_output = decoder_dense_layer(decoder_output)
 
         self.decoder_model = Model(
