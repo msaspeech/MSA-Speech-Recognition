@@ -1,7 +1,7 @@
 from etc import settings
 from utils import load_pickle_data
 from tensorflow.python.keras import models
-from tensorflow.python.keras import Model
+from tensorflow.python.keras import Model, Sequential
 from tensorflow.python.keras.layers import Input
 from.layers.conv_layers import get_cnn_model
 from utils import convert_to_int, convert_int_to_char
@@ -52,7 +52,7 @@ class Char_Inference():
         # Getting encoder model
         encoder_inputs = self.model.get_layer("encoder_input").input
 
-        cnn_model = get_cnn_model(input_shape=(None, settings.MFCC_FEATURES_LENGTH))
+        cnn_model = self.model.get_layer("sequential")
         encoder_inputs_cnn = cnn_model(encoder_inputs)
 
         encoder_gru = self.model.get_layer("encoder_gru_layer")
