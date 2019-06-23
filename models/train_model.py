@@ -51,7 +51,7 @@ class Seq2SeqModel():
         else:
             if self.model_architecture == 1:
                 print("BASELINE MODEL")
-                self.model, self.encoder_states = train_baseline_seq2seq_model_GRU(
+                self.model = train_baseline_seq2seq_model_GRU(
                     mfcc_features=self.mfcc_features_length,
                     target_length=self.target_length,
                     latent_dim=self.latent_dim,
@@ -59,7 +59,7 @@ class Seq2SeqModel():
 
             elif self.model_architecture == 2:
                 print("BI BASELINE MODEL")
-                self.model, self.encoder_states = train_bidirectional_baseline_seq2seq_model_GRU(
+                self.model = train_bidirectional_baseline_seq2seq_model_GRU(
                     mfcc_features=self.mfcc_features_length,
                     target_length=self.target_length,
                     latent_dim=self.latent_dim,
@@ -67,7 +67,7 @@ class Seq2SeqModel():
 
             elif self.model_architecture == 3:
                 print("BASELINE MODEL")
-                self.model, self.encoder_states = train_baseline_seq2seq_model_GRU(
+                self.model = train_baseline_seq2seq_model_GRU(
                     mfcc_features=self.mfcc_features_length,
                     target_length=self.target_length,
                     latent_dim=self.latent_dim,
@@ -76,20 +76,20 @@ class Seq2SeqModel():
 
             elif self.model_architecture == 4:
                 print("CNN MODEL")
-                self.model, self.encoder_states = train_cnn_seq2seq_model_GRU(mfcc_features=self.mfcc_features_length,
+                self.model = train_cnn_seq2seq_model_GRU(mfcc_features=self.mfcc_features_length,
                                                                               target_length=self.target_length,
                                                                               latent_dim=self.latent_dim,
                                                                               word_based=self.word_level)
 
             elif self.model_architecture == 5:
                 print("CNN MODEL")
-                self.model, self.encoder_states = train_cnn_seq2seq_model_GRU(mfcc_features=self.mfcc_features_length,
+                self.model = train_cnn_seq2seq_model_GRU(mfcc_features=self.mfcc_features_length,
                                                                               target_length=self.target_length,
                                                                               latent_dim=self.latent_dim,
                                                                               word_based=self.word_level)
             elif self.model_architecture == 6:
                 print("BASELINE MODEL")
-                self.model, self.encoder_states = train_baseline_seq2seq_model_GRU(
+                self.model = train_baseline_seq2seq_model_GRU(
                     mfcc_features=self.mfcc_features_length,
                     target_length=self.target_length,
                     latent_dim=self.latent_dim,
@@ -97,7 +97,7 @@ class Seq2SeqModel():
 
             elif self.model_architecture == 7:
                 print("BI CNN MODEL")
-                self.model, self.encoder_states = train_cnn_bidirectional_seq2seq_model_GRU(
+                self.model = train_cnn_bidirectional_seq2seq_model_GRU(
                     mfcc_features=self.mfcc_features_length,
                     target_length=self.target_length,
                     latent_dim=self.latent_dim,
@@ -105,7 +105,7 @@ class Seq2SeqModel():
 
             else:
                 print("CNN MODEL")
-                self.model, self.encoder_states = train_cnn_seq2seq_model_GRU(mfcc_features=self.mfcc_features_length,
+                self.model = train_cnn_seq2seq_model_GRU(mfcc_features=self.mfcc_features_length,
                                                                               target_length=self.target_length,
                                                                               latent_dim=self.latent_dim,
                                                                               word_based=self.word_level)
@@ -132,18 +132,9 @@ class Seq2SeqModel():
                                                epochs=self.epochs,
                                                callbacks=[model_saver])
 
-            #history = self.model.fit_generator(self.data_generator_dict_word(),
-            #                                   steps_per_epoch=3000,
-            #                                   epochs=self.epochs,
-            #                                   callbacks=[model_saver])
-
         else:
             print("training here" )
             self.model.compile(optimizer="sgd", loss='categorical_crossentropy', metrics=['accuracy'])
-            #history = self.model.fit_generator(self.data_generator_dict(),
-            #                              steps_per_epoch=3000,
-            #                              epochs=self.epochs,
-            #                              callbacks=[model_saver])
 
             batch_size = 32
             steps = int(settings.TOTAL_SAMPLES_NUMBER / batch_size) + 1

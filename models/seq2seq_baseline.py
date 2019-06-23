@@ -45,7 +45,7 @@ def train_baseline_seq2seq_model_GRU(mfcc_features, target_length, latent_dim, w
     # Generating Keras Model
     model = Model([encoder_inputs, decoder_inputs], decoder_outputs)
     # print(model.summary())
-    return model, encoder_states
+    return model
 
 
 def train_bidirectional_baseline_seq2seq_model_GRU(mfcc_features, target_length, latent_dim, word_level):
@@ -79,7 +79,7 @@ def train_bidirectional_baseline_seq2seq_model_GRU(mfcc_features, target_length,
     # Generating Keras Model
     model = Model([encoder_inputs, decoder_inputs], decoder_outputs)
     print(model.summary())
-    return model, encoder_states
+    return model
 
 
 def train_baseline_seq2seq_model_LSTM(mfcc_features, target_length, latent_dim, word_level):

@@ -56,7 +56,7 @@ def train_cnn_seq2seq_model_GRU(mfcc_features, target_length, latent_dim, word_b
     model = Model([cnn_inputs, decoder_inputs], decoder_outputs)
     print(model.summary())
 
-    return model, encoder_states
+    return model
 
 
 def train_cnn_bidirectional_seq2seq_model_GRU(mfcc_features, target_length, latent_dim, word_level):
@@ -95,7 +95,7 @@ def train_cnn_bidirectional_seq2seq_model_GRU(mfcc_features, target_length, late
     model = Model([cnn_inputs, decoder_inputs], decoder_outputs)
     print(model.summary())
 
-    return model, encoder_states
+    return model
 
 
 def train_cnn_seq2seq_model_LSTM(mfcc_features, target_length, latent_dim, word_based):
