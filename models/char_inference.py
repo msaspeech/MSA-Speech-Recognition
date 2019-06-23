@@ -9,7 +9,16 @@ import numpy as np
 
 class Char_Inference():
 
-    def __init__(self, model_path, latent_dim):
+    def __init__(self, word_level, architecture, latent_dim):
+
+        model_name = "architecture" + str(architecture)
+        if word_level:
+            model_path = settings.TRAINED_MODELS_PATH + model_name + "/" + model_name + "word.h5"
+        else:
+            model_path = settings.TRAINED_MODELS_PATH + model_name + "/" + model_name + "char.h5"
+
+        print(model_path)
+
         self.model = models.load_model(model_path)
         self.encoder_states = None
         self.latent_dim = latent_dim
@@ -19,8 +28,11 @@ class Char_Inference():
         self.encoder_model = None
         self.decoder_model = None
 
-        #self._get_encoder_decoder_model_baseline()
-        self._get_encoder_decoder_model_cnn()
+
+        if architecture == 6:
+            self._get_encoder_decoder_model_baseline()
+        else:
+            self._get_encoder_decoder_model_cnn()
 
     def predict_sequence_test(self, audio_input):
         char_to_int = convert_to_int(sorted(settings.CHARACTER_SET))
