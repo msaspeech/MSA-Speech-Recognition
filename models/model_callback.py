@@ -94,7 +94,7 @@ class ModelSaver(Callback):
         except:
             print("File not found")
 
-        drive_path_archi6 = F"/content/drive/My Drive/'End2End ASR Collab'/architecture6/"+self.model_name
+        drive_path_archi6 = F"/content/drive/'My Drive'/'End2End ASR Collab'/'architectur   e6'/architecture6.h5"
         self.model.save(drive_path_archi6)
 
         uploaded = self.drive_instance.CreateFile({model_title: self.model_name, "parents": [{"kind": "drive#fileLink", "id": parent_directory_id}]})
