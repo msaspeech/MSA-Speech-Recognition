@@ -94,8 +94,6 @@ class ModelSaver(Callback):
         except:
             print("File not found")
 
-        drive_path_archi6 = "../drive/'My Drive'/architecture6.h5"
-        self.model.save(drive_path_archi6)
 
         uploaded = self.drive_instance.CreateFile({model_title: self.model_name, "parents": [{"kind": "drive#fileLink", "id": parent_directory_id}]})
         uploaded.SetContentFile(self.model_path)
