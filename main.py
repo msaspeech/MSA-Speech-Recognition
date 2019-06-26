@@ -8,7 +8,7 @@ from etc import settings
 from init_directories import init_directories
 
 init_directories()
-settings.DRIVE_INSTANCE = load_pickle_data(DRIVE_INSTANCE_PATH)
+#settings.DRIVE_INSTANCE = load_pickle_data(DRIVE_INSTANCE_PATH)
 
 word_level = int(sys.argv[1])
 architecture = int(sys.argv[2])

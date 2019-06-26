@@ -115,7 +115,6 @@ class Seq2SeqModel():
 
         model_saver = ModelSaver(model_name=self.model_name, model_path=self.model_path,
                                  encoder_states=self.encoder_states,
-                                 drive_instance=settings.DRIVE_INSTANCE,
                                  word_level=self.word_level)
 
         if self.word_level:
@@ -139,7 +138,7 @@ class Seq2SeqModel():
             batch_size = 32
             steps = int(settings.TOTAL_SAMPLES_NUMBER / batch_size) + 1
             history = self.model.fit_generator(self.split_data_generator_dict(batch_size),
-                                               steps_per_epoch=steps,
+                                               steps_per_epoch=500,
                                                epochs=self.epochs,
                                                callbacks=[model_saver])
 

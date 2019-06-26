@@ -3,10 +3,11 @@ from . import plot_train_loss_acc
 from etc import ENCODER_STATES_PATH, settings
 from utils import generate_pickle_file, file_exists, create_dir, load_pickle_data
 
+import os
 
 class ModelSaver(Callback):
 
-    def __init__(self, model_name, model_path, encoder_states, drive_instance, word_level=True, output_length=16):
+    def __init__(self, model_name, model_path, encoder_states, word_level=True, output_length=16):
         super().__init__()
 
         self.model_name = model_name
@@ -14,7 +15,7 @@ class ModelSaver(Callback):
         self.word_level = word_level
         self.output_length = output_length
         self.encoder_states = encoder_states
-        self.drive_instance = drive_instance
+        #self.drive_instance = settings.DRIVE_INSTANCE
 
     def on_epoch_end(self, epoch, logs=None):
         # Saving training history
@@ -65,6 +66,12 @@ class ModelSaver(Callback):
 
         # Saving model
 
+        # Copying information to gdrive
+        model_command = "cp "+self.model_path+" ../drive/'My Drive'/'End2End ASR Collab'/"+self.model_name+"/"
+        os.system(model_command)
+        history_command = "cp "+hist_path+" ../drive/'My Drive'/'End2End ASR Collab'/"+self.model_name+"/"
+        os.system(history_command)
+
         # Saving training results
 
         folders_dict_id = {}
@@ -84,34 +91,34 @@ class ModelSaver(Callback):
         #    print('title: %s, id: %s   ' % (file1['title'], file1['id']))
 
         #parent_directory_id = '0B5fJkPjHLj3Jdkw5ZnFiY0lZV1U'
-        parent_directory_id = folders_dict_id[self.model_name]
-        file_list = self.drive_instance.ListFile({'q': "\'"+parent_directory_id+"\'"+" in parents  and trashed=false"}).GetList()
+        #parent_directory_id = folders_dict_id[self.model_name]
+        #file_list = self.drive_instance.ListFile({'q': "\'"+parent_directory_id+"\'"+" in parents  and trashed=false"}).GetList()
 
-        try:
-            for file1 in file_list:
-                if file1['title'] == self.model_path:
-                    file1.Delete()
-        except:
-            print("File not found")
+        #try:
+        #    for file1 in file_list:
+        #        if file1['title'] == self.model_path:
+        #            file1.Delete()
+        #except:
+        #    print("File not found")
 
 
-        uploaded = self.drive_instance.CreateFile({model_title: self.model_name, "parents": [{"kind": "drive#fileLink", "id": parent_directory_id}]})
-        uploaded.SetContentFile(self.model_path)
-        uploaded.Upload()
+        #uploaded = self.drive_instance.CreateFile({model_title: self.model_name, "parents": [{"kind": "drive#fileLink", "id": parent_directory_id}]})
+        #uploaded.SetContentFile(self.model_path)
+        #uploaded.Upload()
 
         # Save training loss and accuracy
-        file_list = self.drive_instance.ListFile(
-            {'q': "\'" + parent_directory_id + "\'" + " in parents  and trashed=false"}).GetList()
-        try:
-            for file1 in file_list:
-                if file1['title'] == hist_path:
-                    file1.Delete()
-        except:
-            print("File not found")
+        #file_list = self.drive_instance.ListFile(
+        #    {'q': "\'" + parent_directory_id + "\'" + " in parents  and trashed=false"}).GetList()
+        #try:
+        #    for file1 in file_list:
+        #        if file1['title'] == hist_path:
+        #            file1.Delete()
+        #except:
+        #    print("File not found")
 
-        uploaded = self.drive_instance.CreateFile(
-            {model_title: "Train history", "parents": [{"kind": "drive#fileLink", "id": parent_directory_id}]})
-        uploaded.SetContentFile(hist_path)
-        uploaded.Upload()
+        #uploaded = self.drive_instance.CreateFile(
+        #    {model_title: "Train history", "parents": [{"kind": "drive#fileLink", "id": parent_directory_id}]})
+        #uploaded.SetContentFile(hist_path)
+        #uploaded.Upload()
 
 
