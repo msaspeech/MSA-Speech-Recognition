@@ -5,8 +5,9 @@ import numpy as np
 from etc import settings
 import sys
 from utils import buckwalter_to_arabic
-
+from models.test2 import test
 from utils import load_pickle_data, generate_pickle_file
 
-print(buckwalter_to_arabic("mwqfy Alrsmy ywm Alsbt wsykwn fy hnAk"))
+#print(buckwalter_to_arabic("mwqfy Alrsmy ywm Alsbt wsykwn fy hnAk"))
 
+test()
