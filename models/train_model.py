@@ -123,7 +123,7 @@ class Seq2SeqModel():
                 layer_name = "decoder_dense" + str(i)
                 loss[layer_name] = 'categorical_crossentropy'
 
-            self.model.compile(optimizer='sgd', loss=loss, metrics=['accuracy'])
+            self.model.compile(optimizer='Adagrad', loss=loss, metrics=['accuracy'])
             batch_size = 32
             steps = int(settings.TOTAL_SAMPLES_NUMBER / batch_size) + 1
             history = self.model.fit_generator(self.split_data_generator_dict_word_level(batch_size),
