@@ -163,7 +163,6 @@ class Char_Inference():
 
         # Populate the first character of target sequence with the start character.
         target_sequence[0, 0, char_to_int['\t']] = 1.
-        print(target_sequence)
         stop_condition = False
         t_force = "\tmsA' Alxyr >wlA hw Almwqf tm tSHyHh\n"
         decoded_sentence = ''
@@ -172,11 +171,9 @@ class Char_Inference():
         while not stop_condition:
             output_tokens, h = self.decoder_model.predict(
                 [target_sequence] + states_value)
-            states_value = [h]
-            #print("DECODER PREDICTION DONE khobz")
+            #states_value = [h]
             sampled_token_index = np.argmax(output_tokens[0, -1, :])
             sampled_char = int_to_char[sampled_token_index]
-            #print(sampled_char)
             decoded_sentence += sampled_char
 
             if sampled_char == "\n" or len(decoded_sentence) > max_length :
