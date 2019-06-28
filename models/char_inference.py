@@ -131,7 +131,7 @@ class Char_Inference():
         decoder_states = [state_h]
 
         # getting dense layers as outputs
-        #decoder_output = decoder_dropout(decoder_output)
+        decoder_output = decoder_dropout(decoder_output)
         decoder_output = decoder_dense_layer(decoder_output)
 
         self.decoder_model = Model(
