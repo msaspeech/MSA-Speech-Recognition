@@ -131,7 +131,7 @@ class Char_Inference():
         decoder_states = [state_h]
 
         # getting dense layers as outputs
-        decoder_output = decoder_dropout(decoder_output)
+        #decoder_output = decoder_dropout(decoder_output)
         decoder_output = decoder_dense_layer(decoder_output)
 
         self.decoder_model = Model(
@@ -171,7 +171,7 @@ class Char_Inference():
         while not stop_condition:
             output_tokens, h = self.decoder_model.predict(
                 [target_sequence] + states_value)
-            #states_value = [h]
+            states_value = [h]
             sampled_token_index = np.argmax(output_tokens[0, -1, :])
             sampled_char = int_to_char[sampled_token_index]
             decoded_sentence += sampled_char
