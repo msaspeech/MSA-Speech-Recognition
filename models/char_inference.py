@@ -139,8 +139,6 @@ class Char_Inference():
             [decoder_output] + decoder_states)
 
 
-
-
     def decode_audio_sequence_character_based(self, audio_sequence):
         """
         Decodes audio sequence into a transcript using encoder_model and decoder_model generated from training
