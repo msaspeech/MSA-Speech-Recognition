@@ -136,9 +136,9 @@ class Seq2SeqModel():
             self.model.compile(optimizer="Adadelta", loss='categorical_crossentropy', metrics=['accuracy'])
 
             batch_size = 32
-            #steps = int(settings.TOTAL_SAMPLES_NUMBER / batch_size) + 1
-            history = self.model.fit_generator(self.split_data_generator_dict_train(),
-                                               steps_per_epoch=11000,
+            steps = int(settings.TOTAL_SAMPLES_NUMBER / batch_size) + 1
+            history = self.model.fit_generator(self.split_data_generator_dict(batch_size),
+                                               steps_per_epoch=steps,
                                                epochs=self.epochs,
                                                callbacks=[model_saver])
 

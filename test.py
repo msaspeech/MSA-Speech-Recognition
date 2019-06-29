@@ -4,10 +4,11 @@ from lib import AudioInput
 import numpy as np
 from etc import settings
 import sys
-from utils import buckwalter_to_arabic
+from utils import buckwalter_to_arabic, arabic_to_buckwalter
 from models.test2 import test
 from utils import load_pickle_data, generate_pickle_file
 
-#print(buckwalter_to_arabic("mwqfy Alrsmy ywm Alsbt wsykwn fy hnAk"))
+print(arabic_to_buckwalter("مشاهدينا الكرام السلام عليكم"))
+print(buckwalter_to_arabic("mwqfy Alrsmy ywm Alsbt wsykwn fy hnAk"))
 
-test()
+#test()
