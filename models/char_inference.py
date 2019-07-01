@@ -214,6 +214,8 @@ class Char_Inference():
         decoded_sentence = ''
         max_length = len(t_force)
         i = 0
+
+
         while not stop_condition:
             output_tokens, h = self.decoder_model.predict(
                 [target_sequence] + states_value)
@@ -221,15 +223,15 @@ class Char_Inference():
             sampled_token_index = np.argmax(output_tokens[0, -1, :])
             sampled_char = int_to_char[sampled_token_index]
             decoded_sentence += sampled_char
-
+            print(sampled_char)
             if sampled_char == "\n" or len(decoded_sentence) > max_length :
                 # End of transcription
                 stop_condition = True
             else:
                 # updating target sequence vector
                 target_sequence = np.zeros((1, 1, num_decoder_tokens))
-                target_sequence[0, 0, char_to_int[t_force[i]]] = 1
-                #target_sequence[0, 0, char_to_int[sampled_char]] = 1
+                #target_sequence[0, 0, char_to_int[t_force[i]]] = 1
+                target_sequence[0, 0, char_to_int[sampled_char]] = 1
                 i += 1
 
 
