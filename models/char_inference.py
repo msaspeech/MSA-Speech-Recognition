@@ -38,7 +38,7 @@ class Char_Inference():
         char_to_int = convert_to_int(sorted(settings.CHARACTER_SET))
         int_to_char = convert_int_to_char(char_to_int)
 
-        t_force = "\tzmny l<nhA' AlAHtlAl Al<srA}yly w<qAmp dwlp flsTynyp\n"
+        t_force = "\tzmny l<nhA' AlAHtlAl Al<srA}yly w<qAmp dwlp flsTynyp"
         encoded_transcript = []
         for index, character in enumerate(t_force):
             encoded_character = [0] * len(settings.CHARACTER_SET)
@@ -164,7 +164,7 @@ class Char_Inference():
         # Populate the first character of target sequence with the start character.
         target_sequence[0, 0, char_to_int['\t']] = 1.
         stop_condition = False
-        t_force = "zmny l<nhA' AlAHtlAl Al<srA}yly w<qAmp dwlp flsTynyp\n"
+        t_force = "zmny l<nhA' AlAHtlAl Al<srA}yly w<qAmp dwlp flsTynyp"
         decoded_sentence = ''
         max_length = len(t_force)
         i = 0
@@ -172,7 +172,7 @@ class Char_Inference():
         while not stop_condition:
             output_tokens, h = self.decoder_model.predict(
                 [target_sequence] + states_value)
-            states_value += [h]
+            states_value = [h]
             sampled_token_index = np.argmax(output_tokens[0, -1, :])
             sampled_char = int_to_char[sampled_token_index]
             decoded_sentence += sampled_char
