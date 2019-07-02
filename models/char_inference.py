@@ -139,53 +139,6 @@ class Char_Inference():
             [decoder_output] + decoder_states)
 
 
-    def decode_audio_sequence_teacher_forcing(self, audio_sequence):
-        """
-                Decodes audio sequence into a transcript using encoder_model and decoder_model generated from training
-                :param audio_sequence: 2D numpy array
-                :param encoder_model: Model
-                :param decoder_model: Model
-                :param character_set: Dict
-                :return: String
-                """
-        # Getting converters
-        char_to_int = convert_to_int(sorted(settings.CHARACTER_SET))
-        int_to_char = convert_int_to_char(char_to_int)
-
-        # Returns the encoded audio_sequence
-        states_value = self.encoder_model.predict(audio_sequence)
-        states_value = [states_value]
-        print("ENCODER PREDICTION DONE")
-        num_decoder_tokens = len(char_to_int)
-        target_sequence = np.zeros((1, 1, num_decoder_tokens))
-
-        # Populate the first character of target sequence with the start character.
-        target_sequence[0, 0, char_to_int['\t']] = 1.
-        stop_condition = False
-        t_force = "zmny l<nhA' AlAHtlAl Al<srA}yly w<qAmp dwlp flsTynyp\n"
-        decoded_sentence = ''
-        max_length = len(t_force)
-        i = 0
-        while not stop_condition:
-            output_tokens, h = self.decoder_model.predict(
-                [target_sequence] + states_value)
-            states_value = [h]
-            sampled_token_index = np.argmax(output_tokens[0, -1, :])
-            sampled_char = int_to_char[sampled_token_index]
-            decoded_sentence += sampled_char
-
-            if sampled_char == "\n" or len(decoded_sentence) > max_length :
-                # End of transcription
-                stop_condition = True
-            else:
-                # updating target sequence vector
-                target_sequence = np.zeros((1, 1, num_decoder_tokens))
-                target_sequence[0, 0, char_to_int[t_force[i]]] = 1
-                i += 1
-
-        print(decoded_sentence)
-        return decoded_sentence
-
 
     def decode_audio_sequence_character_based(self, audio_sequence):
         """
@@ -215,11 +168,11 @@ class Char_Inference():
         max_length = len(t_force)
         i = 0
 
-
+        
         while not stop_condition:
             output_tokens, h = self.decoder_model.predict(
                 [target_sequence] + states_value)
-            states_value = states_value+[h]
+            states_value = [h]
             sampled_token_index = np.argmax(output_tokens[0, -1, :])
             sampled_char = int_to_char[sampled_token_index]
             decoded_sentence += sampled_char
@@ -230,8 +183,8 @@ class Char_Inference():
             else:
                 # updating target sequence vector
                 target_sequence = np.zeros((1, 1, num_decoder_tokens))
-                #target_sequence[0, 0, char_to_int[t_force[i]]] = 1
-                target_sequence[0, 0, char_to_int[sampled_char]] = 1
+                target_sequence[0, 0, char_to_int[t_force[i]]] = 1
+                #target_sequence[0, 0, char_to_int[sampled_char]] = 1
                 i += 1
 
 
