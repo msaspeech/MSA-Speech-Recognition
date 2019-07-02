@@ -102,6 +102,43 @@ class Char_Inference():
             [decoder_output] + decoder_states)
 
     def _get_encoder_decoder_model_baseline(self):
+        # Getting layers after training (updated weights)
+
+        # encoder_inputs = Input(shape=(None, settings.MFCC_FEATURES_LENGTH))
+        encoder_inputs = self.model.get_layer("encoder_input").input
+        [h] = self.model.get_layer("encoder_gru_layer").output[0]
+        self.encoder_states = [h]
+        # self.encoder_states = get_encoder_states(mfcc_features=settings.MFCC_FEATURES_LENGTH, encoder_inputs=encoder_inputs, latent_dim=self.latent_dim)
+        decoder_inputs = self.model.get_layer("decoder_input").input
+        # decoder_inputs = Input(shape=(None, len(settings.CHARACTER_SET)))
+        decoder_lstm1_layer = self.model.get_layer("decoder_gru1_layer")
+        decoder_lstm2_layer = self.model.get_layer("decoder_gru2_layer")
+        decoder_lstm3_layer = self.model.get_layer("decoder_gru3_layer")
+
+        decoder_dense = self.model.get_layer("decoder_dense")
+
+        # Creating encoder model
+        self.encoder_model = Model(encoder_inputs, self.encoder_states)
+
+        # Input shapes for 1st LSTM layer
+        decoder_state_input_h = Input(shape=(self.latent_dim,))
+        decoder_states_inputs = [decoder_state_input_h]
+
+        decoder_lstm1, state_h = decoder_lstm1_layer(decoder_inputs, initial_state=decoder_states_inputs)
+        decoder_states = [state_h]
+
+        # Outputs and states from final LSTM Layer
+        decoder_lstm2 = decoder_lstm2_layer(decoder_lstm1)
+        decoder_outputs = decoder_lstm3_layer(decoder_lstm2)
+
+        decoder_outputs = decoder_dense(decoder_outputs)
+
+        self.decoder_model = Model(
+            [decoder_inputs] + decoder_states_inputs,
+            [decoder_outputs] + decoder_states)
+
+
+    def _get_encoder_decoder_model_baseline_bis(self):
 
         # Getting encoder model
         encoder_inputs = self.model.get_layer("encoder_input").input
@@ -167,7 +204,6 @@ class Char_Inference():
         decoded_sentence = ''
         max_length = len(t_force)
         i = 0
-
 
         while not stop_condition:
             output_tokens, h = self.decoder_model.predict(
