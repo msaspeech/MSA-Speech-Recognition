@@ -116,6 +116,7 @@ class Char_Inference():
         decoder_inputs = self.model.get_layer("decoder_input").input
 
         decoder_gru1_layer = self.model.get_layer("decoder_gru1_layer")
+        decoder_gru2_layer = self.model.get_layer("decoder_gru2_layer")
 
         decoder_dropout = self.model.get_layer("decoder_dropout")
         decoder_dense_layer = self.model.get_layer("decoder_dense")
@@ -123,7 +124,8 @@ class Char_Inference():
         decoder_state_input_h = Input(shape=(self.latent_dim,))
         decoder_states_inputs = [decoder_state_input_h]
 
-        decoder_output, state_h = decoder_gru1_layer(decoder_inputs, initial_state=decoder_states_inputs)
+        decoder_gru1 = decoder_gru1_layer(decoder_inputs, initial_state=decoder_states_inputs)
+        decoder_output, state_h = decoder_gru2_layer(decoder_gru1)
         decoder_states = [state_h]
 
         # getting dense layers as outputs
@@ -217,7 +219,6 @@ class Char_Inference():
                 target_sequence[0, 0, char_to_int[t_force[i]]] = 1
                 #target_sequence[0, 0, char_to_int[sampled_char]] = 1
                 i += 1
-
 
         print(decoded_sentence)
         return decoded_sentence
