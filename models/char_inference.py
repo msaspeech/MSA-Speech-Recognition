@@ -119,7 +119,7 @@ class Char_Inference():
         decoder_gru2_layer = self.model.get_layer("decoder_gru2_layer")
         decoder_gru3_layer = self.model.get_layer("decoder_gru3_layer")
 
-        decoder_dropout = self.model.get_layer("decoder_dropout")
+        #decoder_dropout = self.model.get_layer("decoder_dropout")
         decoder_dense_layer = self.model.get_layer("decoder_dense")
 
         decoder_state_input_h = Input(shape=(self.latent_dim, ))
@@ -131,7 +131,7 @@ class Char_Inference():
         decoder_states = [state_h]
 
         # getting dense layers as outputs
-        decoder_output = decoder_dropout(decoder_output)
+        #decoder_output = decoder_dropout(decoder_output)
         decoder_output = decoder_dense_layer(decoder_output)
 
         self.decoder_model = Model(
@@ -168,7 +168,7 @@ class Char_Inference():
         max_length = len(t_force)
         i = 0
 
-        
+
         while not stop_condition:
             output_tokens, h = self.decoder_model.predict(
                 [target_sequence] + states_value)
@@ -176,7 +176,6 @@ class Char_Inference():
             sampled_token_index = np.argmax(output_tokens[0, -1, :])
             sampled_char = int_to_char[sampled_token_index]
             decoded_sentence += sampled_char
-            print(sampled_char)
             if sampled_char == "\n" or len(decoded_sentence) > max_length :
                 # End of transcription
                 stop_condition = True
