@@ -216,8 +216,8 @@ class Char_Inference():
             else:
                 # updating target sequence vector
                 target_sequence = np.zeros((1, 1, num_decoder_tokens))
-                target_sequence[0, 0, char_to_int[t_force[i]]] = 1
-                #target_sequence[0, 0, char_to_int[sampled_char]] = 1
+                #target_sequence[0, 0, char_to_int[t_force[i]]] = 1
+                target_sequence[0, 0, char_to_int[sampled_char]] = 1
                 i += 1
 
         print(decoded_sentence)
