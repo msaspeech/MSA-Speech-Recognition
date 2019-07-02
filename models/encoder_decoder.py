@@ -31,19 +31,11 @@ def get_decoder_outputs(target_length, encoder_states, decoder_inputs, latent_di
     decoder_gru1_layer = CuDNNGRU(latent_dim,
                                     input_shape=(None, target_length),
                                     return_sequences=True,
-                                    return_state=False,
+                                    return_state=True,
                                     kernel_constraint=None,
                                     kernel_regularizer=None,
                                     name="decoder_gru1_layer")
-    decoder_gru1 = decoder_gru1_layer(decoder_inputs, initial_state=encoder_states)
-    decoder_gru2_layer = CuDNNGRU(latent_dim,
-                                  input_shape=(None, target_length),
-                                  return_sequences=True,
-                                  return_state=True,
-                                  kernel_constraint=None,
-                                  kernel_regularizer=None,
-                                  name="decoder_gru2_layer")
-    decoder_outputs, state_h = decoder_gru2_layer(decoder_gru1)
+    decoder_outputs, state_h = decoder_gru1_layer(decoder_inputs, initial_state=encoder_states)
 
     return decoder_outputs
 
