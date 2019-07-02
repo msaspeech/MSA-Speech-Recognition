@@ -35,6 +35,19 @@ def get_decoder_outputs(target_length, encoder_states, decoder_inputs, latent_di
                                     kernel_constraint=None,
                                     kernel_regularizer=None,
                                     name="decoder_gru1_layer")
+    decoder_outputs, state_h = decoder_gru1_layer(decoder_inputs, initial_state=encoder_states)
+
+    return decoder_outputs
+
+def get_decoder_outputs_original(target_length, encoder_states, decoder_inputs, latent_dim):
+    # First Layer
+    decoder_gru1_layer = CuDNNGRU(latent_dim,
+                                    input_shape=(None, target_length),
+                                    return_sequences=True,
+                                    return_state=True,
+                                    kernel_constraint=None,
+                                    kernel_regularizer=None,
+                                    name="decoder_gru1_layer")
     decoder_gru1, state_h = decoder_gru1_layer(decoder_inputs, initial_state=encoder_states)
 
     # Second LSTM Layer
