@@ -128,7 +128,8 @@ class Char_Inference():
 
         decoder_gru1, state_h1 = decoder_gru1_layer(decoder_inputs, initial_state=decoder_states_inputs)
 
-        decoder_layers_initial_states = np.zeros((self.latent_dim))
+        decoder_layers_initial_states = np.zeros((self.latent_dim, ))
+
         decoder_gru2, state_h2 = decoder_gru2_layer(decoder_gru1, initial_state=decoder_layers_initial_states)
         decoder_gru3, state_h3 = decoder_gru3_layer(decoder_gru2, initial_state=decoder_layers_initial_states)
         decoder_output, state_h4 = decoder_gru4_layer(decoder_gru3, initial_state=decoder_layers_initial_states)
