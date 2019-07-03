@@ -119,15 +119,21 @@ class Char_Inference():
         decoder_dropout = self.model.get_layer("decoder_dropout")
         decoder_dense_layer = self.model.get_layer("decoder_dense")
 
-        decoder_state_input_h = Input(shape=(self.latent_dim,))
-        decoder_states_inputs = [decoder_state_input_h]
+        decoder_state_input_h1 = Input(shape=(self.latent_dim,))
+        decoder_state_input_h2 = Input(shape=(self.latent_dim,))
+        decoder_state_input_h3 = Input(shape=(self.latent_dim,))
+        decoder_state_input_h4 = Input(shape=(self.latent_dim,))
+        decoder_states_inputs = [decoder_state_input_h1, decoder_state_input_h2,
+                                 decoder_state_input_h3, decoder_state_input_h4]
 
         decoder_gru1, state_h1 = decoder_gru1_layer(decoder_inputs, initial_state=decoder_states_inputs)
-        decoder_gru2, state_h2 = decoder_gru2_layer(state_h1)
-        decoder_gru3, state_h3 = decoder_gru3_layer(state_h2)
-        decoder_output, state_h = decoder_gru4_layer(state_h3)
 
-        decoder_states = [state_h]
+        decoder_layers_initial_states = np.zeros((self.latent_dim))
+        decoder_gru2, state_h2 = decoder_gru2_layer(decoder_gru1, initial_state=decoder_layers_initial_states)
+        decoder_gru3, state_h3 = decoder_gru3_layer(decoder_gru2, initial_state=decoder_layers_initial_states)
+        decoder_output, state_h4 = decoder_gru4_layer(decoder_gru3, initial_state=decoder_layers_initial_states)
+
+        decoder_states = [state_h1, state_h2,state_h3,state_h4]
 
         # getting dense layers as outputs
         decoder_output = decoder_dropout(decoder_output)
@@ -191,7 +197,9 @@ class Char_Inference():
 
         # Returns the encoded audio_sequence
         states_value = self.encoder_model.predict(audio_sequence)
-        states_value = [states_value]
+        zeros = np.zeros((self.latent_dim))
+
+        states_value = [states_value, zeros, zeros, zeros]
         print("ENCODER PREDICTION DONE")
         num_decoder_tokens = len(char_to_int)
         target_sequence = np.zeros((1, 1, num_decoder_tokens))
