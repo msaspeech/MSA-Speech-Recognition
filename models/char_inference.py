@@ -29,10 +29,6 @@ class Char_Inference():
         self.decoder_model = None
 
         self._get_encoder_decoder_model_baseline()
-        #if architecture == 6:
-        #    self._get_encoder_decoder_model_baseline()
-        #else:
-        #    self._get_encoder_decoder_model_cnn()
 
     def predict_sequence_test(self, audio_input):
         char_to_int = convert_to_int(sorted(settings.CHARACTER_SET))
@@ -116,7 +112,6 @@ class Char_Inference():
         decoder_inputs = self.model.get_layer("decoder_input").input
 
         decoder_gru1_layer = self.model.get_layer("decoder_gru1_layer")
-        decoder_gru2_layer = self.model.get_layer("decoder_gru2_layer")
 
         decoder_dropout = self.model.get_layer("decoder_dropout")
         decoder_dense_layer = self.model.get_layer("decoder_dense")
@@ -124,8 +119,7 @@ class Char_Inference():
         decoder_state_input_h = Input(shape=(self.latent_dim,))
         decoder_states_inputs = [decoder_state_input_h]
 
-        decoder_gru1 = decoder_gru1_layer(decoder_inputs, initial_state=decoder_states_inputs)
-        decoder_output, state_h = decoder_gru2_layer(decoder_gru1)
+        decoder_output, state_h = decoder_gru1_layer(decoder_inputs, initial_state=decoder_states_inputs)
         decoder_states = [state_h]
 
         # getting dense layers as outputs
