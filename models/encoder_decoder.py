@@ -45,7 +45,7 @@ def get_decoder_outputs(target_length, encoder_states, decoder_inputs, latent_di
                                     kernel_constraint=None,
                                     kernel_regularizer=None,
                                     name="decoder_gru2_layer")
-    decoder_gru2 = decoder_gru2_layer(decoder_gru1)
+    decoder_gru2, state_h = decoder_gru2_layer(decoder_gru1)
 
     decoder_gru3_layer = CuDNNGRU(latent_dim,
                                   stateful=False,
@@ -54,7 +54,7 @@ def get_decoder_outputs(target_length, encoder_states, decoder_inputs, latent_di
                                   kernel_constraint=None,
                                   kernel_regularizer=None,
                                   name="decoder_gru3_layer")
-    decoder_gru3 = decoder_gru3_layer(decoder_gru2)
+    decoder_gru3, state_h = decoder_gru3_layer(decoder_gru2)
 
     decoder_gru4_layer = CuDNNGRU(latent_dim,
                                   stateful=False,
@@ -63,7 +63,7 @@ def get_decoder_outputs(target_length, encoder_states, decoder_inputs, latent_di
                                   kernel_constraint=None,
                                   kernel_regularizer=None,
                                   name="decoder_gru4_layer")
-    decoder_gru4 = decoder_gru4_layer(decoder_gru3)
+    decoder_gru4, state_h = decoder_gru4_layer(decoder_gru3)
 
     decoder_gru5_layer = CuDNNGRU(latent_dim,
                                   stateful=False,
@@ -72,7 +72,7 @@ def get_decoder_outputs(target_length, encoder_states, decoder_inputs, latent_di
                                   kernel_constraint=None,
                                   kernel_regularizer=None,
                                   name="decoder_gru5_layer")
-    decoder_outputs = decoder_gru5_layer(decoder_gru4)
+    decoder_outputs, state_h = decoder_gru5_layer(decoder_gru4)
 
     return decoder_outputs
 
