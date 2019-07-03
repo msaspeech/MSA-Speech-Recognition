@@ -199,8 +199,10 @@ class Char_Inference():
         # Returns the encoded audio_sequence
         states_value = self.encoder_model.predict(audio_sequence)
         zeros = np.zeros((self.latent_dim,))
-
-        states_value = [states_value, zeros, zeros, zeros]
+        zeros2 = np.zeros((self.latent_dim,))
+        zeros3 = np.zeros((self.latent_dim,))
+        zeros4 = np.zeros((self.latent_dim,))
+        states_value = [states_value, zeros2, zeros3, zeros4]
 
         print("ENCODER PREDICTION DONE")
         num_decoder_tokens = len(char_to_int)
