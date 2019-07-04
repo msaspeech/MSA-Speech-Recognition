@@ -222,6 +222,7 @@ class Char_Inference():
             output_tokens, h = self.decoder_model.predict(
                 [target_sequence] + states_value)
             states_value = h
+            print("DID IT GET HERE ? ")
             sampled_token_index = np.argmax(output_tokens[0, -1, :])
             sampled_char = int_to_char[sampled_token_index]
             decoded_sentence += sampled_char
