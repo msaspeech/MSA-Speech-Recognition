@@ -20,6 +20,7 @@ class Char_Inference():
         print(model_path)
 
         self.model = models.load_model(model_path)
+        self.model.summary()
         self.encoder_states = None
         self.latent_dim = latent_dim
         general_info = load_pickle_data(settings.DATASET_CHAR_INFERENCE_INFORMATION_PATH)
