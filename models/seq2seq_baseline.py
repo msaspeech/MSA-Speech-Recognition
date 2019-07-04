@@ -27,17 +27,15 @@ def train_baseline_seq2seq_model_GRU(mfcc_features, target_length, latent_dim, w
     decoder_inputs = Input(shape=(None, target_length), name="decoder_input")
 
     pre_decoder_dense_layer = Dense(30, activation="relu", name="pre_decoder_dense")
-    decoder_inputs = pre_decoder_dense_layer(decoder_inputs)
+    decoder_entries = pre_decoder_dense_layer(decoder_inputs)
 
     dropout_layer = Dropout(0.5, name="decoder_dropout")
-    decoder_inputs = dropout_layer(decoder_inputs)
+    decoder_entries = dropout_layer(decoder_entries)
 
     decoder_outputs = get_decoder_outputs(target_length=target_length,
                                           encoder_states=encoder_states,
-                                          decoder_inputs=decoder_inputs,
+                                          decoder_inputs=decoder_entries,
                                           latent_dim=latent_dim)
-
-
 
     # Dense Output Layers
     if word_level:
