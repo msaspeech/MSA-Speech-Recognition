@@ -55,6 +55,7 @@ def get_decoder_outputs(target_length, encoder_states, decoder_inputs, latent_di
                                   kernel_regularizer=None,
                                   name="decoder_gru3_layer")
     decoder_gru3, state_h = decoder_gru3_layer(decoder_gru2)
+
     decoder_gru4_layer = CuDNNGRU(latent_dim,
                                   stateful=False,
                                   return_sequences=True,
