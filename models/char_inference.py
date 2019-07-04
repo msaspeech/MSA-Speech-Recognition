@@ -224,8 +224,7 @@ class Char_Inference():
                 [target_sequence] + states_value)
             output_tokens = outputs[0]
             states_value = outputs[1:]
-            #states_value = h
-            print("DID IT GET HERE ? ")
+
             sampled_token_index = np.argmax(output_tokens[0, -1, :])
             sampled_char = int_to_char[sampled_token_index]
             decoded_sentence += sampled_char
@@ -235,8 +234,8 @@ class Char_Inference():
             else:
                 # updating target sequence vector
                 target_sequence = np.zeros((1, 1, num_decoder_tokens))
-                target_sequence[0, 0, char_to_int[t_force[i]]] = 1
-                #target_sequence[0, 0, char_to_int[sampled_char]] = 1
+                #target_sequence[0, 0, char_to_int[t_force[i]]] = 1
+                    target_sequence[0, 0, char_to_int[sampled_char]] = 1
                 i += 1
 
         print(decoded_sentence)
