@@ -192,7 +192,6 @@ class Seq2SeqModel():
                     yield [encoder_x, decoder_x], decoder_targets
 
 
-
     def data_generator_dict(self):
         audio_directory = settings.AUDIO_SPLIT_TEST_PATH
         audio_files = get_files_full_path(audio_directory)
