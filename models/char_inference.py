@@ -124,13 +124,12 @@ class Char_Inference():
         decoder_state_input_h3 = Input(shape=(self.latent_dim,))
         decoder_state_input_h4 = Input(shape=(self.latent_dim,))
 
-        decoder_layers_initial_states = np.zeros((self.latent_dim, ))
-
-        decoder_states_inputs = [decoder_state_input_h1, decoder_layers_initial_states,
-                                 decoder_layers_initial_states, decoder_layers_initial_states]
+        decoder_states_inputs = [decoder_state_input_h1, decoder_state_input_h2,
+                                 decoder_state_input_h3, decoder_state_input_h4]
 
         decoder_gru1, state_h1 = decoder_gru1_layer(decoder_inputs, initial_state=decoder_state_input_h1)
 
+        #decoder_layers_initial_states = np.zeros((self.latent_dim, ))
 
         decoder_gru2, state_h2 = decoder_gru2_layer(decoder_gru1, initial_state=decoder_state_input_h1)
         decoder_gru3, state_h3 = decoder_gru3_layer(decoder_gru2, initial_state=decoder_state_input_h1)
@@ -202,7 +201,6 @@ class Char_Inference():
 
         # Returns the encoded audio_sequence
         states_value = self.encoder_model.predict(audio_sequence)
-        zeros = np.zeros((self.latent_dim,))
         zeros2 = np.zeros((self.latent_dim,))
         zeros3 = np.zeros((self.latent_dim,))
         zeros4 = np.zeros((self.latent_dim,))
@@ -223,7 +221,7 @@ class Char_Inference():
         while not stop_condition:
             output_tokens, h = self.decoder_model.predict(
                 [target_sequence] + states_value)
-            states_value = [h]
+            states_value = h
             sampled_token_index = np.argmax(output_tokens[0, -1, :])
             sampled_char = int_to_char[sampled_token_index]
             decoded_sentence += sampled_char
