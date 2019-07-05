@@ -79,9 +79,9 @@ def get_decoder_outputs(target_length, encoder_states, decoder_inputs, latent_di
     return decoder_outputs
 
 
-#model = models.load_model("model.h5")
-#model.summary()
-#model.save_weights("model_weights.h5")
+model = models.load_model("model.h5")
+model.summary()
+model.save_weights("model_weights.h5")
 
 encoder_inputs = Input(shape=(None, 40), name="encoder_input")
 
@@ -108,6 +108,6 @@ decoder_outputs = get_multi_output_dense(decoder_outputs, target_length)
 # Generating Keras Model
 model = Model([encoder_inputs, decoder_inputs], decoder_outputs)
 
-model.load_weights("model_weights.h5")
-model.save("model.h5")
+#model.load_weights("model_weights.h5")
+#model.save("model.h5")
 

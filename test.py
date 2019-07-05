@@ -1,6 +1,6 @@
 from etc import settings
 from lib import AudioInput
-from utils import convert_to_int, convert_int_to_char
+from utils import convert_to_int, convert_int_to_char, load_pickle_data
 import numpy as np
 from tensorflow.python.keras import models
 
@@ -8,7 +8,7 @@ def predict_sequence_test(audio_input):
     char_to_int = convert_to_int(sorted(settings.CHARACTER_SET))
     int_to_char = convert_int_to_char(char_to_int)
 
-    t_force = "SOS_ m$AhdynA AlkrAm AlslAm Elykm _EOS"
+    t_force = "SOS_ wbyn sEy AlqwAt AlmslHp Alty kAn ytHdv bAsmhA _EOS"
     words = t_force.split()
     # print(words)
     character_set_length = 50
@@ -52,7 +52,15 @@ def predict_sequence_test(audio_input):
     print(list_words)
 
 
-sample = AudioInput("audio.wav", "")
+general_info = load_pickle_data("info_word.pkl")
+settings.MFCC_FEATURES_LENGTH = general_info[0]
+settings.TOTAL_SAMPLES_NUMBER = general_info[1]
+settings.WORD_SET = general_info[2]
+settings.LONGEST_WORD_LENGTH = general_info[3]
+settings.CHARACTER_SET = general_info[4]
+settings.WORD_TARGET_LENGTH = general_info[5]
+
+sample = AudioInput("test.wav", "")
 audio = [sample.mfcc.transpose()]
 
 audio_sequence = np.array(audio, dtype=np.float32)
