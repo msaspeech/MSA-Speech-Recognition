@@ -18,7 +18,7 @@ partitions = int(sys.argv[5])
 
 upload_dataset_partition(word_level=word_level, partitions=partitions)
 model = Seq2SeqModel(latent_dim=latent_dim, epochs=epochs, model_architecture=architecture, word_level=word_level)
-xmodel.train_model()
+model.train_model()
 
 #(train_encoder_input, train_decoder_input, train_decoder_target), \
 #(test_encoder_input, test_decoder_input, test_decoder_target) = upload_dataset_2()
