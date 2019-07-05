@@ -54,7 +54,6 @@ def train_cnn_seq2seq_model_GRU(mfcc_features, target_length, latent_dim, word_b
 
     # Generating Keras Model
     model = Model([cnn_inputs, decoder_inputs], decoder_outputs)
-    print(model.summary())
 
     return model
 

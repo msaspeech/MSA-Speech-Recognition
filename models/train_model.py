@@ -109,10 +109,10 @@ class Seq2SeqModel():
                                                                               target_length=self.target_length,
                                                                               latent_dim=self.latent_dim,
                                                                               word_based=self.word_level)
+                print("generated model")
 
     def train_model(self):
         print("ENCODER STATES")
-        self.model.summary()
         model_saver = ModelSaver(model_name=self.model_name, model_path=self.model_path,
                                  encoder_states=self.encoder_states,
                                  word_level=self.word_level)
