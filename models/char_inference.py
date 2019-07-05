@@ -111,13 +111,13 @@ class Char_Inference():
         # Getting decoder model
 
         decoder_inputs = self.model.get_layer("decoder_input").input
-        #pre_decoder_dense_layer = self.model.get_layer("pre_decoder_dense")
+        pre_decoder_dense_layer = self.model.get_layer("pre_decoder_dense")
+        decoder_dropout = self.model.get_layer("decoder_dropout")
 
         decoder_gru1_layer = self.model.get_layer("decoder_gru1_layer")
         decoder_gru2_layer = self.model.get_layer("decoder_gru2_layer")
         decoder_gru3_layer = self.model.get_layer("decoder_gru3_layer")
         decoder_gru4_layer = self.model.get_layer("decoder_gru4_layer")
-        decoder_dropout = self.model.get_layer("decoder_dropout")
         decoder_dense_layer = self.model.get_layer("decoder_dense")
 
         decoder_state_input_h1 = Input(shape=(self.latent_dim,))
@@ -128,10 +128,10 @@ class Char_Inference():
         decoder_states_inputs = [decoder_state_input_h1, decoder_state_input_h2,
                                  decoder_state_input_h3, decoder_state_input_h4]
 
-        decoder_gru1, state_h1 = decoder_gru1_layer(decoder_inputs, initial_state=decoder_state_input_h1)
+        decoder_entries = pre_decoder_dense_layer(decoder_inputs)
+        decoder_entries = decoder_dropout(decoder_entries)
 
-        #decoder_layers_initial_states = np.zeros((self.latent_dim, ))
-
+        decoder_gru1, state_h1 = decoder_gru1_layer(decoder_entries, initial_state=decoder_state_input_h1)
         decoder_gru2, state_h2 = decoder_gru2_layer(decoder_gru1, initial_state=decoder_state_input_h2)
         decoder_gru3, state_h3 = decoder_gru3_layer(decoder_gru2, initial_state=decoder_state_input_h3)
         decoder_output, state_h4 = decoder_gru4_layer(decoder_gru3, initial_state=decoder_state_input_h4)
