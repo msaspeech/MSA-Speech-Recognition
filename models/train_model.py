@@ -113,6 +113,7 @@ class Seq2SeqModel():
 
     def train_model(self):
         print("ENCODER STATES")
+        self.model.summary()
         model_saver = ModelSaver(model_name=self.model_name, model_path=self.model_path,
                                  encoder_states=self.encoder_states,
                                  word_level=self.word_level)
