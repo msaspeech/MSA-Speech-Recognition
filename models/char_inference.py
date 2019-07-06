@@ -123,8 +123,7 @@ class Char_Inference():
         decoder_state_input_h3 = Input(shape=(self.latent_dim,))
         decoder_state_input_h4 = Input(shape=(self.latent_dim,))
 
-        decoder_states_inputs = [decoder_state_input_h1, decoder_state_input_h2,
-                                 decoder_state_input_h3, decoder_state_input_h4]
+        decoder_states_inputs = [decoder_state_input_h1, decoder_state_input_h2]
 
         decoder_entries = pre_decoder_dense_layer(decoder_inputs)
         decoder_entries = decoder_dropout(decoder_entries)
