@@ -132,7 +132,7 @@ class Char_Inference():
         decoder_gru1, state_h1 = decoder_gru1_layer(decoder_entries, initial_state=decoder_state_input_h1)
         decoder_output, state_h2 = decoder_gru2_layer(decoder_gru1, initial_state=decoder_state_input_h2)
 
-        decoder_states = [state_h1, state_h2,state_h3,state_h4]
+        decoder_states = [state_h1, state_h2]
 
         # getting dense layers as outputs
         decoder_output = decoder_dropout(decoder_output)
