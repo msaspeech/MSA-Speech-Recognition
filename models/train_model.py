@@ -136,7 +136,7 @@ class Seq2SeqModel():
             print("training here" )
             self.model.compile(optimizer="Adagrad", loss='categorical_crossentropy', metrics=['accuracy'])
 
-            batch_size = 48
+            batch_size = 32
             steps = int(settings.TOTAL_SAMPLES_NUMBER / batch_size) + 1
             history = self.model.fit_generator(self.split_data_generator_dict(steps),
                                                steps_per_epoch=steps,
