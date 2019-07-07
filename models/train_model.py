@@ -134,7 +134,7 @@ class Seq2SeqModel():
 
         else:
             print("training here" )
-            self.model.compile(optimizer="RMSProp", loss='categorical_crossentropy', metrics=['accuracy'])
+            self.model.compile(optimizer="Nadam", loss='categorical_crossentropy', metrics=['accuracy'])
 
             batch_size = 32
             steps = int(settings.TOTAL_SAMPLES_NUMBER / batch_size) + 1

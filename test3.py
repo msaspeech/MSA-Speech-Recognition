@@ -69,9 +69,9 @@ def get_decoder_outputs(target_length, encoder_states, decoder_inputs, latent_di
     return decoder_outputs
 
 
-model = models.load_model("model_word.h5")
-model.summary()
-model.save_weights("model_word_weights.h5")
+#model = models.load_model("model_word.h5")
+#model.summary()
+#model.save_weights("model_word_weights.h5")
 
 encoder_inputs = Input(shape=(None, 40), name="encoder_input")
 
