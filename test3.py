@@ -54,7 +54,7 @@ def get_decoder_outputs(target_length, encoder_states, decoder_inputs, latent_di
                              kernel_constraint=None,
                              kernel_regularizer=None,
                              name="decoder_gru2_layer")
-    decoder_gru2 = decoder_gru2_layer(decoder_gru1)
+    decoder_gru2, state_h = decoder_gru2_layer(decoder_gru1, initial_state=state_h)
 
     decoder_gru3_layer = GRU(latent_dim,
                              stateful=False,
@@ -64,41 +64,36 @@ def get_decoder_outputs(target_length, encoder_states, decoder_inputs, latent_di
                              kernel_constraint=None,
                              kernel_regularizer=None,
                              name="decoder_gru3_layer")
-    decoder_outputs = decoder_gru3_layer(decoder_gru2)
+    decoder_outputs, state_h = decoder_gru3_layer(decoder_gru2, initial_state=state_h)
 
     return decoder_outputs
 
 
-model = models.load_model("model.h5")
+model = models.load_model("model_word.h5")
 model.summary()
-model.save_weights("model_weights.h5")
+model.save_weights("model_word_weights.h5")
 
 encoder_inputs = Input(shape=(None, 40), name="encoder_input")
 
 # Encoder model
 encoder_states = get_encoder_states(input_shape=40,
                                     encoder_inputs=encoder_inputs,
-                                    latent_dim=600)
+                                    latent_dim=350)
 
 # Decoder training, using 'encoder_states' as initial state.
-decoder_inputs = Input(shape=(None, 49), name="decoder_input")
+decoder_inputs = Input(shape=(None, 50), name="decoder_input")
 
-decoder_outputs = get_decoder_outputs(target_length=49,
+decoder_outputs = get_decoder_outputs(target_length=50,
                                       encoder_states=encoder_states,
                                       decoder_inputs=decoder_inputs,
-                                      latent_dim=600)
-
-dropout_layer = Dropout(0.5, name="decoder_dropout")
-decoder_outputs = dropout_layer(decoder_outputs)
-
+                                      latent_dim=350)
 # Dense Output Layers
 
-target_length = 49
-decoder_dense = Dense(target_length, activation='softmax', name="decoder_dense")
-decoder_outputs = decoder_dense(decoder_outputs)
+target_length = 50
+decoder_outputs = get_multi_output_dense(decoder_outputs, target_length)
 
 # Generating Keras Model
 model = Model([encoder_inputs, decoder_inputs], decoder_outputs)
 
-model.load_weights("model_weights.h5")
-model.save("model.h5")
+model.load_weights("model_word_weights.h5")
+model.save("model_word.h5")
