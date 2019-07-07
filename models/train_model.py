@@ -138,8 +138,8 @@ class Seq2SeqModel():
 
             batch_size = 32
             steps = int(settings.TOTAL_SAMPLES_NUMBER / batch_size) + 1
-            history = self.model.fit_generator(self.split_data_generator_dict(batch_size),
-                                               steps_per_epoch=steps,
+            history = self.model.fit_generator(self.data_generator_dict_bis(),
+                                               steps_per_epoch=8000,
                                                epochs=self.epochs,
                                                callbacks=[model_saver])
 
@@ -227,6 +227,42 @@ class Seq2SeqModel():
                     decoder_y = np.array(decoder_y)
 
                     yield [encoder_x, decoder_x], decoder_y
+
+    def data_generator_dict_bis(self):
+        audio_directory = settings.AUDIO_SPLIT_TEST_PATH
+        audio_files = get_files_full_path(audio_directory)
+        transcripts_directory = settings.TRANSCRIPTS_ENCODING_SPLIT_TRAIN_PATH
+        transcript_files = get_files_full_path(transcripts_directory)
+
+        while True:
+            for index, audio in enumerate(audio_files):
+                path_audio = audio
+                path_transcript = transcript_files[index]
+
+                audio_data = load_pickle_data(path_audio)
+                transcripts_data = load_pickle_data(path_transcript)
+
+                encoder_input = audio_data
+                decoder_input = transcripts_data[0]
+                decoder_target = transcripts_data[1]
+                data = self._generate_timestep_dict(encoder_input, decoder_input, decoder_target)
+                for key in data:
+                    #pair_key = random.choice(list(data.keys()))
+                    for pair_key in data.keys():
+                        output = data[pair_key]
+                        encoder_x = []
+                        decoder_x = []
+                        decoder_y = []
+                        for element in output:
+                            encoder_x.append(element[0][0])
+                            decoder_x.append(element[0][1])
+                            decoder_y.append(element[1])
+
+                        encoder_x = np.array(encoder_x)
+                        decoder_x = np.array(decoder_x)
+                        decoder_y = np.array(decoder_y)
+
+                        yield [encoder_x, decoder_x], decoder_y
 
     def validation_generator(self):
         audio_directory = settings.AUDIO_SPLIT_TEST_PATH

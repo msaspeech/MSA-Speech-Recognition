@@ -9,7 +9,7 @@ def predict_sequence_test(audio_input):
     char_to_int = convert_to_int(sorted(settings.CHARACTER_SET))
     int_to_char = convert_int_to_char(char_to_int)
 
-    t_force = "\tmtY rAyt *lk"
+    t_force = "\txSwSA mn* >n tslm Alr}ys >wbAmA Alr}Asp fy blAdh"
     encoded_transcript = []
     for index, character in enumerate(t_force):
         encoded_character = [0] * len(settings.CHARACTER_SET)

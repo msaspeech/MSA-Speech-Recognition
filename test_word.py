@@ -9,7 +9,7 @@ def predict_sequence_test(audio_input):
     char_to_int = convert_to_int(sorted(settings.CHARACTER_SET))
     int_to_char = convert_int_to_char(char_to_int)
 
-    t_force = "SOS_ tgyyrhA m&tmrAt wmnA$dAt dwlyp"
+    t_force = "SOS_ wmA hy AlDmAnAt AlmTlwbp ltfAdy mA Hdv fy EmrAn m&xrA"
     words = t_force.split()
     # print(words)
     character_set_length = len(settings.CHARACTER_SET) + 1
