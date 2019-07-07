@@ -25,7 +25,7 @@ def train_baseline_seq2seq_model_GRU(mfcc_features, target_length, latent_dim, w
 
     # Decoder training, using 'encoder_states' as initial state.
     decoder_inputs = Input(shape=(None, target_length), name="decoder_input")
-    pre_decoder_dense_layer = Dense(29, activation="relu", name="pre_decoder_dense")
+    pre_decoder_dense_layer = Dense(38, activation="relu", name="pre_decoder_dense")
     decoder_entries = pre_decoder_dense_layer(decoder_inputs)
     dropout_layer = Dropout(0.2, name="decoder_dropout")
     decoder_entries = dropout_layer(decoder_entries)
