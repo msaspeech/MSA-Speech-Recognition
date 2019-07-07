@@ -49,7 +49,7 @@ def get_decoder_outputs(target_length, encoder_states, decoder_inputs, latent_di
     decoder_gru2_layer = GRU(latent_dim,
                              stateful=False,
                              return_sequences=True,
-                             return_state=False,
+                             return_state=True,
                              reset_after=True,
                              kernel_constraint=None,
                              kernel_regularizer=None,
@@ -59,12 +59,22 @@ def get_decoder_outputs(target_length, encoder_states, decoder_inputs, latent_di
     decoder_gru3_layer = GRU(latent_dim,
                              stateful=False,
                              return_sequences=True,
-                             return_state=False,
+                             return_state=True,
                              reset_after=True,
                              kernel_constraint=None,
                              kernel_regularizer=None,
                              name="decoder_gru3_layer")
-    decoder_outputs, state_h = decoder_gru3_layer(decoder_gru2, initial_state=state_h)
+    decoder_gru3, state_h = decoder_gru3_layer(decoder_gru2, initial_state=state_h)
+
+    decoder_gru4_layer = GRU(latent_dim,
+                             stateful=False,
+                             return_sequences=True,
+                             return_state=True,
+                             reset_after=True,
+                             kernel_constraint=None,
+                             kernel_regularizer=None,
+                             name="decoder_gru4_layer")
+    decoder_outputs, state_h = decoder_gru4_layer(decoder_gru3, initial_state=state_h)
 
     return decoder_outputs
 
@@ -81,7 +91,7 @@ encoder_states = get_encoder_states(input_shape=40,
                                     latent_dim=350)
 
 # Decoder training, using 'encoder_states' as initial state.
-decoder_inputs = Input(shape=(None, 50), name="decoder_input")
+decoder_inputs = Input(shape=(None, 800), name="decoder_input")
 
 decoder_outputs = get_decoder_outputs(target_length=50,
                                       encoder_states=encoder_states,
