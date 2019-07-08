@@ -9,7 +9,7 @@ def predict_sequence_test(audio_input):
     char_to_int = convert_to_int(sorted(settings.CHARACTER_SET))
     int_to_char = convert_int_to_char(char_to_int)
 
-    t_force = "SOS_ wmA hy AlDmAnAt AlmTlwbp ltfAdy mA Hdv fy EmrAn m&xrA"
+    t_force = "SOS_ kyf qmt b*lk _EOS"
     words = t_force.split()
     # print(words)
     character_set_length = len(settings.CHARACTER_SET) + 1
@@ -58,7 +58,6 @@ def predict_sequence_test(audio_input):
     print(sentence)
     print(buckwalter_to_arabic(sentence))
 
-print(arabic_to_buckwalter("متى رايت ذلك"))
 general_info = load_pickle_data("info_word.pkl")
 settings.MFCC_FEATURES_LENGTH = general_info[0]
 settings.TOTAL_SAMPLES_NUMBER = general_info[1]

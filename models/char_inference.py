@@ -35,7 +35,7 @@ class Char_Inference():
         char_to_int = convert_to_int(sorted(settings.CHARACTER_SET))
         int_to_char = convert_int_to_char(char_to_int)
 
-        t_force = "\tm$AhdynA AlkrAm AlslAm Elykm"
+        t_force = "\t<*n ElynA >n nntql nqltyn Alnqlp Al>wlY"
         encoded_transcript = []
         for index, character in enumerate(t_force):
             encoded_character = [0] * len(settings.CHARACTER_SET)
@@ -174,7 +174,7 @@ class Char_Inference():
         stop_condition = False
         t_force = "m$AhdynA AlkrAm AlslAm Elykm"
         decoded_sentence = ''
-        max_length = len(t_force)
+        max_length = len(t_force) + 15
         i = 0
 
         while not stop_condition:

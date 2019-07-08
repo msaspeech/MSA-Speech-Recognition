@@ -1,15 +1,14 @@
 from etc import settings
 from lib import AudioInput
-from utils import convert_to_int, convert_int_to_char, load_pickle_data, buckwalter_to_arabic
+from utils import convert_to_int, convert_int_to_char, load_pickle_data, buckwalter_to_arabic, arabic_to_buckwalter
 import numpy as np
 from tensorflow.python.keras import models
 from models import correct_word
 
-def predict_sequence_test(audio_input):
+def predict_sequence_test(audio_input, t_force):
     char_to_int = convert_to_int(sorted(settings.CHARACTER_SET))
     int_to_char = convert_int_to_char(char_to_int)
 
-    t_force = "\txSwSA mn* >n tslm Alr}ys >wbAmA Alr}Asp fy blAdh"
     encoded_transcript = []
     for index, character in enumerate(t_force):
         encoded_character = [0] * len(settings.CHARACTER_SET)
@@ -38,8 +37,7 @@ def predict_sequence_test(audio_input):
         corrected_sentence.append(corrected_word)
 
     sentence = " ".join(corrected_sentence)
-    print(sentence)
-    print(buckwalter_to_arabic(sentence))
+    return sentence
 
 general_info = load_pickle_data("info_char.pkl")
 settings.MFCC_FEATURES_LENGTH = general_info[0]
@@ -52,5 +50,15 @@ audio = [sample.mfcc.transpose()]
 
 audio_sequence = np.array(audio, dtype=np.float32)
 print(audio_sequence.shape)
+original = arabic_to_buckwalter("متى تريد ان نقوم بهذه العمليه")
+print(original)
+t_force = "\t"+original
 
-predict_sequence_test(audio_sequence)
+sentence = predict_sequence_test(audio_sequence, t_force)
+print(buckwalter_to_arabic(sentence))
+decoded_words = sentence.split()
+original_words = original.split()
+decoded_words[0] = original_words[0]
+decoded_words[-1] = original_words[-1]
+sentence = " ".join(decoded_words)
+print(buckwalter_to_arabic(sentence))
