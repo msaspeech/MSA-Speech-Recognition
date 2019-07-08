@@ -54,17 +54,7 @@ def get_decoder_outputs(target_length, encoder_states, decoder_inputs, latent_di
                              kernel_constraint=None,
                              kernel_regularizer=None,
                              name="decoder_gru2_layer")
-    decoder_gru2 = decoder_gru2_layer(decoder_gru1)
-
-    decoder_gru3_layer = GRU(latent_dim,
-                             stateful=False,
-                             return_sequences=True,
-                             return_state=False,
-                             reset_after=True,
-                             kernel_constraint=None,
-                             kernel_regularizer=None,
-                             name="decoder_gru3_layer")
-    decoder_outputs = decoder_gru3_layer(decoder_gru2)
+    decoder_outputs, state_h = decoder_gru2_layer(decoder_gru1)
 
     return decoder_outputs
 
@@ -74,24 +64,22 @@ model.summary()
 model.save_weights("model_weights.h5")
 
 encoder_inputs = Input(shape=(None, 40), name="encoder_input")
-
+decoder_inputs = Input(shape=(None, 49), name="decoder_input")
+pre_decoder_dense_layer = Dense(44, activation="relu", name="pre_decoder_dense")
+decoder_entries = pre_decoder_dense_layer(decoder_inputs)
+dropout_layer = Dropout(0.1, name="decoder_dropout")
+decoder_entries = dropout_layer(decoder_entries)
 # Encoder model
 encoder_states = get_encoder_states(input_shape=40,
-                                    encoder_inputs=encoder_inputs,
-                                    latent_dim=600)
+                                    encoder_inputs=decoder_entries,
+                                    latent_dim=900)
 
 # Decoder training, using 'encoder_states' as initial state.
-decoder_inputs = Input(shape=(None, 49), name="decoder_input")
 
 decoder_outputs = get_decoder_outputs(target_length=49,
                                       encoder_states=encoder_states,
                                       decoder_inputs=decoder_inputs,
-                                      latent_dim=600)
-
-dropout_layer = Dropout(0.5, name="decoder_dropout")
-decoder_outputs = dropout_layer(decoder_outputs)
-
-# Dense Output Layers
+                                      latent_dim=900)
 
 target_length = 49
 decoder_dense = Dense(target_length, activation='softmax', name="decoder_dense")
